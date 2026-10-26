@@ -10,18 +10,24 @@
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 .card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center}
-.brand{color:var(--or);font-weight:800;letter-spacing:.5px}
-h1{font-size:26px;margin:10px 0 4px}
+.brand{color:var(--or);font-weight:800;font-size:20px;letter-spacing:.5px}
+h1{font-size:24px;margin:12px 0 4px}
 p{color:var(--mut);line-height:1.5;margin:8px 0}
-.dots{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0}
-.dot{width:54px;height:54px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;color:#111}
+.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
+.dot{width:46px;height:46px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;color:#111}
 .dot.on{background:var(--or);border:2px solid var(--or)}
 .dot.wait{border:2px dashed var(--or);animation:pulse 1.2s infinite}
+.dot.gift{border:2px dashed var(--ye);font-size:22px;filter:grayscale(1);opacity:.6}
+.dot.gift.on{background:var(--ye);border:2px solid var(--ye);filter:none;opacity:1}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-.reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:700;margin-top:14px}
+.rw{color:var(--ye);font-weight:700;margin:6px 0 2px}
+.reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:800;margin-top:14px}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
 .chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
 button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:8px}
+.links{display:flex;gap:8px;margin-top:18px}
+a.lnk{flex:1;display:block;padding:12px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;font-weight:700;font-size:15px}
+.foot{margin-top:20px;font-size:12px;color:#666}
 .err{color:#ff7b7b}
 </style>
 </head>
@@ -34,7 +40,7 @@ var app = document.getElementById("app");
 var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
 var TK = "dmg_" + slug;
-var bizName = "";
+var brand = null;
 var memToken = null;
 var pollTimer = null;
 
@@ -47,7 +53,42 @@ function setToken(t){
   try { localStorage.setItem(TK, t); } catch(e){}
 }
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-function shell(inner){ app.innerHTML = '<div class="brand">Damgalio</div>' + inner; }
+function okUrl(u){ return typeof u === "string" && /^https:\/\/[^\s"'<>]+$/.test(u); }
+
+function applyBrand(){
+  if(brand && /^#[0-9a-fA-F]{6}$/.test(brand.color)){
+    document.documentElement.style.setProperty("--or", brand.color);
+  }
+  if(brand && brand.name) document.title = brand.name;
+}
+function setBrand(b){ if(b){ brand = b; applyBrand(); } }
+
+function shell(inner){
+  var nm = brand && brand.name ? brand.name : "Damgalio";
+  app.innerHTML = '<div class="brand">' + esc(nm) + '</div>' + inner + '<div class="foot">Damgalio ile çalışır</div>';
+}
+
+function links(){
+  if(!brand) return "";
+  var h = "";
+  if(okUrl(brand.site)) h += '<a class="lnk" href="' + esc(brand.site) + '" target="_blank" rel="noopener">Web sitemiz</a>';
+  if(okUrl(brand.ig)) h += '<a class="lnk" href="' + esc(brand.ig) + '" target="_blank" rel="noopener">Instagram</a>';
+  return h ? '<div class="links">' + h + '</div>' : "";
+}
+
+function rewardLine(){
+  return brand && brand.reward ? '<p class="rw">Ödül: ' + esc(brand.reward) + '</p>' : "";
+}
+
+function dots(n, need, wait, full){
+  var h = '<div class="dots">';
+  for(var i = 0; i < need; i++){
+    var cls = i < n ? 'on' : (wait && i === n ? 'wait' : '');
+    h += '<div class="dot ' + cls + '">' + (i < n ? '&#10003;' : '') + '</div>';
+  }
+  h += '<div class="dot gift ' + (full ? 'on' : '') + '">&#127873;</div>';
+  return h + '</div>';
+}
 
 async function rpc(fn, body){
   var r = await fetch(SB_URL + "/rest/v1/rpc/" + fn, {
@@ -62,26 +103,17 @@ async function rpc(fn, body){
   return r.json();
 }
 
-function dots(n, need, wait){
-  var h = '<div class="dots">';
-  for(var i = 0; i < need; i++){
-    var cls = i < n ? 'on' : (wait && i === n ? 'wait' : '');
-    h += '<div class="dot ' + cls + '">' + (i < n ? '&#10003;' : '') + '</div>';
-  }
-  return h + '</div>';
-}
-
 function showError(e){
   shell('<h1>Bir sorun oluştu</h1><p class="err">' + esc(e.message) + '</p><p>Lütfen tekrar dene.</p>');
 }
 
 function showForm(msg){
-  shell('<h1>Hoş geldin</h1><p>' + esc(bizName) + ' damga kartın için bilgilerini gir.</p>' +
+  shell('<h1>Hoş geldin</h1><p>Damga kartın için bilgilerini gir.</p>' + rewardLine() +
     (msg ? '<p class="err">' + msg + '</p>' : '') +
     '<input type="text" id="nm" placeholder="Adın (isteğe bağlı)" autocomplete="given-name">' +
     '<input type="tel" id="ph" placeholder="Telefon: 5XX XXX XX XX" autocomplete="tel" inputmode="tel">' +
     '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum.</span></label>' +
-    '<button id="go">Damgayı Ekle</button>');
+    '<button id="go">Damgayı Ekle</button>' + links());
   document.getElementById("go").onclick = submit;
 }
 
@@ -112,43 +144,71 @@ function startPoll(){
       if(r.status === "approved"){
         stopPoll();
         r.status = "ok";
-        r.earned = (r.stamps === 0);
         showResult(r);
       } else if(r.status === "rejected"){
         stopPoll();
-        shell('<h1>Damga onaylanmadı</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed) +
-          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>');
+        setBrand(r.brand);
+        shell('<h1>Damga onaylanmadı</h1>' + dots(r.stamps, r.needed, false, false) +
+          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>' + links());
       }
     } catch(e){}
   }, 3000);
 }
 
+function startRewardPoll(){
+  stopPoll();
+  var n = 0;
+  pollTimer = setInterval(async function(){
+    n++;
+    if(n > 60){ stopPoll(); return; }
+    try {
+      var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
+      if(r.stamps < r.needed){
+        stopPoll();
+        setBrand(r.brand);
+        shell('<h1>Ödülün kullanıldı</h1>' + dots(r.stamps, r.needed, false, false) + rewardLine() +
+          '<p>Yeni damga kartın başladı. Afiyet olsun!</p>' + links());
+      }
+    } catch(e){}
+  }, 5000);
+}
+
 function showResult(r){
   if(r.token) setToken(r.token);
-  var s = r.status, h = "";
+  setBrand(r.brand);
+  var s = r.status;
   if(s === "not_found"){ shell('<h1>Geçersiz damga</h1><p>Bu damga bulunamadı. İşletmeye haber ver.</p>'); return; }
-  if(s === "need_info"){ bizName = r.business || ""; showForm(""); return; }
+  if(s === "need_info"){ showForm(""); return; }
   if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 5551234567"); return; }
   if(s === "pending"){
-    shell('<h1>Onay bekleniyor</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed, true) +
-      '<p>Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.</p>');
+    shell('<h1>Onay bekleniyor</h1>' + dots(r.stamps, r.needed, true, false) + rewardLine() +
+      '<p>Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.</p>' + links());
     startPoll();
     return;
   }
-  if(s === "cooldown"){
-    h = '<h1>Damgan zaten eklendi</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed) +
-        '<p>Yeni damga için ' + r.wait_minutes + ' dakika sonra tekrar dene.</p>';
+  var full = r.stamps >= r.needed;
+  var title, note;
+  if(full){
+    title = s === "ok" ? "Tebrikler! Ödülün hazır" : "Ödülün hazır!";
+    note = "Kasada bu ekranı göster.";
+  } else if(s === "cooldown"){
+    title = "Damgan zaten eklendi";
+    note = "Yeni damga için " + r.wait_minutes + " dakika sonra tekrar dene.";
   } else {
-    var n = r.earned ? r.needed : r.stamps;
-    h = '<h1>' + (r.earned ? 'Tebrikler!' : 'Damga eklendi') + '</h1><p>' + esc(r.business) + '</p>' + dots(n, r.needed);
-    if(!r.earned) h += '<p>Ödüle ' + (r.needed - r.stamps) + ' damga kaldı.</p>';
+    title = "Damga eklendi";
+    note = "Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
   }
-  if(r.rewards > 0) h += '<div class="reward">Ödül hakkın: ' + r.rewards + '. Kasada bu ekranı göster.</div>';
-  shell(h);
+  var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full) + rewardLine() + '<p>' + note + '</p>';
+  if(full) h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
+  shell(h + links());
+  if(full) startRewardPoll(); else stopPoll();
 }
 
 (async function(){
-  if(!slug){ shell('<h1>Damgalio</h1><p>Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p>'); return; }
+  if(!slug){
+    shell('<h1>Damga kartın burada</h1><p>Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p>');
+    return;
+  }
   shell('<p>Damga ekleniyor...</p>');
   try {
     var b = { p_slug: slug };
