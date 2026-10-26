@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Damgalio</title>
+<style>
+:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center}
+.brand{color:var(--or);font-weight:800;letter-spacing:.5px}
+h1{font-size:26px;margin:10px 0 4px}
+p{color:var(--mut);line-height:1.5;margin:8px 0}
+.dots{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0}
+.dot{width:54px;height:54px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;color:#111}
+.dot.on{background:var(--or);border:2px solid var(--or)}
+.reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:700;margin-top:14px}
+input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
+.chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
+button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:8px}
+.err{color:#ff7b7b}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+<script>
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var app = document.getElementById("app");
+var parts = location.pathname.split("/").filter(Boolean);
+var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
+var TK = "dmg_" + slug;
+var bizName = "";
+
+function getToken(){ try { return localStorage.getItem(TK); } catch(e){ return null; } }
+function setToken(t){ try { localStorage.setItem(TK, t); } catch(e){} }
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+function shell(inner){ app.innerHTML = '<div class="brand">Damgalio</div>' + inner; }
+
+async function rpc(body){
+  var r = await fetch(SB_URL + "/rest/v1/rpc/add_stamp", {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){
+    var t = ""; try { t = await r.text(); } catch(e){}
+    throw new Error(r.status + " " + t);
+  }
+  return r.json();
+}
+
+function dots(n, need){
+  var h = '<div class="dots">';
+  for(var i = 0; i < need; i++){
+    h += '<div class="dot ' + (i < n ? 'on' : '') + '">' + (i < n ? '&#10003;' : '') + '</div>';
+  }
+  return h + '</div>';
+}
+
+function showError(e){
+  shell('<h1>Bir sorun oluştu</h1><p class="err">' + esc(e.message) + '</p><p>Lütfen tekrar dene.</p>');
+}
+
+function showForm(msg){
+  shell('<h1>Hoş geldin</h1><p>' + esc(bizName) + ' damga kartın için bilgilerini gir.</p>' +
+    (msg ? '<p class="err">' + msg + '</p>' : '') +
+    '<input type="text" id="nm" placeholder="Adın (isteğe bağlı)" autocomplete="given-name">' +
+    '<input type="tel" id="ph" placeholder="Telefon: 5XX XXX XX XX" autocomplete="tel" inputmode="tel">' +
+    '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum.</span></label>' +
+    '<button id="go">Damgayı Ekle</button>');
+  document.getElementById("go").onclick = submit;
+}
+
+async function submit(){
+  if(!document.getElementById("kv").checked){ alert("Devam etmek için onay kutusunu işaretle."); return; }
+  var ph = document.getElementById("ph").value;
+  var nm = document.getElementById("nm").value;
+  var btn = document.getElementById("go");
+  btn.disabled = true; btn.textContent = "Ekleniyor...";
+  try { showResult(await rpc({ p_slug: slug, p_phone: ph, p_name: nm })); }
+  catch(e){ showError(e); }
+}
+
+function showResult(r){
+  if(r.token) setToken(r.token);
+  var s = r.status, h = "";
+  if(s === "not_found"){ shell('<h1>Geçersiz damga</h1><p>Bu damga bulunamadı. İşletmeye haber ver.</p>'); return; }
+  if(s === "need_info"){ bizName = r.business || ""; showForm(""); return; }
+  if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 5551234567"); return; }
+  if(s === "cooldown"){
+    h = '<h1>Damgan zaten eklendi</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed) +
+        '<p>Yeni damga için ' + r.wait_minutes + ' dakika sonra tekrar dene.</p>';
+  } else {
+    var n = r.earned ? r.needed : r.stamps;
+    h = '<h1>' + (r.earned ? 'Tebrikler!' : 'Damga eklendi') + '</h1><p>' + esc(r.business) + '</p>' + dots(n, r.needed);
+    if(!r.earned) h += '<p>Ödüle ' + (r.needed - r.stamps) + ' damga kaldı.</p>';
+  }
+  if(r.rewards > 0) h += '<div class="reward">Ödül hakkın: ' + r.rewards + '. Kasada bu ekranı göster.</div>';
+  shell(h);
+}
+
+(async function(){
+  if(!slug){ shell('<h1>Damgalio</h1><p>Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p>'); return; }
+  shell('<p>Damga ekleniyor...</p>');
+  try {
+    var b = { p_slug: slug };
+    var t = getToken(); if(t) b.p_token = t;
+    showResult(await rpc(b));
+  } catch(e){ showError(e); }
+})();
+</script>
+</body>
+</html>
