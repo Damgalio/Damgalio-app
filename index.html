@@ -13,6 +13,7 @@ body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:c
 .brand{color:var(--or);font-weight:800;font-size:20px;letter-spacing:.5px}
 h1{font-size:24px;margin:12px 0 4px}
 p{color:var(--mut);line-height:1.5;margin:8px 0}
+.sub{font-size:13px;color:var(--mut)}
 .dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
 .dot{width:46px;height:46px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;color:#111}
 .dot.on{background:var(--or);border:2px solid var(--or)}
@@ -25,6 +26,7 @@ p{color:var(--mut);line-height:1.5;margin:8px 0}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
 .chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
 button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:8px}
+button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line);font-size:15px;padding:12px}
 .links{display:flex;gap:8px;margin-top:18px}
 a.lnk{flex:1;display:block;padding:12px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;font-weight:700;font-size:15px}
 .foot{margin-top:20px;font-size:12px;color:#666}
@@ -39,19 +41,23 @@ var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
-var TK = "dmg_" + slug;
 var brand = null;
 var memToken = null;
 var pollTimer = null;
+var cdTimer = null;
+var deadline = 0;
 
-function getToken(){
-  if(memToken) return memToken;
-  try { return localStorage.getItem(TK); } catch(e){ return null; }
-}
-function setToken(t){
-  memToken = t;
-  try { localStorage.setItem(TK, t); } catch(e){}
-}
+try {
+  for(var i = localStorage.length - 1; i >= 0; i--){
+    var k = localStorage.key(i);
+    if(k && k.indexOf("dmg_") === 0 && k !== "dmg_kv" && k !== "dmg_panel_rt") localStorage.removeItem(k);
+  }
+} catch(e){}
+
+function getToken(){ return memToken; }
+function setToken(t){ memToken = t; }
+function hasConsent(){ try { return localStorage.getItem("dmg_kv") === "1"; } catch(e){ return false; } }
+function setConsent(){ try { localStorage.setItem("dmg_kv", "1"); } catch(e){} }
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function okUrl(u){ return typeof u === "string" && /^https:\/\/[^\s"'<>]+$/.test(u); }
 
@@ -107,27 +113,67 @@ function showError(e){
   shell('<h1>Bir sorun oluştu</h1><p class="err">' + esc(e.message) + '</p><p>Lütfen tekrar dene.</p>');
 }
 
+function clearLogout(){ if(cdTimer){ clearInterval(cdTimer); cdTimer = null; } }
+function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
+
+function tick(){
+  var left = Math.ceil((deadline - Date.now()) / 1000);
+  if(left <= 0){ doLogout(); return; }
+  var el = document.getElementById("cd");
+  if(el) el.textContent = left;
+}
+
+function armLogout(sec){
+  clearLogout();
+  deadline = Date.now() + sec * 1000;
+  cdTimer = setInterval(tick, 1000);
+}
+
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden && cdTimer) tick();
+});
+
+function doLogout(){
+  clearLogout();
+  stopPoll();
+  memToken = null;
+  shell('<h1>Oturum kapandı</h1><p>Yeni damga için NFC damgaya telefonunu tekrar yaklaştır.</p><button id="again">Yeniden giriş</button>' + links());
+  document.getElementById("again").onclick = function(){ location.reload(); };
+}
+
+function finish(h, sec){
+  shell(h + links() +
+    '<p class="sub" style="margin-top:16px">Güvenlik için <span id="cd">' + sec + '</span> sn sonra oturum kapanacak.</p>' +
+    '<button class="ghost" id="out">Çıkış yap</button>');
+  document.getElementById("out").onclick = doLogout;
+  armLogout(sec);
+}
+
 function showForm(msg){
-  shell('<h1>Hoş geldin</h1><p>Damga kartın için bilgilerini gir.</p>' + rewardLine() +
+  var consent = hasConsent();
+  shell('<h1>Damga kartın</h1><p>Telefon numaranı gir, damganı ekleyelim.</p>' + rewardLine() +
     (msg ? '<p class="err">' + msg + '</p>' : '') +
-    '<input type="text" id="nm" placeholder="Adın (isteğe bağlı)" autocomplete="given-name">' +
     '<input type="tel" id="ph" placeholder="Telefon: 5XX XXX XX XX" autocomplete="tel" inputmode="tel">' +
-    '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum.</span></label>' +
+    '<input type="text" id="nm" placeholder="Adın (ilk kayıtta, isteğe bağlı)" autocomplete="given-name">' +
+    (consent ? '<p class="sub">Telefon numaran damga kartın için saklanır.</p>' :
+      '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum.</span></label>') +
     '<button id="go">Damgayı Ekle</button>' + links());
   document.getElementById("go").onclick = submit;
 }
 
 async function submit(){
-  if(!document.getElementById("kv").checked){ alert("Devam etmek için onay kutusunu işaretle."); return; }
+  var kv = document.getElementById("kv");
+  if(kv && !kv.checked){ alert("Devam etmek için onay kutusunu işaretle."); return; }
   var ph = document.getElementById("ph").value;
   var nm = document.getElementById("nm").value;
   var btn = document.getElementById("go");
   btn.disabled = true; btn.textContent = "Ekleniyor...";
-  try { showResult(await rpc("add_stamp", { p_slug: slug, p_phone: ph, p_name: nm })); }
-  catch(e){ showError(e); }
+  try {
+    var r = await rpc("add_stamp", { p_slug: slug, p_phone: ph, p_name: nm });
+    if(r.status !== "bad_phone" && r.status !== "not_found") setConsent();
+    showResult(r);
+  } catch(e){ showError(e); }
 }
-
-function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
 
 function startPoll(){
   stopPoll();
@@ -136,7 +182,7 @@ function startPoll(){
     n++;
     if(n > 200){
       stopPoll();
-      shell('<h1>Onay gecikti</h1><p>Sayfayı yenileyerek tekrar kontrol et ya da personele haber ver.</p>');
+      shell('<h1>Onay gecikti</h1><p>Personele haber ver ya da NFC damgaya tekrar dokun.</p>');
       return;
     }
     try {
@@ -148,8 +194,8 @@ function startPoll(){
       } else if(r.status === "rejected"){
         stopPoll();
         setBrand(r.brand);
-        shell('<h1>Damga onaylanmadı</h1>' + dots(r.stamps, r.needed, false, false) +
-          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>' + links());
+        finish('<h1>Damga onaylanmadı</h1>' + dots(r.stamps, r.needed, false, false) +
+          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>', 20);
       }
     } catch(e){}
   }, 3000);
@@ -160,14 +206,14 @@ function startRewardPoll(){
   var n = 0;
   pollTimer = setInterval(async function(){
     n++;
-    if(n > 60){ stopPoll(); return; }
+    if(n > 30){ stopPoll(); return; }
     try {
       var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
       if(r.stamps < r.needed){
         stopPoll();
         setBrand(r.brand);
-        shell('<h1>Ödülün kullanıldı</h1>' + dots(r.stamps, r.needed, false, false) + rewardLine() +
-          '<p>Yeni damga kartın başladı. Afiyet olsun!</p>' + links());
+        finish('<h1>Ödülün kullanıldı</h1>' + dots(r.stamps, r.needed, false, false) + rewardLine() +
+          '<p>Yeni damga kartın başladı. Afiyet olsun!</p>', 20);
       }
     } catch(e){}
   }, 5000);
@@ -181,6 +227,7 @@ function showResult(r){
   if(s === "need_info"){ showForm(""); return; }
   if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 5551234567"); return; }
   if(s === "pending"){
+    clearLogout();
     shell('<h1>Onay bekleniyor</h1>' + dots(r.stamps, r.needed, true, false) + rewardLine() +
       '<p>Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.</p>' + links());
     startPoll();
@@ -200,7 +247,7 @@ function showResult(r){
   }
   var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full) + rewardLine() + '<p>' + note + '</p>';
   if(full) h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
-  shell(h + links());
+  finish(h, full ? 120 : 20);
   if(full) startRewardPoll(); else stopPoll();
 }
 
@@ -209,12 +256,9 @@ function showResult(r){
     shell('<h1>Damga kartın burada</h1><p>Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p>');
     return;
   }
-  shell('<p>Damga ekleniyor...</p>');
-  try {
-    var b = { p_slug: slug };
-    var t = getToken(); if(t) b.p_token = t;
-    showResult(await rpc("add_stamp", b));
-  } catch(e){ showError(e); }
+  shell('<p>Yükleniyor...</p>');
+  try { showResult(await rpc("add_stamp", { p_slug: slug })); }
+  catch(e){ showError(e); }
 })();
 </script>
 </body>
