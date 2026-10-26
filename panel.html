@@ -16,9 +16,11 @@ body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-sy
 h1{font-size:22px;margin:4px 0}
 p{color:var(--mut);line-height:1.5;margin:6px 0}
 input[type=text],input[type=email],input[type=password]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
+input[type=color]{width:100%;height:48px;padding:4px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010}
 button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:16px;font-weight:800}
 button.full{width:100%;margin-top:8px}
-button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px}
+button.ghost,a.btn{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px;border-radius:12px;font-weight:800}
+a.btn{display:inline-block;text-decoration:none}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .stat b{display:block;font-size:24px;color:var(--ye)}
@@ -33,6 +35,9 @@ button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line
 .tg{display:flex;gap:12px;align-items:flex-start}
 .tg input{width:24px;height:24px;margin:2px 0 0}
 .pend{border-color:var(--ye)}
+details summary{font-weight:700;cursor:pointer}
+.lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
+.ok{color:#7be0a0}
 .err{color:#ff7b7b}
 </style>
 </head>
@@ -51,6 +56,15 @@ function clearSession(){ session = null; try { localStorage.removeItem(SK); } ca
 function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
 function fmtPhone(p){ return String(p || "").replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4"); }
 function fmtDate(d){ return d ? new Date(d).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "-"; }
+
+function normUrl(v){
+  v = (v || "").trim();
+  if(!v) return null;
+  if(/^http:\/\//i.test(v)) v = "https://" + v.slice(7);
+  else if(!/^https:\/\//i.test(v)) v = "https://" + v;
+  if(v.length > 200 || !/^https:\/\/[^\s"'<>]+$/.test(v)) return false;
+  return v;
+}
 
 async function authCall(grant, body){
   var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
@@ -117,7 +131,7 @@ function pendingQuery(){
 }
 
 async function loadAll(){
-  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval&order=created_at");
+  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,brand_color,website_url,instagram_url&order=created_at");
   if(!bs.length){
     app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme bulunamadı</h1><p>Bu hesaba bağlı işletme yok.</p><button class="ghost" id="lo">Çıkış</button></div>';
     document.getElementById("lo").onclick = logout;
@@ -150,9 +164,22 @@ function render(){
     '<div class="stat"><b>' + rewardsTotal + '</b><span>Bekleyen ödül</span></div></div>' +
     '<div class="card" style="margin-top:12px"><label class="tg"><input type="checkbox" id="ra"' + (biz.require_approval ? ' checked' : '') + '>' +
     '<span><b>Damga onayı iste</b><br><span class="sub">Açıkken müşterinin damgası senin onayından sonra eklenir.</span></span></label></div>' +
-    '<div class="card"><div class="sub">NFC damgaya yazılacak link</div><div class="link">' + esc(link) + '</div><button class="ghost" id="cp" style="margin-top:8px">Linki kopyala</button></div>' +
+    '<details class="card"><summary>Marka ve ödül ayarları</summary>' +
+    '<label class="lb">Ödül (en fazla 60 karakter)</label><input type="text" id="s_rw" maxlength="60">' +
+    '<label class="lb">Marka rengi</label><input type="color" id="s_col">' +
+    '<label class="lb">Web sitesi (isteğe bağlı)</label><input type="text" id="s_site" placeholder="https://ornek.com" inputmode="url" autocapitalize="none">' +
+    '<label class="lb">Instagram linki (isteğe bağlı)</label><input type="text" id="s_ig" placeholder="https://instagram.com/kullaniciadi" inputmode="url" autocapitalize="none">' +
+    '<button class="full" id="s_save">Kaydet</button><p id="s_msg"></p></details>' +
+    '<div class="card"><div class="sub">NFC damgaya yazılacak link</div><div class="link">' + esc(link) + '</div>' +
+    '<div class="acts" style="margin-top:8px"><button class="ghost" id="cp">Linki kopyala</button>' +
+    '<a class="btn" href="' + esc(link) + '" target="_blank" rel="noopener">Sayfayı aç</a></div></div>' +
     '<input type="text" id="q" placeholder="Ara: isim veya telefon">' +
     '<div class="card" id="list"></div>';
+  document.getElementById("s_rw").value = biz.reward_text || "";
+  document.getElementById("s_col").value = /^#[0-9a-fA-F]{6}$/.test(biz.brand_color) ? biz.brand_color : "#ee6a37";
+  document.getElementById("s_site").value = biz.website_url || "";
+  document.getElementById("s_ig").value = biz.instagram_url || "";
+  document.getElementById("s_save").onclick = saveSettings;
   document.getElementById("lo").onclick = logout;
   document.getElementById("cp").onclick = function(){
     try { navigator.clipboard.writeText(link); alert("Link kopyalandı."); } catch(e){ alert(link); }
@@ -163,6 +190,36 @@ function render(){
   renderList();
   if(poller) clearInterval(poller);
   poller = setInterval(refreshPending, 4000);
+}
+
+async function saveSettings(){
+  var rt = document.getElementById("s_rw").value.trim();
+  var col = document.getElementById("s_col").value;
+  var site = normUrl(document.getElementById("s_site").value);
+  var ig = normUrl(document.getElementById("s_ig").value);
+  var msg = document.getElementById("s_msg");
+  if(!rt || rt.length > 60){ alert("Ödül metni 1 ile 60 karakter arasında olmalı."); return; }
+  if(site === false || ig === false){ alert("Web adresi geçersiz. Örnek: https://ornek.com"); return; }
+  var btn = document.getElementById("s_save");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+  try {
+    var res = await api("businesses?id=eq." + biz.id + "&select=reward_text,brand_color,website_url,instagram_url", {
+      method: "PATCH",
+      body: { reward_text: rt, brand_color: col, website_url: site, instagram_url: ig },
+      headers: { "Prefer": "return=representation" }
+    });
+    if(!res || !res.length) throw new Error("Kaydedilemedi");
+    biz.reward_text = res[0].reward_text;
+    biz.brand_color = res[0].brand_color;
+    biz.website_url = res[0].website_url;
+    biz.instagram_url = res[0].instagram_url;
+    document.getElementById("s_site").value = biz.website_url || "";
+    document.getElementById("s_ig").value = biz.instagram_url || "";
+    msg.className = "ok"; msg.textContent = "Kaydedildi.";
+  } catch(e){
+    msg.className = "err"; msg.textContent = e.message;
+  }
+  btn.disabled = false; btn.textContent = "Kaydet";
 }
 
 async function toggleApproval(e){
@@ -226,7 +283,7 @@ function renderList(){
     var has = c.rewards_available > 0;
     return '<div class="row"><div><div class="nm">' + esc(c.name || "İsimsiz") + '</div>' +
       '<div class="sub">' + esc(fmtPhone(c.phone)) + ' &middot; ' + c.stamps + '/' + biz.stamps_needed + ' damga</div>' +
-      (has ? '<span class="badge">Ödül: ' + c.rewards_available + '</span>' : '') +
+      (has ? '<span class="badge">Ödül hazır: ' + esc(biz.reward_text) + '</span>' : '') +
       '<div class="sub">Son: ' + esc(fmtDate(c.last_stamp_at)) + '</div></div>' +
       (has ? '<button data-id="' + esc(c.id) + '">Ödülü Kullan</button>' : '') + '</div>';
   }).join("");
@@ -236,7 +293,7 @@ function renderList(){
 }
 
 async function redeem(id, btn){
-  if(!confirm("Ödül verildi olarak işaretlensin mi?")) return;
+  if(!confirm("Ödül verildi olarak işaretlensin mi? Müşterinin kartı sıfırlanacak.")) return;
   btn.disabled = true;
   try {
     var r = await api("rpc/redeem_reward", { method: "POST", body: { p_customer: id } });
