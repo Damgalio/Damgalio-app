@@ -28,9 +28,13 @@ p{color:var(--mut);line-height:1.5;margin:8px 0}
 @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
 @keyframes fall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(720deg)}}
 .cf{position:fixed;top:-16px;width:9px;height:14px;border-radius:2px;z-index:99;pointer-events:none;animation:fall linear both}
-@media (prefers-reduced-motion:reduce){.dot.pop,.dot.gift.pop{animation:none}.cf{display:none}}
+@media (prefers-reduced-motion:reduce){.dot.pop,.dot.gift.pop{animation:none}.cf{display:none}.live{animation:none}}
 .rw{color:var(--ye);font-weight:700;margin:6px 0 2px}
 .reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:800;margin-top:14px}
+.rcheck{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.clk{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
+.live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#5ad1a0;margin-right:8px;vertical-align:middle;animation:pulse 1.2s infinite}
+.rph{font-size:15px;color:#fff;margin-top:2px}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
 .chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
 .chk a,.sub a{color:#fff}
@@ -54,6 +58,7 @@ var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
 var brand = null;
 var memToken = null;
+var myPhone = "";
 var pollTimer = null;
 var cdTimer = null;
 var deadline = 0;
@@ -125,6 +130,12 @@ function confetti(){
   }
 }
 
+function nowStr(){
+  var d = new Date();
+  function z(n){ return (n < 10 ? "0" : "") + n; }
+  return z(d.getHours()) + ":" + z(d.getMinutes()) + ":" + z(d.getSeconds());
+}
+
 function fmtPhone(v){
   var d = String(v).replace(/\D/g, "");
   d = d.replace(/^0+/, "");
@@ -168,6 +179,8 @@ function tick(){
   if(left <= 0){ doLogout(); return; }
   var el = document.getElementById("cd");
   if(el) el.textContent = left;
+  var ck = document.getElementById("clk");
+  if(ck) ck.textContent = nowStr();
 }
 
 function armLogout(sec){
@@ -184,6 +197,7 @@ function doLogout(){
   clearLogout();
   stopPoll();
   memToken = null;
+  myPhone = "";
   shell('<h1>Oturum kapandı</h1><p>Yeni damga için NFC damgaya telefonunu tekrar yaklaştır.</p><button id="again">Yeniden giriş</button>' + links());
   document.getElementById("again").onclick = function(){ location.reload(); };
 }
@@ -219,6 +233,7 @@ async function submit(){
   var ph = document.getElementById("ph").value.replace(/\D/g, "");
   if(ph.length !== 10){ ferr.textContent = "Telefon numarası 10 haneli olmalı. Örnek: 555 123 45 67"; return; }
   ferr.textContent = "";
+  myPhone = ph;
   var nm = document.getElementById("nm").value;
   var btn = document.getElementById("go");
   btn.disabled = true; btn.textContent = "Ekleniyor...";
@@ -300,7 +315,12 @@ function showResult(r){
     note = "Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
   }
   var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full, s === "ok") + rewardLine() + '<p>' + note + '</p>';
-  if(full) h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
+  if(full){
+    h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
+    h += '<div class="rcheck"><div class="clk"><span class="live"></span><span id="clk">' + nowStr() + '</span></div>';
+    if(myPhone.length === 10) h += '<div class="rph">Numaran: &bull;&bull;&bull; &bull;&bull;&bull; ' + myPhone.slice(6, 8) + ' ' + myPhone.slice(8, 10) + '</div>';
+    h += '<div class="sub">Saat akıyorsa ekran canlıdır.</div></div>';
+  }
   finish(h, full ? 120 : 20);
   if(full) startRewardPoll(); else stopPoll();
   if(full && s === "ok") confetti();
