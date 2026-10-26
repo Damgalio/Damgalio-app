@@ -33,12 +33,15 @@ p{color:var(--mut);line-height:1.5;margin:8px 0}
 .reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:800;margin-top:14px}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
 .chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
+.chk a,.sub a{color:#fff}
 button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:8px}
 button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line);font-size:15px;padding:12px}
 .links{display:flex;gap:8px;margin-top:18px}
 a.lnk{flex:1;display:block;padding:12px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;font-weight:700;font-size:15px}
 .foot{margin-top:20px;font-size:12px;color:#666}
 .err{color:#ff7b7b}
+.err:empty{display:none}
+#ferr{margin:6px 0;font-size:14px}
 </style>
 </head>
 <body>
@@ -122,6 +125,19 @@ function confetti(){
   }
 }
 
+function fmtPhone(v){
+  var d = String(v).replace(/\D/g, "");
+  d = d.replace(/^0+/, "");
+  if(d.indexOf("90") === 0) d = d.slice(2);
+  d = d.replace(/^0+/, "");
+  d = d.slice(0, 10);
+  var o = d.slice(0, 3);
+  if(d.length > 3) o += " " + d.slice(3, 6);
+  if(d.length > 6) o += " " + d.slice(6, 8);
+  if(d.length > 8) o += " " + d.slice(8, 10);
+  return o;
+}
+
 async function rpc(fn, body){
   var r = await fetch(SB_URL + "/rest/v1/rpc/" + fn, {
     method: "POST",
@@ -136,7 +152,12 @@ async function rpc(fn, body){
 }
 
 function showError(e){
-  shell('<h1>Bir sorun oluştu</h1><p class="err">' + esc(e.message) + '</p><p>Lütfen tekrar dene.</p>');
+  try { console.error(e); } catch(x){}
+  var off = typeof navigator !== "undefined" && navigator.onLine === false;
+  shell('<h1>Bağlantı sorunu</h1><p>' +
+    (off ? 'İnternet bağlantın yok gibi görünüyor.' : 'Şu an damganı ekleyemedik.') +
+    ' Birkaç saniye sonra tekrar dene.</p><button id="retry">Tekrar dene</button>');
+  document.getElementById("retry").onclick = function(){ location.reload(); };
 }
 
 function clearLogout(){ if(cdTimer){ clearInterval(cdTimer); cdTimer = null; } }
@@ -177,20 +198,27 @@ function finish(h, sec){
 
 function showForm(msg){
   var consent = hasConsent();
+  var kvLink = '<a href="/gizlilik.html" target="_blank" rel="noopener">Aydınlatma metni</a>';
   shell('<h1>Damga kartın</h1><p>Telefon numaranı gir, damganı ekleyelim.</p>' + rewardLine() +
     (msg ? '<p class="err">' + msg + '</p>' : '') +
     '<input type="tel" id="ph" placeholder="Telefon: 5XX XXX XX XX" autocomplete="tel" inputmode="tel">' +
     '<input type="text" id="nm" placeholder="Adın (ilk kayıtta, isteğe bağlı)" autocomplete="given-name">' +
-    (consent ? '<p class="sub">Telefon numaran damga kartın için saklanır.</p>' :
-      '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum.</span></label>') +
+    (consent ? '<p class="sub">Telefon numaran damga kartın için saklanır. ' + kvLink + '</p>' :
+      '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum. ' + kvLink + '</span></label>') +
+    '<div class="err" id="ferr"></div>' +
     '<button id="go">Damgayı Ekle</button>' + links());
+  var phEl = document.getElementById("ph");
+  phEl.oninput = function(){ phEl.value = fmtPhone(phEl.value); };
   document.getElementById("go").onclick = submit;
 }
 
 async function submit(){
+  var ferr = document.getElementById("ferr");
   var kv = document.getElementById("kv");
-  if(kv && !kv.checked){ alert("Devam etmek için onay kutusunu işaretle."); return; }
-  var ph = document.getElementById("ph").value;
+  if(kv && !kv.checked){ ferr.textContent = "Devam etmek için onay kutusunu işaretle."; return; }
+  var ph = document.getElementById("ph").value.replace(/\D/g, "");
+  if(ph.length !== 10){ ferr.textContent = "Telefon numarası 10 haneli olmalı. Örnek: 555 123 45 67"; return; }
+  ferr.textContent = "";
   var nm = document.getElementById("nm").value;
   var btn = document.getElementById("go");
   btn.disabled = true; btn.textContent = "Ekleniyor...";
@@ -251,7 +279,7 @@ function showResult(r){
   var s = r.status;
   if(s === "not_found"){ shell('<h1>Geçersiz damga</h1><p>Bu damga bulunamadı. İşletmeye haber ver.</p>'); return; }
   if(s === "need_info"){ showForm(""); return; }
-  if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 5551234567"); return; }
+  if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 555 123 45 67"); return; }
   if(s === "pending"){
     clearLogout();
     shell('<h1>Onay bekleniyor</h1>' + dots(r.stamps, r.needed, true, false) + rewardLine() +
