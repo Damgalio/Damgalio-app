@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
 <title>Damgalio</title>
 <style>
 :root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
@@ -15,6 +16,8 @@ p{color:var(--mut);line-height:1.5;margin:8px 0}
 .dots{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0}
 .dot{width:54px;height:54px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;color:#111}
 .dot.on{background:var(--or);border:2px solid var(--or)}
+.dot.wait{border:2px dashed var(--or);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
 .reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:700;margin-top:14px}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
 .chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
@@ -32,14 +35,22 @@ var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
 var TK = "dmg_" + slug;
 var bizName = "";
+var memToken = null;
+var pollTimer = null;
 
-function getToken(){ try { return localStorage.getItem(TK); } catch(e){ return null; } }
-function setToken(t){ try { localStorage.setItem(TK, t); } catch(e){} }
+function getToken(){
+  if(memToken) return memToken;
+  try { return localStorage.getItem(TK); } catch(e){ return null; }
+}
+function setToken(t){
+  memToken = t;
+  try { localStorage.setItem(TK, t); } catch(e){}
+}
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function shell(inner){ app.innerHTML = '<div class="brand">Damgalio</div>' + inner; }
 
-async function rpc(body){
-  var r = await fetch(SB_URL + "/rest/v1/rpc/add_stamp", {
+async function rpc(fn, body){
+  var r = await fetch(SB_URL + "/rest/v1/rpc/" + fn, {
     method: "POST",
     headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -51,10 +62,11 @@ async function rpc(body){
   return r.json();
 }
 
-function dots(n, need){
+function dots(n, need, wait){
   var h = '<div class="dots">';
   for(var i = 0; i < need; i++){
-    h += '<div class="dot ' + (i < n ? 'on' : '') + '">' + (i < n ? '&#10003;' : '') + '</div>';
+    var cls = i < n ? 'on' : (wait && i === n ? 'wait' : '');
+    h += '<div class="dot ' + cls + '">' + (i < n ? '&#10003;' : '') + '</div>';
   }
   return h + '</div>';
 }
@@ -79,8 +91,36 @@ async function submit(){
   var nm = document.getElementById("nm").value;
   var btn = document.getElementById("go");
   btn.disabled = true; btn.textContent = "Ekleniyor...";
-  try { showResult(await rpc({ p_slug: slug, p_phone: ph, p_name: nm })); }
+  try { showResult(await rpc("add_stamp", { p_slug: slug, p_phone: ph, p_name: nm })); }
   catch(e){ showError(e); }
+}
+
+function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
+
+function startPoll(){
+  stopPoll();
+  var n = 0;
+  pollTimer = setInterval(async function(){
+    n++;
+    if(n > 200){
+      stopPoll();
+      shell('<h1>Onay gecikti</h1><p>Sayfayı yenileyerek tekrar kontrol et ya da personele haber ver.</p>');
+      return;
+    }
+    try {
+      var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
+      if(r.status === "approved"){
+        stopPoll();
+        r.status = "ok";
+        r.earned = (r.stamps === 0);
+        showResult(r);
+      } else if(r.status === "rejected"){
+        stopPoll();
+        shell('<h1>Damga onaylanmadı</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed) +
+          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>');
+      }
+    } catch(e){}
+  }, 3000);
 }
 
 function showResult(r){
@@ -89,6 +129,12 @@ function showResult(r){
   if(s === "not_found"){ shell('<h1>Geçersiz damga</h1><p>Bu damga bulunamadı. İşletmeye haber ver.</p>'); return; }
   if(s === "need_info"){ bizName = r.business || ""; showForm(""); return; }
   if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 5551234567"); return; }
+  if(s === "pending"){
+    shell('<h1>Onay bekleniyor</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed, true) +
+      '<p>Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.</p>');
+    startPoll();
+    return;
+  }
   if(s === "cooldown"){
     h = '<h1>Damgan zaten eklendi</h1><p>' + esc(r.business) + '</p>' + dots(r.stamps, r.needed) +
         '<p>Yeni damga için ' + r.wait_minutes + ' dakika sonra tekrar dene.</p>';
@@ -107,7 +153,7 @@ function showResult(r){
   try {
     var b = { p_slug: slug };
     var t = getToken(); if(t) b.p_token = t;
-    showResult(await rpc(b));
+    showResult(await rpc("add_stamp", b));
   } catch(e){ showError(e); }
 })();
 </script>
