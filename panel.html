@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Damgalio Panel</title>
+<style>
+:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.brand{color:var(--or);font-weight:800}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+h1{font-size:22px;margin:4px 0}
+p{color:var(--mut);line-height:1.5;margin:6px 0}
+input{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
+button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:16px;font-weight:800}
+button.full{width:100%;margin-top:8px}
+button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line);padding:8px 12px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px;color:var(--ye)}
+.stat span{font-size:12px;color:var(--mut)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.nm{font-weight:700}
+.sub{font-size:13px;color:var(--mut)}
+.badge{background:var(--ye);color:#111;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:800;display:inline-block;margin-top:4px}
+.link{word-break:break-all;font-size:13px;color:var(--ye)}
+.err{color:#ff7b7b}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var app = document.getElementById("app");
+var SK = "dmg_panel_rt";
+var session = null, biz = null, customers = [], todayCount = 0;
+
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
+function clearSession(){ session = null; try { localStorage.removeItem(SK); } catch(e){} }
+function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
+function fmtPhone(p){ return String(p || "").replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4"); }
+function fmtDate(d){ return d ? new Date(d).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "-"; }
+
+async function authCall(grant, body){
+  var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var j = await r.json();
+  if(!r.ok) throw new Error(j.error_description || j.msg || ("Hata " + r.status));
+  return j;
+}
+
+async function api(path, opts, retry){
+  opts = opts || {};
+  var r = await fetch(SB_URL + "/rest/v1/" + path, {
+    method: opts.method || "GET",
+    headers: { "apikey": SB_KEY, "Authorization": "Bearer " + session.access_token, "Content-Type": "application/json" },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if(r.status === 401 && !retry){
+    saveSession(await authCall("refresh_token", { refresh_token: session.refresh_token }));
+    return api(path, opts, true);
+  }
+  if(!r.ok){ throw new Error(r.status + " " + (await r.text())); }
+  return r.json();
+}
+
+function showLogin(msg){
+  app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme Paneli</h1><p>Giriş yap.</p>' +
+    (msg ? '<p class="err">' + esc(msg) + '</p>' : '') +
+    '<input type="email" id="em" placeholder="E-posta" autocomplete="username">' +
+    '<input type="password" id="pw" placeholder="Şifre" autocomplete="current-password">' +
+    '<button class="full" id="lg">Giriş Yap</button></div>';
+  document.getElementById("lg").onclick = login;
+}
+
+function showFatal(e){
+  app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>Bir sorun oluştu</h1><p class="err">' + esc(e.message) + '</p><button class="ghost" id="lo">Çıkış</button></div>';
+  document.getElementById("lo").onclick = function(){ clearSession(); showLogin(""); };
+}
+
+async function login(){
+  var em = document.getElementById("em").value.trim();
+  var pw = document.getElementById("pw").value;
+  var b = document.getElementById("lg");
+  b.disabled = true; b.textContent = "Giriş yapılıyor...";
+  try { saveSession(await authCall("password", { email: em, password: pw })); }
+  catch(e){ showLogin(e.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : e.message); return; }
+  try { await loadAll(); } catch(e){ showFatal(e); }
+}
+
+async function loadAll(){
+  var bs = await api("businesses?select=id,name,slug,stamps_needed&order=created_at");
+  if(!bs.length){
+    app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme bulunamadı</h1><p>Bu hesaba bağlı işletme yok.</p><button class="ghost" id="lo">Çıkış</button></div>';
+    document.getElementById("lo").onclick = function(){ clearSession(); showLogin(""); };
+    return;
+  }
+  biz = bs[0];
+  customers = await api("customers?select=id,name,phone,stamps,rewards_available,last_stamp_at&business_id=eq." + biz.id + "&order=last_stamp_at.desc.nullslast&limit=500");
+  var d = new Date(); d.setHours(0, 0, 0, 0);
+  var ev = await api("stamp_events?select=id&business_id=eq." + biz.id + "&created_at=gte." + encodeURIComponent(d.toISOString()) + "&limit=1000");
+  todayCount = ev.length;
+  render();
+}
+
+function render(){
+  var pending = 0;
+  customers.forEach(function(c){ pending += c.rewards_available; });
+  var link = location.origin + "/s/" + biz.slug;
+  app.innerHTML =
+    '<div class="top"><div><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1></div><button class="ghost" id="lo">Çıkış</button></div>' +
+    '<div class="stats">' +
+    '<div class="stat"><b>' + customers.length + '</b><span>Müşteri</span></div>' +
+    '<div class="stat"><b>' + todayCount + '</b><span>Bugün damga</span></div>' +
+    '<div class="stat"><b>' + pending + '</b><span>Bekleyen ödül</span></div></div>' +
+    '<div class="card" style="margin-top:12px"><div class="sub">NFC damgaya yazılacak link</div><div class="link">' + esc(link) + '</div><button class="ghost" id="cp" style="margin-top:8px">Linki kopyala</button></div>' +
+    '<input type="text" id="q" placeholder="Ara: isim veya telefon">' +
+    '<div class="card" id="list"></div>';
+  document.getElementById("lo").onclick = function(){ clearSession(); showLogin(""); };
+  document.getElementById("cp").onclick = function(){
+    try { navigator.clipboard.writeText(link); alert("Link kopyalandı."); } catch(e){ alert(link); }
+  };
+  document.getElementById("q").oninput = renderList;
+  renderList();
+}
+
+function renderList(){
+  var v = document.getElementById("q").value;
+  var qn = v.toLowerCase().trim();
+  var qp = v.replace(/\D/g, "");
+  var rows = customers.filter(function(c){
+    if(!qn) return true;
+    return (c.name || "").toLowerCase().indexOf(qn) > -1 || (qp && String(c.phone).indexOf(qp) > -1);
+  });
+  var list = document.getElementById("list");
+  if(!rows.length){ list.innerHTML = '<p>Müşteri bulunamadı.</p>'; return; }
+  list.innerHTML = rows.map(function(c){
+    var has = c.rewards_available > 0;
+    return '<div class="row"><div><div class="nm">' + esc(c.name || "İsimsiz") + '</div>' +
+      '<div class="sub">' + esc(fmtPhone(c.phone)) + ' &middot; ' + c.stamps + '/' + biz.stamps_needed + ' damga</div>' +
+      (has ? '<span class="badge">Ödül: ' + c.rewards_available + '</span>' : '') +
+      '<div class="sub">Son: ' + esc(fmtDate(c.last_stamp_at)) + '</div></div>' +
+      (has ? '<button data-id="' + esc(c.id) + '">Ödülü Kullan</button>' : '') + '</div>';
+  }).join("");
+  list.querySelectorAll("button[data-id]").forEach(function(b){
+    b.onclick = function(){ redeem(b.getAttribute("data-id"), b); };
+  });
+}
+
+async function redeem(id, btn){
+  if(!confirm("Ödül verildi olarak işaretlensin mi?")) return;
+  btn.disabled = true;
+  try {
+    var r = await api("rpc/redeem_reward", { method: "POST", body: { p_customer: id } });
+    if(r.status !== "ok") alert("Ödül kullanılamadı: " + r.status);
+    await loadAll();
+  } catch(e){ alert(e.message); btn.disabled = false; }
+}
+
+(async function(){
+  var rt = savedRefresh();
+  if(!rt){ showLogin(""); return; }
+  app.innerHTML = '<p>Yükleniyor...</p>';
+  try { saveSession(await authCall("refresh_token", { refresh_token: rt })); }
+  catch(e){ clearSession(); showLogin("Oturum süresi doldu, tekrar giriş yap."); return; }
+  try { await loadAll(); } catch(e){ showFatal(e); }
+})();
+</script>
+</body>
+</html>
