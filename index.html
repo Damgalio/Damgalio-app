@@ -20,7 +20,15 @@ p{color:var(--mut);line-height:1.5;margin:8px 0}
 .dot.wait{border:2px dashed var(--or);animation:pulse 1.2s infinite}
 .dot.gift{border:2px dashed var(--ye);font-size:22px;filter:grayscale(1);opacity:.6}
 .dot.gift.on{background:var(--ye);border:2px solid var(--ye);filter:none;opacity:1}
+.dot.pop{animation:pop .5s ease-out both}
+.dot.gift.pop{animation:pop .6s ease-out .4s both}
+.cnt{font-size:15px;color:var(--mut);margin:0 0 6px}
+.cnt b{color:#fff;font-size:18px}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes fall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(720deg)}}
+.cf{position:fixed;top:-16px;width:9px;height:14px;border-radius:2px;z-index:99;pointer-events:none;animation:fall linear both}
+@media (prefers-reduced-motion:reduce){.dot.pop,.dot.gift.pop{animation:none}.cf{display:none}}
 .rw{color:var(--ye);font-weight:700;margin:6px 0 2px}
 .reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:800;margin-top:14px}
 input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
@@ -86,14 +94,32 @@ function rewardLine(){
   return brand && brand.reward ? '<p class="rw">Ödül: ' + esc(brand.reward) + '</p>' : "";
 }
 
-function dots(n, need, wait, full){
+function dots(n, need, wait, full, pop){
+  var last = Math.min(n, need) - 1;
   var h = '<div class="dots">';
   for(var i = 0; i < need; i++){
     var cls = i < n ? 'on' : (wait && i === n ? 'wait' : '');
+    if(pop && i === last) cls += ' pop';
     h += '<div class="dot ' + cls + '">' + (i < n ? '&#10003;' : '') + '</div>';
   }
-  h += '<div class="dot gift ' + (full ? 'on' : '') + '">&#127873;</div>';
-  return h + '</div>';
+  h += '<div class="dot gift ' + (full ? 'on' : '') + (full && pop ? ' pop' : '') + '">&#127873;</div>';
+  h += '</div>';
+  return h + '<div class="cnt"><b>' + Math.min(n, need) + '</b> / ' + need + ' damga</div>';
+}
+
+function confetti(){
+  var cols = ["#f7d44c", "#ffffff", "#5ad1a0", "#6aa8ff", "#ff7b7b"];
+  if(brand && /^#[0-9a-fA-F]{6}$/.test(brand.color)) cols.push(brand.color);
+  for(var i = 0; i < 40; i++){
+    var c = document.createElement("div");
+    c.className = "cf";
+    c.style.left = (Math.random() * 100) + "vw";
+    c.style.background = cols[i % cols.length];
+    c.style.animationDuration = (2 + Math.random() * 2) + "s";
+    c.style.animationDelay = (Math.random() * 0.6) + "s";
+    document.body.appendChild(c);
+    (function(el){ setTimeout(function(){ el.remove(); }, 4800); })(c);
+  }
 }
 
 async function rpc(fn, body){
@@ -245,10 +271,11 @@ function showResult(r){
     title = "Damga eklendi";
     note = "Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
   }
-  var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full) + rewardLine() + '<p>' + note + '</p>';
+  var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full, s === "ok") + rewardLine() + '<p>' + note + '</p>';
   if(full) h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
   finish(h, full ? 120 : 20);
   if(full) startRewardPoll(); else stopPoll();
+  if(full && s === "ok") confetti();
 }
 
 (async function(){
