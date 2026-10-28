@@ -66,6 +66,15 @@ function normUrl(v){
   return v;
 }
 
+function normWa(v){
+  var d = (v || "").replace(/\D/g, "");
+  if(!d) return null;
+  if(d.length === 11 && d.charAt(0) === "0") d = "90" + d.slice(1);
+  else if(d.length === 10 && d.charAt(0) === "5") d = "90" + d;
+  if(!/^[0-9]{10,15}$/.test(d)) return false;
+  return d;
+}
+
 async function authCall(grant, body){
   var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
     method: "POST",
@@ -131,7 +140,7 @@ function pendingQuery(){
 }
 
 async function loadAll(){
-  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,brand_color,website_url,instagram_url&order=created_at");
+  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp&order=created_at");
   if(!bs.length){
     app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme bulunamadı</h1><p>Bu hesaba bağlı işletme yok.</p><button class="ghost" id="lo">Çıkış</button></div>';
     document.getElementById("lo").onclick = logout;
@@ -161,12 +170,15 @@ function render(){
     '<div class="stats">' +
     '<div class="stat"><b>' + customers.length + '</b><span>Müşteri</span></div>' +
     '<div class="stat"><b>' + todayCount + '</b><span>Bugün damga</span></div>' +
-    '<div class="stat"><b>' + rewardsTotal + '</b><span>Bekleyen ödül</span></div></div>' +
+    '<div class="stat"><b>' + rewardsTotal + '</b><span>Bekleyen ödül bileti</span></div></div>' +
     '<div class="card" style="margin-top:12px"><label class="tg"><input type="checkbox" id="ra"' + (biz.require_approval ? ' checked' : '') + '>' +
     '<span><b>Damga onayı iste</b><br><span class="sub">Açıkken müşterinin damgası senin onayından sonra eklenir.</span></span></label></div>' +
     '<details class="card"><summary>Marka ve ödül ayarları</summary>' +
-    '<label class="lb">Ödül (en fazla 60 karakter)</label><input type="text" id="s_rw" maxlength="60">' +
+    '<label class="lb">Ödül (en fazla 60 karakter)</label><input type="text" id="s_rw" maxlength="60" placeholder="Bir filtre kahve">' +
+    '<label class="lb">Ödül notu (en fazla 80 karakter)</label><input type="text" id="s_nt" maxlength="80" placeholder="İstediğin zaman kullan, süresi yok">' +
+    '<label class="lb">Damga kuralı (en fazla 60 karakter)</label><input type="text" id="s_ru" maxlength="60" placeholder="Her kahve alışverişinde">' +
     '<label class="lb">Marka rengi</label><input type="color" id="s_col">' +
+    '<label class="lb">WhatsApp numarası (isteğe bağlı)</label><input type="text" id="s_wa" placeholder="0555 123 45 67" inputmode="tel">' +
     '<label class="lb">Web sitesi (isteğe bağlı)</label><input type="text" id="s_site" placeholder="https://ornek.com" inputmode="url" autocapitalize="none">' +
     '<label class="lb">Instagram linki (isteğe bağlı)</label><input type="text" id="s_ig" placeholder="https://instagram.com/kullaniciadi" inputmode="url" autocapitalize="none">' +
     '<button class="full" id="s_save">Kaydet</button><p id="s_msg"></p></details>' +
@@ -176,7 +188,10 @@ function render(){
     '<input type="text" id="q" placeholder="Ara: isim veya telefon">' +
     '<div class="card" id="list"></div>';
   document.getElementById("s_rw").value = biz.reward_text || "";
+  document.getElementById("s_nt").value = biz.reward_note || "";
+  document.getElementById("s_ru").value = biz.stamp_rule || "";
   document.getElementById("s_col").value = /^#[0-9a-fA-F]{6}$/.test(biz.brand_color) ? biz.brand_color : "#ee6a37";
+  document.getElementById("s_wa").value = biz.whatsapp || "";
   document.getElementById("s_site").value = biz.website_url || "";
   document.getElementById("s_ig").value = biz.instagram_url || "";
   document.getElementById("s_save").onclick = saveSettings;
@@ -194,25 +209,36 @@ function render(){
 
 async function saveSettings(){
   var rt = document.getElementById("s_rw").value.trim();
+  var nt = document.getElementById("s_nt").value.trim();
+  var ru = document.getElementById("s_ru").value.trim();
   var col = document.getElementById("s_col").value;
+  var wa = normWa(document.getElementById("s_wa").value);
   var site = normUrl(document.getElementById("s_site").value);
   var ig = normUrl(document.getElementById("s_ig").value);
   var msg = document.getElementById("s_msg");
   if(!rt || rt.length > 60){ alert("Ödül metni 1 ile 60 karakter arasında olmalı."); return; }
+  if(!nt || nt.length > 80){ alert("Ödül notu 1 ile 80 karakter arasında olmalı."); return; }
+  if(!ru || ru.length > 60){ alert("Damga kuralı 1 ile 60 karakter arasında olmalı."); return; }
+  if(wa === false){ alert("WhatsApp numarası geçersiz. Örnek: 0555 123 45 67"); return; }
   if(site === false || ig === false){ alert("Web adresi geçersiz. Örnek: https://ornek.com"); return; }
   var btn = document.getElementById("s_save");
   btn.disabled = true; btn.textContent = "Kaydediliyor...";
   try {
-    var res = await api("businesses?id=eq." + biz.id + "&select=reward_text,brand_color,website_url,instagram_url", {
+    var res = await api("businesses?id=eq." + biz.id + "&select=reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp", {
       method: "PATCH",
-      body: { reward_text: rt, brand_color: col, website_url: site, instagram_url: ig },
+      body: { reward_text: rt, reward_note: nt, stamp_rule: ru, brand_color: col, whatsapp: wa, website_url: site, instagram_url: ig },
       headers: { "Prefer": "return=representation" }
     });
     if(!res || !res.length) throw new Error("Kaydedilemedi");
-    biz.reward_text = res[0].reward_text;
-    biz.brand_color = res[0].brand_color;
-    biz.website_url = res[0].website_url;
-    biz.instagram_url = res[0].instagram_url;
+    var x = res[0];
+    biz.reward_text = x.reward_text;
+    biz.reward_note = x.reward_note;
+    biz.stamp_rule = x.stamp_rule;
+    biz.brand_color = x.brand_color;
+    biz.whatsapp = x.whatsapp;
+    biz.website_url = x.website_url;
+    biz.instagram_url = x.instagram_url;
+    document.getElementById("s_wa").value = biz.whatsapp || "";
     document.getElementById("s_site").value = biz.website_url || "";
     document.getElementById("s_ig").value = biz.instagram_url || "";
     msg.className = "ok"; msg.textContent = "Kaydedildi.";
@@ -283,17 +309,17 @@ function renderList(){
     var has = c.rewards_available > 0;
     return '<div class="row"><div><div class="nm">' + esc(c.name || "İsimsiz") + '</div>' +
       '<div class="sub">' + esc(fmtPhone(c.phone)) + ' &middot; ' + c.stamps + '/' + biz.stamps_needed + ' damga</div>' +
-      (has ? '<span class="badge">Ödül hazır: ' + esc(biz.reward_text) + '</span>' : '') +
+      (has ? '<span class="badge">Ödül bileti: ' + c.rewards_available + '</span>' : '') +
       '<div class="sub">Son: ' + esc(fmtDate(c.last_stamp_at)) + '</div></div>' +
-      (has ? '<button data-id="' + esc(c.id) + '">Ödülü Kullan</button>' : '') + '</div>';
+      (has ? '<button data-id="' + esc(c.id) + '" data-n="' + c.rewards_available + '">Ödülü Kullan</button>' : '') + '</div>';
   }).join("");
   list.querySelectorAll("button[data-id]").forEach(function(b){
-    b.onclick = function(){ redeem(b.getAttribute("data-id"), b); };
+    b.onclick = function(){ redeem(b.getAttribute("data-id"), Number(b.getAttribute("data-n")), b); };
   });
 }
 
-async function redeem(id, btn){
-  if(!confirm("Ödül verildi olarak işaretlensin mi? Müşterinin kartı sıfırlanacak.")) return;
+async function redeem(id, n, btn){
+  if(!confirm("Bir ödül bileti kullanıldı olarak işaretlensin mi? Kalan bilet: " + (n - 1))) return;
   btn.disabled = true;
   try {
     var r = await api("rpc/redeem_reward", { method: "POST", body: { p_customer: id } });
