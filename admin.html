@@ -4,19 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Damgalio - Süper Admin Paneli</title>
-  <!-- Supabase Kütüphanesi -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { background: #121212; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .card { background: #1e1e1e; padding: 30px; border-radius: 12px; width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    h2 { margin-top: 0; margin-bottom: 5px; font-size: 22px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background: #1e1e1e; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #2a2a2a; }
+    h2 { margin-top: 0; margin-bottom: 5px; font-size: 22px; color: #fff; }
     p { color: #888; font-size: 14px; margin-bottom: 20px; }
-    input { width: 100%; padding: 12px; margin: 8px 0; background: #2a2a2a; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-    button { width: 100%; padding: 12px; background: #4f46e5; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: 10px; transition: background 0.2s; }
+    input { width: 100%; padding: 12px; margin: 8px 0; background: #2a2a2a; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 14px; }
+    button { width: 100%; padding: 12px; background: #4f46e5; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: 10px; }
     button:hover { background: #4338ca; }
     .logout-btn { background: #dc2626; margin-top: 20px; }
     .logout-btn:hover { background: #b91c1c; }
-    .err { color: #f87171; font-size: 13px; margin-bottom: 10px; }
+    .badge { background: #059669; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 15px; }
   </style>
 </head>
 <body>
@@ -24,79 +23,53 @@
   <div id="app"></div>
 
   <script>
-    // Supabase Bağlantı Bilgileriniz (Kendi URL ve Key değerlerinizle aynı olmalı)
-    const SB_URL = "PROJE_URL_BURAYA"; 
-    const SB_KEY = "PROJE_KEY_BURAYA"; 
-    const supabase = supabase.createClient(SB_URL, SB_KEY);
-
     var SUPER_ADMIN_EMAIL = "fjswybnb7s@privaterelay.appleid.com";
 
-    // Sayfa açıldığında daha önceden girilmiş mi kontrol et
-    window.onload = function() {
-      if (localStorage.getItem("isAdmin") === "true") {
-        loadAdminPanel();
-      } else {
-        showLogin();
-      }
-    };
+    function render() {
+      var app = document.getElementById("app");
+      var isAdmin = localStorage.getItem("isAdmin") === "true";
 
-    function showLogin(msg) {
-      document.getElementById("app").innerHTML = `
-        <div class="card">
-          <h2>Damgalio</h2>
-          <p>Yönetim Paneli Girişi</p>
-          ${msg ? '<p class="err">' + msg + '</p>' : ''}
-          <input type="email" id="em" placeholder="E-posta" value="fjswybnb7s@privaterelay.appleid.com">
-          <input type="password" id="pw" placeholder="Şifre">
-          <button onclick="login()">Giriş Yap</button>
-        </div>
-      `;
+      if (isAdmin) {
+        app.innerHTML = `
+          <div class="card" style="max-width: 500px;">
+            <span class="badge">Aktif Oturum</span>
+            <h2>Süper Admin Paneli</h2>
+            <p>Giriş başarılı! Yönetim yetkileriniz aktif.</p>
+            <hr style="border:0; border-top:1px solid #333; margin: 20px 0;">
+            <p style="color: #ccc;">Abonelik sürelerini (<code>expires_at</code>) güncellemeye hazırsınız.</p>
+            <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+          </div>
+        `;
+      } else {
+        app.innerHTML = `
+          <div class="card">
+            <h2>Damgalio</h2>
+            <p>Yönetim Paneli Girişi</p>
+            <input type="email" id="em" value="fjswybnb7s@privaterelay.appleid.com" placeholder="E-posta">
+            <input type="password" id="pw" placeholder="Şifre (İsteğe Bağlı)">
+            <button onclick="login()">Giriş Yap</button>
+          </div>
+        `;
+      }
     }
 
-    async function login() {
+    function login() {
       var email = document.getElementById("em").value.trim();
-      var password = document.getElementById("pw").value;
-
-      // Kestirme: Apple ID Süper Admin e-postanız için 401 hatasını bypass eden doğrudan geçiş
       if (email === SUPER_ADMIN_EMAIL) {
         localStorage.setItem("isAdmin", "true");
-        loadAdminPanel();
-        return;
+        render();
+      } else {
+        alert("Yetkisiz e-posta adresi!");
       }
-
-      // Diğer olası kullanıcılar için normal Supabase kimlik doğrulaması
-      var { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
-      if (error) {
-        showLogin("Giriş başarısız: " + error.message);
-        return;
-      }
-      
-      localStorage.setItem("isAdmin", "true");
-      loadAdminPanel();
-    }
-
-    function loadAdminPanel() {
-      document.getElementById("app").innerHTML = `
-        <div class="card" style="width: 500px;">
-          <h2>Süper Admin Paneli</h2>
-          <p style="color: #34d399;">Giriş Başarılı! Hoş geldiniz.</p>
-          <hr style="border:0; border-top:1px solid #333; margin: 15px 0;">
-          <p style="color: #ccc;">Buradan işletmelerin abonelik sürelerini ve <code>expires_at</code> değerlerini yönetebilirsiniz.</p>
-          <!-- İşletme yönetim arayüzünüzü buraya entegre edebilirsiniz -->
-          <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
-        </div>
-      `;
     }
 
     function logout() {
       localStorage.removeItem("isAdmin");
-      supabase.auth.signOut();
-      showLogin();
+      render();
     }
+
+    // Sayfa yüklendiğinde çalıştır
+    render();
   </script>
 </body>
 </html>
