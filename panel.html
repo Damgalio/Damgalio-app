@@ -12,7 +12,7 @@ body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-sy
 .wrap{max-width:560px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
 .brand{color:var(--or);font-weight:800}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 h1{font-size:22px;margin:4px 0}
 p{color:var(--mut);line-height:1.5;margin:6px 0}
 input[type=text],input[type=email],input[type=password]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
@@ -31,7 +31,7 @@ a.btn{display:inline-block;text-decoration:none}
 .sub{font-size:13px;color:var(--mut)}
 .badge{background:var(--ye);color:#111;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:800;display:inline-block;margin-top:4px}
 .link{word-break:break-all;font-size:13px;color:var(--ye)}
-.acts{display:flex;gap:6px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
 .tg{display:flex;gap:12px;align-items:flex-start}
 .tg input{width:24px;height:24px;margin:2px 0 0}
 .pend{border-color:var(--ye)}
@@ -44,11 +44,12 @@ details summary{font-weight:700;cursor:pointer}
 <body>
 <div class="wrap" id="app"></div>
 <script>
+var CONTACT_WA = "";
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
-var session = null, biz = null, customers = [], pending = [], todayCount = 0, poller = null;
+var session = null, biz = null, customers = [], pending = [], todayCount = 0, poller = null, tickN = 0;
 
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
@@ -56,6 +57,14 @@ function clearSession(){ session = null; try { localStorage.removeItem(SK); } ca
 function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
 function fmtPhone(p){ return String(p || "").replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4"); }
 function fmtDate(d){ return d ? new Date(d).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "-"; }
+function fmtDay(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
+function isInactive(b){ return !!b.suspended || new Date(b.paid_until).getTime() <= Date.now(); }
+function daysLeft(b){ return Math.ceil((new Date(b.paid_until).getTime() - Date.now()) / 86400000); }
+
+function contactHtml(){
+  if(!/^[0-9]{10,15}$/.test(CONTACT_WA)) return "";
+  return '<a class="btn" href="https://wa.me/' + CONTACT_WA + '" target="_blank" rel="noopener">WhatsApp ile yaz</a>';
+}
 
 function normUrl(v){
   v = (v || "").trim();
@@ -125,6 +134,19 @@ function showFatal(e){
   document.getElementById("lo").onclick = logout;
 }
 
+function showLocked(){
+  if(poller){ clearInterval(poller); poller = null; }
+  document.title = "Damgalio Panel";
+  var why = biz.suspended ? "Hesabın durduruldu." : "Hizmet süren " + fmtDay(biz.paid_until) + " tarihinde doldu.";
+  app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1>' +
+    '<p class="err"><b>' + esc(why) + '</b></p>' +
+    '<p>Şu an müşterilerin damga ekleyemiyor ve panelin kapalı. Verilerin silinmedi, hizmet yenilendiğinde her şey olduğu gibi açılır.</p>' +
+    '<p>Yenilemek için Damgalio ile iletişime geç.</p>' + contactHtml() +
+    '<div class="acts" style="margin-top:14px"><button class="ghost" id="rl">Yenile</button><button class="ghost" id="lo">Çıkış</button></div></div>';
+  document.getElementById("rl").onclick = function(){ loadAll().catch(showFatal); };
+  document.getElementById("lo").onclick = logout;
+}
+
 async function login(){
   var em = document.getElementById("em").value.trim();
   var pw = document.getElementById("pw").value;
@@ -140,13 +162,14 @@ function pendingQuery(){
 }
 
 async function loadAll(){
-  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp&order=created_at");
+  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp,paid_until,suspended&order=created_at");
   if(!bs.length){
     app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme bulunamadı</h1><p>Bu hesaba bağlı işletme yok.</p><button class="ghost" id="lo">Çıkış</button></div>';
     document.getElementById("lo").onclick = logout;
     return;
   }
   biz = bs[0];
+  if(isInactive(biz)){ showLocked(); return; }
   customers = await api("customers?select=id,name,phone,stamps,rewards_available,last_stamp_at&business_id=eq." + biz.id + "&order=last_stamp_at.desc.nullslast&limit=500");
   var d = new Date(); d.setHours(0, 0, 0, 0);
   var ev = await api("stamp_events?select=id&business_id=eq." + biz.id + "&status=eq.approved&created_at=gte." + encodeURIComponent(d.toISOString()) + "&limit=1000");
@@ -157,15 +180,30 @@ async function loadAll(){
 
 async function refreshPending(){
   if(document.hidden || !biz || !session) return;
-  try { pending = await api(pendingQuery()); renderPending(); } catch(e){}
+  tickN++;
+  try {
+    if(tickN % 5 === 0){
+      var st = await api("businesses?id=eq." + biz.id + "&select=paid_until,suspended");
+      if(st && st.length){
+        biz.paid_until = st[0].paid_until;
+        biz.suspended = st[0].suspended;
+        if(isInactive(biz)){ showLocked(); return; }
+      }
+    }
+    pending = await api(pendingQuery());
+    renderPending();
+  } catch(e){}
 }
 
 function render(){
   var rewardsTotal = 0;
   customers.forEach(function(c){ rewardsTotal += c.rewards_available; });
   var link = location.origin + "/s/" + biz.tag_code;
+  var dl = daysLeft(biz);
   app.innerHTML =
-    '<div class="top"><div><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1></div><button class="ghost" id="lo">Çıkış</button></div>' +
+    '<div class="top"><div><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1>' +
+    '<div class="sub">Hizmet bitişi: ' + esc(fmtDay(biz.paid_until)) + ' &middot; ' + dl + ' gün kaldı</div></div><button class="ghost" id="lo">Çıkış</button></div>' +
+    (dl <= 7 ? '<div class="card pend"><b>Hizmet süren ' + dl + ' gün sonra bitiyor.</b><p>Kesinti olmaması için yenilemek üzere Damgalio ile iletişime geç.</p>' + contactHtml() + '</div>' : '') +
     '<div class="card pend" id="pend" style="display:none"></div>' +
     '<div class="stats">' +
     '<div class="stat"><b>' + customers.length + '</b><span>Müşteri</span></div>' +
@@ -204,6 +242,7 @@ function render(){
   renderPending();
   renderList();
   if(poller) clearInterval(poller);
+  tickN = 0;
   poller = setInterval(refreshPending, 4000);
 }
 
