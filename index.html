@@ -2,66 +2,85 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#fdf8ec">
 <title>Damgalio</title>
 <style>
-:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+:root{--bg:#fdf8ec;--ink:#24504c;--mut:#6f8c88;--line:#e2e9e3;--ac:#ee6a37;--onac:#ffffff;--acsoft:rgba(238,106,55,.15)}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center}
-.brand{color:var(--or);font-weight:800;font-size:20px;letter-spacing:.5px}
-h1{font-size:24px;margin:12px 0 4px}
-p{color:var(--mut);line-height:1.5;margin:8px 0}
-.sub{font-size:13px;color:var(--mut)}
-.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
-.dot{width:46px;height:46px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;color:#111}
-.dot.on{background:var(--or);border:2px solid var(--or)}
-.dot.wait{border:2px dashed var(--or);animation:pulse 1.2s infinite}
-.dot.gift{border:2px dashed var(--ye);font-size:22px;filter:grayscale(1);opacity:.6}
-.dot.gift.on{background:var(--ye);border:2px solid var(--ye);filter:none;opacity:1}
-.dot.pop{animation:pop .5s ease-out both}
-.dot.gift.pop{animation:pop .6s ease-out .4s both}
-.cnt{font-size:15px;color:var(--mut);margin:0 0 6px}
-.cnt b{color:#fff;font-size:18px}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-@keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-@keyframes fall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(720deg)}}
-.cf{position:fixed;top:-16px;width:9px;height:14px;border-radius:2px;z-index:99;pointer-events:none;animation:fall linear both}
-@media (prefers-reduced-motion:reduce){.dot.pop,.dot.gift.pop{animation:none}.cf{display:none}.live{animation:none}}
-.rw{color:var(--ye);font-weight:700;margin:6px 0 2px}
-.reward{background:var(--ye);color:#111;border-radius:14px;padding:14px;font-weight:800;margin-top:14px}
-.rcheck{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px}
-.clk{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
-.live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#5ad1a0;margin-right:8px;vertical-align:middle;animation:pulse 1.2s infinite}
-.rph{font-size:15px;color:#fff;margin-top:2px}
-input[type=text],input[type=tel]{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
-.chk{display:flex;gap:8px;text-align:left;color:var(--mut);font-size:13px;margin:10px 0}
-.chk a,.sub a{color:#fff}
-button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:8px}
-button.ghost{background:transparent;color:var(--mut);border:1px solid var(--line);font-size:15px;padding:12px}
-.links{display:flex;gap:8px;margin-top:18px}
-a.lnk{flex:1;display:block;padding:12px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;font-weight:700;font-size:15px}
-.foot{margin-top:20px;font-size:12px;color:#666}
-.err{color:#ff7b7b}
-.err:empty{display:none}
-#ferr{margin:6px 0;font-size:14px}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+.page{max-width:480px;margin:0 auto;padding:28px 20px 40px}
+.page.hasbar{padding-bottom:130px}
+.lab{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mut)}
+.top{text-align:center}
+h1{font-size:38px;line-height:1.05;letter-spacing:-1px;margin:12px 0 8px;font-weight:800}
+h1.sm{font-size:28px}
+.subt{color:var(--mut);font-size:17px;margin:0;line-height:1.4}
+.sub2{font-size:13px;color:var(--mut);line-height:1.4}
+.c{text-align:center}
+.banner{margin:20px 0 0;padding:13px 15px;border-radius:14px;background:var(--acsoft);font-weight:700;line-height:1.4}
+.banner.wait{animation:pulse 1.6s infinite}
+.banner.bad{background:#fde8e6;color:#8a2c22}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+.sec{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:30px 0 12px}
+.clk{display:flex;align-items:center;gap:6px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.clk i{width:8px;height:8px;border-radius:50%;background:#2fb36b;animation:pulse 1.2s infinite}
+.tks{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px}
+.tks::-webkit-scrollbar{display:none}
+.tk{flex:0 0 88%;scroll-snap-align:start;position:relative;background:var(--ac);color:var(--onac);border-radius:26px;padding:20px;overflow:hidden}
+.tk .meta{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:1.5px;opacity:.8}
+.tk .row1{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-top:10px}
+.tk h3{margin:0;font-size:26px;line-height:1.1;font-weight:800}
+.tk .nt{margin:8px 0 0;font-size:15px;opacity:.85;line-height:1.4}
+.perf{position:relative;height:2px;margin:18px 0}
+.perf .dash{height:2px;background:repeating-linear-gradient(90deg,currentColor 0 9px,transparent 9px 15px);opacity:.5}
+.perf i{position:absolute;top:-10px;width:22px;height:22px;border-radius:50%;background:var(--bg)}
+.perf i.l{left:-31px}
+.perf i.r{right:-31px}
+.tk .bot{display:flex;justify-content:space-between;gap:10px;font-family:ui-monospace,Menlo,monospace;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+.tk0{border:2px dashed #cdd9d4;border-radius:26px;padding:22px;color:var(--mut);background:rgba(255,255,255,.5);line-height:1.5}
+.tk0 b{color:var(--ink)}
+.pg{display:flex;gap:8px;justify-content:center;margin:12px 0 4px}
+.pg i{width:10px;height:10px;border-radius:50%;background:#d9e3de}
+.pg i.on{background:var(--ac)}
+.hint{text-align:center;color:var(--mut);font-size:15px;margin:4px 0 0}
+.stamps{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 18px}
+.stp{width:64px;height:64px;border-radius:50%;border:2px dashed #cdd9d4;background:rgba(255,255,255,.6);position:relative}
+.stp.on{background:var(--ac);border:2px solid var(--ac)}
+.stp.on::before{content:"";position:absolute;inset:9px;border-radius:50%;border:1.5px dashed var(--onac);opacity:.55}
+.stp.on::after{content:"";position:absolute;inset:21px;border-radius:50%;background:var(--ink)}
+.stp.wait{border-color:var(--ac);animation:pulse 1.2s infinite}
+.bar{height:10px;border-radius:10px;background:#e9eeea;overflow:hidden}
+.bar b{display:block;height:100%;background:var(--ac);border-radius:10px;transition:width .6s}
+.pl{display:flex;justify-content:space-between;margin-top:12px}
+.info{margin-top:26px;border-top:1px solid var(--line)}
+.ir{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.ir .v{font-weight:800;font-size:19px;text-align:right}
+.in{width:100%;padding:15px;margin:6px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:17px}
+.chk{display:flex;gap:10px;text-align:left;color:var(--mut);font-size:13px;margin:12px 0;line-height:1.4}
+.chk input{width:20px;height:20px;margin-top:2px;flex:none}
+.chk a,.foot a{color:var(--ink)}
+button.pri{width:100%;padding:16px;border:0;border-radius:14px;background:var(--ac);color:var(--onac);font-size:18px;font-weight:800;margin-top:10px}
+button.gh{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:14px;background:transparent;color:var(--mut);font-size:15px;font-weight:700;margin-top:10px}
+.foot{margin-top:28px;text-align:center;font-size:12px;color:#8aa09c}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:rgba(253,248,236,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.dock a{flex:1;display:flex;align-items:center;justify-content:center;padding:15px 8px;border-radius:999px;font-weight:800;font-size:16px;text-decoration:none;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock a.ig{background:#fbe9f1}
+.dock a.wa{background:#e5f5ec}
+.dock a.web{background:var(--acsoft)}
 </style>
 </head>
 <body>
-<div class="card" id="app"></div>
+<div id="app"></div>
 <script>
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
-var brand = null;
-var memToken = null;
-var myPhone = "";
-var pollTimer = null;
-var cdTimer = null;
-var deadline = 0;
+var brand = null, memToken = null, pollTimer = null, cdTimer = null, deadline = 0, S = null, phoneDigits = "";
 
 try {
   for(var i = localStorage.length - 1; i >= 0; i--){
@@ -70,83 +89,82 @@ try {
   }
 } catch(e){}
 
+var GIFT = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>';
+
 function getToken(){ return memToken; }
 function setToken(t){ memToken = t; }
 function hasConsent(){ try { return localStorage.getItem("dmg_kv") === "1"; } catch(e){ return false; } }
 function setConsent(){ try { localStorage.setItem("dmg_kv", "1"); } catch(e){} }
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function okUrl(u){ return typeof u === "string" && /^https:\/\/[^\s"'<>]+$/.test(u); }
+function bn(){ return brand && brand.name ? brand.name : "Damgalio"; }
+
+function lum(r, g, b){
+  function f(c){ c = c / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
 
 function applyBrand(){
-  if(brand && /^#[0-9a-fA-F]{6}$/.test(brand.color)){
-    document.documentElement.style.setProperty("--or", brand.color);
+  if(!brand) return;
+  if(/^#[0-9a-fA-F]{6}$/.test(brand.color)){
+    var h = brand.color;
+    var r = parseInt(h.slice(1, 3), 16), g = parseInt(h.slice(3, 5), 16), b = parseInt(h.slice(5, 7), 16);
+    var st = document.documentElement.style;
+    st.setProperty("--ac", h);
+    st.setProperty("--onac", lum(r, g, b) > 0.5 ? "#1c2b29" : "#ffffff");
+    st.setProperty("--acsoft", "rgba(" + r + "," + g + "," + b + ",.15)");
   }
-  if(brand && brand.name) document.title = brand.name;
+  if(brand.name) document.title = brand.name;
 }
 function setBrand(b){ if(b){ brand = b; applyBrand(); } }
 
-function shell(inner){
-  var nm = brand && brand.name ? brand.name : "Damgalio";
-  app.innerHTML = '<div class="brand">' + esc(nm) + '</div>' + inner + '<div class="foot">Damgalio ile çalışır</div>';
+function digits10(v){
+  var d = String(v || "").replace(/\D/g, "");
+  if(d.indexOf("90") === 0 && d.length > 10) d = d.slice(2);
+  if(d.charAt(0) === "0") d = d.slice(1);
+  return d.slice(0, 10);
 }
-
-function links(){
-  if(!brand) return "";
-  var h = "";
-  if(okUrl(brand.site)) h += '<a class="lnk" href="' + esc(brand.site) + '" target="_blank" rel="noopener">Web sitemiz</a>';
-  if(okUrl(brand.ig)) h += '<a class="lnk" href="' + esc(brand.ig) + '" target="_blank" rel="noopener">Instagram</a>';
-  return h ? '<div class="links">' + h + '</div>' : "";
-}
-
-function rewardLine(){
-  return brand && brand.reward ? '<p class="rw">Ödül: ' + esc(brand.reward) + '</p>' : "";
-}
-
-function dots(n, need, wait, full, pop){
-  var last = Math.min(n, need) - 1;
-  var h = '<div class="dots">';
-  for(var i = 0; i < need; i++){
-    var cls = i < n ? 'on' : (wait && i === n ? 'wait' : '');
-    if(pop && i === last) cls += ' pop';
-    h += '<div class="dot ' + cls + '">' + (i < n ? '&#10003;' : '') + '</div>';
-  }
-  h += '<div class="dot gift ' + (full ? 'on' : '') + (full && pop ? ' pop' : '') + '">&#127873;</div>';
-  h += '</div>';
-  return h + '<div class="cnt"><b>' + Math.min(n, need) + '</b> / ' + need + ' damga</div>';
-}
-
-function confetti(){
-  var cols = ["#f7d44c", "#ffffff", "#5ad1a0", "#6aa8ff", "#ff7b7b"];
-  if(brand && /^#[0-9a-fA-F]{6}$/.test(brand.color)) cols.push(brand.color);
-  for(var i = 0; i < 40; i++){
-    var c = document.createElement("div");
-    c.className = "cf";
-    c.style.left = (Math.random() * 100) + "vw";
-    c.style.background = cols[i % cols.length];
-    c.style.animationDuration = (2 + Math.random() * 2) + "s";
-    c.style.animationDelay = (Math.random() * 0.6) + "s";
-    document.body.appendChild(c);
-    (function(el){ setTimeout(function(){ el.remove(); }, 4800); })(c);
-  }
-}
-
-function nowStr(){
-  var d = new Date();
-  function z(n){ return (n < 10 ? "0" : "") + n; }
-  return z(d.getHours()) + ":" + z(d.getMinutes()) + ":" + z(d.getSeconds());
-}
-
-function fmtPhone(v){
-  var d = String(v).replace(/\D/g, "");
-  d = d.replace(/^0+/, "");
-  if(d.indexOf("90") === 0) d = d.slice(2);
-  d = d.replace(/^0+/, "");
-  d = d.slice(0, 10);
-  var o = d.slice(0, 3);
+function fmtPhoneInput(v){
+  var d = digits10(v), o = d.slice(0, 3);
   if(d.length > 3) o += " " + d.slice(3, 6);
   if(d.length > 6) o += " " + d.slice(6, 8);
   if(d.length > 8) o += " " + d.slice(8, 10);
   return o;
+}
+function maskPhone(d){
+  if(!d || d.length < 10) return "-";
+  return "\u2022\u2022\u2022 \u2022\u2022\u2022 " + d.slice(6, 8) + " " + d.slice(8, 10);
+}
+function fmtLast(v){
+  if(!v) return "-";
+  try { return new Date(v).toLocaleString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
+  catch(e){ return "-"; }
+}
+function nowStr(){
+  var d = new Date();
+  return d.toLocaleDateString("tr-TR", { day: "numeric", month: "short" }) + " " + d.toLocaleTimeString("tr-TR");
+}
+
+function igLabel(u){
+  try {
+    var p = new URL(u).pathname.split("/").filter(Boolean)[0];
+    return p ? "@" + p : "Instagram";
+  } catch(e){ return "Instagram"; }
+}
+function dockHtml(){
+  if(!brand) return "";
+  var h = "";
+  if(okUrl(brand.ig)) h += '<a class="ig" href="' + esc(brand.ig) + '" target="_blank" rel="noopener">' + esc(igLabel(brand.ig)) + '</a>';
+  if(brand.wa && /^[0-9]{10,15}$/.test(brand.wa)) h += '<a class="wa" href="https://wa.me/' + brand.wa + '" target="_blank" rel="noopener">WhatsApp</a>';
+  if(okUrl(brand.site)) h += '<a class="web" href="' + esc(brand.site) + '" target="_blank" rel="noopener">Web sitemiz</a>';
+  return h ? '<div class="dock">' + h + '</div>' : "";
+}
+
+function page(inner){
+  var d = dockHtml();
+  app.innerHTML = '<div class="page' + (d ? ' hasbar' : '') + '">' + inner +
+    '<div class="foot">Damgalio ile çalışır &middot; <a href="/gizlilik.html" target="_blank" rel="noopener">Gizlilik</a></div></div>' + d;
+  window.scrollTo(0, 0);
 }
 
 async function rpc(fn, body){
@@ -162,12 +180,18 @@ async function rpc(fn, body){
   return r.json();
 }
 
+function friendly(e){
+  var m = String(e && e.message || "");
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return "İnternet bağlantını kontrol edip tekrar dene.";
+  return "Bir sorun oluştu. Birkaç saniye sonra tekrar dene.";
+}
+
 function showError(e){
-  try { console.error(e); } catch(x){}
-  var off = typeof navigator !== "undefined" && navigator.onLine === false;
-  shell('<h1>Bağlantı sorunu</h1><p>' +
-    (off ? 'İnternet bağlantın yok gibi görünüyor.' : 'Şu an damganı ekleyemedik.') +
-    ' Birkaç saniye sonra tekrar dene.</p><button id="retry">Tekrar dene</button>');
+  var m = String(e && e.message || "");
+  var code = (m.match(/^\d{3}/) || [""])[0];
+  page('<div class="top"><div class="lab">' + esc(bn()) + '</div><h1 class="sm">Bir sorun oluştu</h1><p class="subt">' + friendly(e) + '</p>' +
+    (code ? '<p class="sub2">Kod: ' + code + '</p>' : '') + '</div>' +
+    '<button class="pri" id="retry" style="margin-top:22px">Tekrar dene</button>');
   document.getElementById("retry").onclick = function(){ location.reload(); };
 }
 
@@ -179,69 +203,138 @@ function tick(){
   if(left <= 0){ doLogout(); return; }
   var el = document.getElementById("cd");
   if(el) el.textContent = left;
-  var ck = document.getElementById("clk");
-  if(ck) ck.textContent = nowStr();
 }
-
 function armLogout(sec){
   clearLogout();
   deadline = Date.now() + sec * 1000;
   cdTimer = setInterval(tick, 1000);
 }
-
 document.addEventListener("visibilitychange", function(){
   if(!document.hidden && cdTimer) tick();
 });
+setInterval(function(){
+  var el = document.getElementById("clk");
+  if(el) el.textContent = nowStr();
+}, 1000);
 
 function doLogout(){
   clearLogout();
   stopPoll();
-  memToken = null;
-  myPhone = "";
-  shell('<h1>Oturum kapandı</h1><p>Yeni damga için NFC damgaya telefonunu tekrar yaklaştır.</p><button id="again">Yeniden giriş</button>' + links());
+  memToken = null; S = null; phoneDigits = "";
+  page('<div class="top"><div class="lab">' + esc(bn()) + '</div><h1 class="sm">Oturum kapandı</h1>' +
+    '<p class="subt">Yeni damga için NFC damgaya telefonunu tekrar yaklaştır.</p></div>' +
+    '<button class="pri" id="again" style="margin-top:22px">Yeniden giriş</button>');
   document.getElementById("again").onclick = function(){ location.reload(); };
 }
 
-function finish(h, sec){
-  shell(h + links() +
-    '<p class="sub" style="margin-top:16px">Güvenlik için <span id="cd">' + sec + '</span> sn sonra oturum kapanacak.</p>' +
-    '<button class="ghost" id="out">Çıkış yap</button>');
-  document.getElementById("out").onclick = doLogout;
-  armLogout(sec);
-}
-
-function showForm(msg){
+function showForm(msg, pre){
   var consent = hasConsent();
-  var kvLink = '<a href="/gizlilik.html" target="_blank" rel="noopener">Aydınlatma metni</a>';
-  shell('<h1>Damga kartın</h1><p>Telefon numaranı gir, damganı ekleyelim.</p>' + rewardLine() +
-    (msg ? '<p class="err">' + msg + '</p>' : '') +
-    '<input type="tel" id="ph" placeholder="Telefon: 5XX XXX XX XX" autocomplete="tel" inputmode="tel">' +
-    '<input type="text" id="nm" placeholder="Adın (ilk kayıtta, isteğe bağlı)" autocomplete="given-name">' +
-    (consent ? '<p class="sub">Telefon numaran damga kartın için saklanır. ' + kvLink + '</p>' :
-      '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartımı bulmak için saklanmasını kabul ediyorum. ' + kvLink + '</span></label>') +
-    '<div class="err" id="ferr"></div>' +
-    '<button id="go">Damgayı Ekle</button>' + links());
-  var phEl = document.getElementById("ph");
-  phEl.oninput = function(){ phEl.value = fmtPhone(phEl.value); };
+  page('<div class="top"><div class="lab">' + esc(bn()) + '</div><h1>Damga kartın</h1>' +
+    '<p class="subt">Telefon numaranı gir, damganı ekleyelim.</p></div>' +
+    (msg ? '<div class="banner bad">' + esc(msg) + '</div>' : '') +
+    '<div style="margin-top:22px">' +
+    '<input class="in" type="tel" id="ph" placeholder="5XX XXX XX XX" autocomplete="tel" inputmode="numeric">' +
+    '<input class="in" type="text" id="nm" placeholder="Adın (ilk kayıtta, isteğe bağlı)" autocomplete="given-name" maxlength="50">' +
+    (consent
+      ? '<p class="sub2 c">Telefon numaran damga kartın için saklanır. <a href="/gizlilik.html" target="_blank" rel="noopener">Aydınlatma metni</a></p>'
+      : '<label class="chk"><input type="checkbox" id="kv"><span>Telefon numaramın damga kartım için saklanmasını kabul ediyorum. <a href="/gizlilik.html" target="_blank" rel="noopener">Aydınlatma metni</a></span></label>') +
+    '<button class="pri" id="go">Damgayı Ekle</button></div>');
+  var ph = document.getElementById("ph");
+  ph.oninput = function(){ ph.value = fmtPhoneInput(ph.value); };
+  if(pre){
+    ph.value = fmtPhoneInput(pre.ph || "");
+    document.getElementById("nm").value = pre.nm || "";
+  }
   document.getElementById("go").onclick = submit;
 }
 
 async function submit(){
-  var ferr = document.getElementById("ferr");
+  var ph = digits10(document.getElementById("ph").value);
+  var nm = document.getElementById("nm").value.trim();
   var kv = document.getElementById("kv");
-  if(kv && !kv.checked){ ferr.textContent = "Devam etmek için onay kutusunu işaretle."; return; }
-  var ph = document.getElementById("ph").value.replace(/\D/g, "");
-  if(ph.length !== 10){ ferr.textContent = "Telefon numarası 10 haneli olmalı. Örnek: 555 123 45 67"; return; }
-  ferr.textContent = "";
-  myPhone = ph;
-  var nm = document.getElementById("nm").value;
+  if(kv && !kv.checked){ showForm("Devam etmek için onay kutusunu işaretle.", { ph: ph, nm: nm }); return; }
+  if(ph.length !== 10){ showForm("Telefon numarası 10 haneli olmalı. Örnek: 555 123 45 67", { ph: ph, nm: nm }); return; }
   var btn = document.getElementById("go");
   btn.disabled = true; btn.textContent = "Ekleniyor...";
+  phoneDigits = ph;
   try {
     var r = await rpc("add_stamp", { p_slug: slug, p_phone: ph, p_name: nm });
     if(r.status !== "bad_phone" && r.status !== "not_found") setConsent();
     showResult(r);
-  } catch(e){ showError(e); }
+  } catch(e){ showForm(friendly(e), { ph: ph, nm: nm }); }
+}
+
+function secFor(r){ return r.rewards > 0 ? 90 : 20; }
+
+function afterCard(r){
+  if(r.rewards > 0) startRewardPoll(); else stopPoll();
+}
+
+function bindCarousel(){
+  var sc = document.getElementById("tks"), pg = document.getElementById("pg");
+  if(!sc || !pg) return;
+  sc.addEventListener("scroll", function(){
+    var f = sc.firstElementChild;
+    if(!f) return;
+    var idx = Math.round(sc.scrollLeft / (f.offsetWidth + 12));
+    var ds = pg.children;
+    for(var q = 0; q < ds.length; q++) ds[q].className = q === idx ? "on" : "";
+  });
+}
+
+function showCard(r, banner, tone, sec){
+  S = r;
+  var rw = r.rewards || 0;
+  var n = Math.min(rw, 10);
+  var h = '<div class="top"><div class="lab">' + esc(bn()) + '</div><h1>Kartın şu an</h1>' +
+    '<p class="subt">' + r.stamps + ' / ' + r.needed + ' damga &middot; ' + rw + ' kullanılmamış bilet</p></div>';
+  if(banner) h += '<div class="banner ' + (tone || '') + '">' + esc(banner) + '</div>';
+
+  if(n > 0){
+    var tks = "", dts = "";
+    for(var i = 1; i <= n; i++){
+      tks += '<div class="tk"><div class="meta">' + i + ' / ' + n + (i === 1 ? ' &middot; sıradaki' : '') + '</div>' +
+        '<div class="row1"><div><h3>' + esc(brand.reward) + '</h3><p class="nt">' + esc(brand.note) + '</p></div>' + GIFT + '</div>' +
+        '<div class="perf"><div class="dash"></div><i class="l"></i><i class="r"></i></div>' +
+        '<div class="bot"><span>' + esc(brand.name) + '</span><span>Bilet ' + i + '</span></div></div>';
+      dts += '<i class="' + (i === 1 ? 'on' : '') + '"></i>';
+    }
+    h += '<div class="sec"><span class="lab">Cüzdanında ' + rw + ' ödül bileti</span>' +
+      '<span class="clk"><i></i><b id="clk">' + esc(nowStr()) + '</b></span></div>' +
+      '<div class="tks" id="tks">' + tks + '</div>' +
+      (n > 1 ? '<div class="pg" id="pg">' + dts + '</div><p class="hint">Kaydır &mdash; ' + n + ' hediye var</p>' : '');
+  } else {
+    h += '<div class="sec"><span class="lab">Ödül biletin</span></div>' +
+      '<div class="tk0"><b>Henüz biletin yok.</b><br>Her ' + r.needed + ' damgada bir ödül bileti kazanırsın: ' + esc(brand.reward) + '</div>';
+  }
+
+  h += '<div class="stamps">';
+  for(var j = 0; j < r.needed; j++){
+    h += '<div class="stp ' + (j < r.stamps ? 'on' : (tone === 'wait' && j === r.stamps ? 'wait' : '')) + '"></div>';
+  }
+  var pct = Math.min(100, Math.round(r.stamps / r.needed * 100));
+  h += '</div><div class="bar"><b style="width:' + pct + '%"></b></div>' +
+    '<div class="pl"><span class="lab" style="color:var(--ink)"><b>' + r.stamps + '</b> / ' + r.needed + ' damga</span>' +
+    '<span class="lab">' + (r.needed - r.stamps) + ' kaldı</span></div>';
+
+  h += '<div class="info">' +
+    '<div class="ir"><span class="lab">Ödül</span><span class="v">' + esc(brand.reward) + '</span></div>' +
+    '<div class="ir"><span class="lab">Damga</span><span class="v">' + esc(brand.rule) + '</span></div>' +
+    '<div class="ir"><span class="lab">Son damga</span><span class="v">' + esc(fmtLast(r.last)) + '</span></div>' +
+    '<div class="ir"><span class="lab">Kartın</span><span class="v">' + esc(maskPhone(phoneDigits)) + '</span></div></div>';
+
+  if(sec){
+    h += '<p class="sub2 c" style="margin-top:22px">Güvenlik için <span id="cd">' + sec + '</span> sn sonra oturum kapanacak.</p>' +
+      '<button class="gh" id="out">Çıkış yap</button>';
+  }
+  page(h);
+  bindCarousel();
+  if(sec){
+    document.getElementById("out").onclick = doLogout;
+    armLogout(sec);
+  } else {
+    clearLogout();
+  }
 }
 
 function startPoll(){
@@ -251,7 +344,8 @@ function startPoll(){
     n++;
     if(n > 200){
       stopPoll();
-      shell('<h1>Onay gecikti</h1><p>Personele haber ver ya da NFC damgaya tekrar dokun.</p>');
+      page('<div class="top"><div class="lab">' + esc(bn()) + '</div><h1 class="sm">Onay gecikti</h1>' +
+        '<p class="subt">Personele haber ver ya da NFC damgaya tekrar dokun.</p></div>');
       return;
     }
     try {
@@ -259,12 +353,13 @@ function startPoll(){
       if(r.status === "approved"){
         stopPoll();
         r.status = "ok";
+        r.earned = !!(S && r.rewards > S.rewards);
         showResult(r);
       } else if(r.status === "rejected"){
         stopPoll();
         setBrand(r.brand);
-        finish('<h1>Damga onaylanmadı</h1>' + dots(r.stamps, r.needed, false, false) +
-          '<p>Bir yanlışlık olduğunu düşünüyorsan personele sor.</p>', 20);
+        showCard(r, "Damga onaylanmadı. Bir yanlışlık olduğunu düşünüyorsan personele sor.", "bad", secFor(r));
+        afterCard(r);
       }
     } catch(e){}
   }, 3000);
@@ -275,14 +370,14 @@ function startRewardPoll(){
   var n = 0;
   pollTimer = setInterval(async function(){
     n++;
-    if(n > 30){ stopPoll(); return; }
+    if(n > 40){ stopPoll(); return; }
     try {
       var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
-      if(r.stamps < r.needed){
+      if(S && r.rewards < S.rewards){
         stopPoll();
         setBrand(r.brand);
-        finish('<h1>Ödülün kullanıldı</h1>' + dots(r.stamps, r.needed, false, false) + rewardLine() +
-          '<p>Yeni damga kartın başladı. Afiyet olsun!</p>', 20);
+        showCard(r, "Ödülün kullanıldı. Afiyet olsun!", "", secFor(r));
+        afterCard(r);
       }
     } catch(e){}
   }, 5000);
@@ -292,46 +387,38 @@ function showResult(r){
   if(r.token) setToken(r.token);
   setBrand(r.brand);
   var s = r.status;
-  if(s === "not_found"){ shell('<h1>Geçersiz damga</h1><p>Bu damga bulunamadı. İşletmeye haber ver.</p>'); return; }
-  if(s === "need_info"){ showForm(""); return; }
-  if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 555 123 45 67"); return; }
+  if(s === "not_found"){
+    page('<div class="top"><div class="lab">Damgalio</div><h1 class="sm">Geçersiz damga</h1>' +
+      '<p class="subt">Bu damga bulunamadı. İşletmeye haber ver.</p></div>');
+    return;
+  }
+  if(s === "need_info"){ showForm("", null); return; }
+  if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 555 123 45 67", { ph: phoneDigits }); return; }
   if(s === "pending"){
     clearLogout();
-    shell('<h1>Onay bekleniyor</h1>' + dots(r.stamps, r.needed, true, false) + rewardLine() +
-      '<p>Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.</p>' + links());
+    showCard(r, "Onay bekleniyor. Personel onaylayınca damgan otomatik eklenecek. Bu sayfayı açık tut.", "wait", 0);
     startPoll();
     return;
   }
-  var full = r.stamps >= r.needed;
-  var title, note;
-  if(full){
-    title = s === "ok" ? "Tebrikler! Ödülün hazır" : "Ödülün hazır!";
-    note = "Kasada bu ekranı göster.";
-  } else if(s === "cooldown"){
-    title = "Damgan zaten eklendi";
-    note = "Yeni damga için " + r.wait_minutes + " dakika sonra tekrar dene.";
+  var banner;
+  if(s === "cooldown"){
+    banner = "Damgan zaten eklendi. Yeni damga için " + r.wait_minutes + " dakika sonra tekrar dene.";
+  } else if(r.earned){
+    banner = "Tebrikler! Yeni ödül biletin cüzdanında.";
   } else {
-    title = "Damga eklendi";
-    note = "Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
+    banner = "Damga eklendi. Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
   }
-  var h = '<h1>' + title + '</h1>' + dots(r.stamps, r.needed, false, full, s === "ok") + rewardLine() + '<p>' + note + '</p>';
-  if(full){
-    h += '<div class="reward">&#127873; ' + esc(brand && brand.reward ? brand.reward : "Ödül") + '</div>';
-    h += '<div class="rcheck"><div class="clk"><span class="live"></span><span id="clk">' + nowStr() + '</span></div>';
-    if(myPhone.length === 10) h += '<div class="rph">Numaran: &bull;&bull;&bull; &bull;&bull;&bull; ' + myPhone.slice(6, 8) + ' ' + myPhone.slice(8, 10) + '</div>';
-    h += '<div class="sub">Saat akıyorsa ekran canlıdır.</div></div>';
-  }
-  finish(h, full ? 120 : 20);
-  if(full) startRewardPoll(); else stopPoll();
-  if(full && s === "ok") confetti();
+  showCard(r, banner, "", secFor(r));
+  afterCard(r);
 }
 
 (async function(){
   if(!slug){
-    shell('<h1>Damga kartın burada</h1><p>Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p>');
+    page('<div class="top"><div class="lab">Damgalio</div><h1 class="sm">Damga kartın burada</h1>' +
+      '<p class="subt">Damga eklemek için işletmedeki NFC damgaya telefonunu yaklaştır.</p></div>');
     return;
   }
-  shell('<p>Yükleniyor...</p>');
+  page('<div class="top"><p class="subt">Yükleniyor...</p></div>');
   try { showResult(await rpc("add_stamp", { p_slug: slug })); }
   catch(e){ showError(e); }
 })();
