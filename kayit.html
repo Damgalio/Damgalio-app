@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Damgalio Hesap Aç</title>
+<style>
+:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center}
+.brand{color:var(--or);font-weight:800;letter-spacing:.5px}
+h1{font-size:24px;margin:10px 0 4px}
+p{color:var(--mut);line-height:1.5;margin:8px 0}
+input{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
+button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:17px;font-weight:800;margin-top:10px}
+.err{color:#ff7b7b}
+.sub{font-size:13px}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+<script>
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var app = document.getElementById("app");
+var code = (new URLSearchParams(location.search).get("k") || "").trim();
+
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+function shell(inner){ app.innerHTML = '<div class="brand">Damgalio</div>' + inner; }
+
+function showForm(msg, em){
+  if(!code){
+    shell('<h1>Davet kodu yok</h1><p>Yöneticiden aldığın linkin tamamını aç.</p>');
+    return;
+  }
+  shell('<h1>Hesabını aç</h1><p>E-posta ve şifreni belirle. İşletmen hesabına otomatik bağlanacak.</p>' +
+    (msg ? '<p class="err">' + esc(msg) + '</p>' : '') +
+    '<input type="email" id="em" placeholder="E-posta" autocomplete="username">' +
+    '<input type="password" id="pw" placeholder="Şifre (en az 8 karakter)" autocomplete="new-password">' +
+    '<input type="password" id="pw2" placeholder="Şifre tekrar" autocomplete="new-password">' +
+    '<p class="sub">Şifreni unutma. Şifre sıfırlama şu an yok.</p>' +
+    '<button id="go">Hesabımı Aç</button>');
+  if(em) document.getElementById("em").value = em;
+  document.getElementById("go").onclick = go;
+}
+
+async function authCall(grant, body){
+  var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var j = await r.json();
+  if(!r.ok) throw new Error(j.error_description || j.msg || ("Hata " + r.status));
+  return j;
+}
+
+async function go(){
+  var em = document.getElementById("em").value.trim().toLowerCase();
+  var pw = document.getElementById("pw").value;
+  var pw2 = document.getElementById("pw2").value;
+  if(!/^\S+@\S+\.\S+$/.test(em)){ showForm("E-posta adresi geçersiz.", em); return; }
+  if(pw.length < 8){ showForm("Şifre en az 8 karakter olmalı.", em); return; }
+  if(pw !== pw2){ showForm("Şifreler aynı değil.", em); return; }
+  var btn = document.getElementById("go");
+  btn.disabled = true; btn.textContent = "Hesap açılıyor...";
+  var sess;
+  try {
+    var r = await fetch(SB_URL + "/auth/v1/signup", {
+      method: "POST",
+      headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ email: em, password: pw })
+    });
+    var j = await r.json();
+    if(r.ok){
+      if(!j.access_token){ showForm("E-posta doğrulaması açık görünüyor. Yöneticiye haber ver.", em); return; }
+      sess = j;
+    } else {
+      var m = String(j.msg || "") + " " + String(j.error_description || "") + " " + String(j.error_code || "");
+      if(/already|exists/i.test(m)){
+        try { sess = await authCall("password", { email: em, password: pw }); }
+        catch(e2){ showForm("Bu e-posta ile hesap zaten var ama şifre eşleşmedi.", em); return; }
+      } else {
+        showForm(j.msg || j.error_description || "Hesap açılamadı. Birkaç saniye sonra tekrar dene.", em);
+        return;
+      }
+    }
+    var cr = await fetch(SB_URL + "/rest/v1/rpc/claim_business", {
+      method: "POST",
+      headers: { "apikey": SB_KEY, "Authorization": "Bearer " + sess.access_token, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_code: code })
+    });
+    var cj = await cr.json();
+    if(!cr.ok || cj.status !== "ok"){
+      showForm("Davet kodu geçersiz ya da daha önce kullanılmış. Yöneticiden yeni link iste.", em);
+      return;
+    }
+    try { localStorage.setItem("dmg_panel_rt", sess.refresh_token); } catch(e3){}
+    shell('<h1>Hesabın hazır!</h1><p>' + esc(cj.name) + ' hesabına bağlandı.</p>' +
+      '<p class="sub">Panelden ödülünü, rengini ve linklerini ayarlayabilirsin.</p>' +
+      '<button id="pn">Panele git</button>');
+    document.getElementById("pn").onclick = function(){ location.href = "/panel.html"; };
+  } catch(e){
+    showForm("İnternet bağlantını kontrol edip tekrar dene.", em);
+  }
+}
+
+showForm("", "");
+</script>
+</body>
+</html>
