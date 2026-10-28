@@ -195,6 +195,17 @@ function showError(e){
   document.getElementById("retry").onclick = function(){ location.reload(); };
 }
 
+function showInactive(r){
+  clearLogout();
+  stopPoll();
+  memToken = null; S = null; phoneDigits = "";
+  setBrand(r && r.brand);
+  page('<div class="top"><div class="lab">' + esc(bn()) + '</div><h1 class="sm">Hizmet şu an kapalı</h1>' +
+    '<p class="subt">Bu işletmenin damga hizmeti şu an kullanılamıyor. Biriktirdiğin damgalar ve ödüllerin kayıtlı, hizmet açılınca kaldığın yerden devam edersin.</p></div>' +
+    '<button class="gh" id="again2" style="margin-top:22px">Tekrar dene</button>');
+  document.getElementById("again2").onclick = function(){ location.reload(); };
+}
+
 function clearLogout(){ if(cdTimer){ clearInterval(cdTimer); cdTimer = null; } }
 function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer = null; } }
 
@@ -259,7 +270,7 @@ async function submit(){
   phoneDigits = ph;
   try {
     var r = await rpc("add_stamp", { p_slug: slug, p_phone: ph, p_name: nm });
-    if(r.status !== "bad_phone" && r.status !== "not_found") setConsent();
+    if(r.status !== "bad_phone" && r.status !== "not_found" && r.status !== "inactive") setConsent();
     showResult(r);
   } catch(e){ showForm(friendly(e), { ph: ph, nm: nm }); }
 }
@@ -350,7 +361,9 @@ function startPoll(){
     }
     try {
       var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
-      if(r.status === "approved"){
+      if(r.status === "inactive"){
+        showInactive(r);
+      } else if(r.status === "approved"){
         stopPoll();
         r.status = "ok";
         r.earned = !!(S && r.rewards > S.rewards);
@@ -373,7 +386,9 @@ function startRewardPoll(){
     if(n > 40){ stopPoll(); return; }
     try {
       var r = await rpc("stamp_status", { p_slug: slug, p_token: getToken() });
-      if(S && r.rewards < S.rewards){
+      if(r.status === "inactive"){
+        showInactive(r);
+      } else if(S && r.rewards < S.rewards){
         stopPoll();
         setBrand(r.brand);
         showCard(r, "Ödülün kullanıldı. Afiyet olsun!", "", secFor(r));
@@ -392,6 +407,7 @@ function showResult(r){
       '<p class="subt">Bu damga bulunamadı. İşletmeye haber ver.</p></div>');
     return;
   }
+  if(s === "inactive"){ showInactive(r); return; }
   if(s === "need_info"){ showForm("", null); return; }
   if(s === "bad_phone"){ showForm("Telefon numarası geçersiz. 10 haneli gir, örnek: 555 123 45 67", { ph: phoneDigits }); return; }
   if(s === "pending"){
