@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Damgalio Yönetici</title>
+<style>
+:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.brand{color:var(--or);font-weight:800}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+h1{font-size:22px;margin:4px 0}
+p{color:var(--mut);line-height:1.5;margin:6px 0}
+input[type=text],input[type=email],input[type=password],input[type=number],select{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px}
+button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:16px;font-weight:800}
+button.full{width:100%;margin-top:12px}
+button.ghost,a.btn{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px;border-radius:12px;font-weight:800}
+a.btn{display:inline-block;text-decoration:none}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.nm{font-weight:700}
+.sub{font-size:13px;color:var(--mut)}
+.badge{border-radius:10px;padding:3px 8px;font-size:12px;font-weight:800;display:inline-block;margin-left:6px}
+.badge.ok{background:#1f4d33;color:#7be0a0}
+.badge.wt{background:var(--ye);color:#111}
+.link{word-break:break-all;font-size:13px;color:var(--ye);margin:4px 0 8px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.tg{display:flex;gap:12px;align-items:center}
+.tg input{width:24px;height:24px;margin:0}
+.lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
+.good{border-color:#2f8f5b}
+.err{color:#ff7b7b}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var app = document.getElementById("app");
+var SK = "dmg_panel_rt";
+var session = null, items = [], created = null;
+
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
+function clearSession(){ session = null; try { localStorage.removeItem(SK); } catch(e){} }
+function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
+function custLink(t){ return location.origin + "/s/" + t; }
+function inviteLink(c){ return location.origin + "/kayit.html?k=" + c; }
+
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); alert("Kopyalandı."); }
+  catch(e){ prompt("Linki kopyala:", t); }
+}
+
+async function authCall(grant, body){
+  var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var j = await r.json();
+  if(!r.ok) throw new Error(j.error_description || j.msg || ("Hata " + r.status));
+  return j;
+}
+
+async function api(path, opts, retry){
+  opts = opts || {};
+  var r = await fetch(SB_URL + "/rest/v1/" + path, {
+    method: opts.method || "GET",
+    headers: { "apikey": SB_KEY, "Authorization": "Bearer " + session.access_token, "Content-Type": "application/json" },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if(r.status === 401 && !retry){
+    saveSession(await authCall("refresh_token", { refresh_token: session.refresh_token }));
+    return api(path, opts, true);
+  }
+  var t = await r.text();
+  if(!r.ok){ throw new Error(r.status + " " + t); }
+  return t ? JSON.parse(t) : null;
+}
+
+function rpc(fn, body){ return api("rpc/" + fn, { method: "POST", body: body || {} }); }
+
+function logout(){ clearSession(); showLogin(""); }
+
+function showLogin(msg){
+  app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>Yönetici Girişi</h1>' +
+    (msg ? '<p class="err">' + esc(msg) + '</p>' : '') +
+    '<input type="email" id="em" placeholder="E-posta" autocomplete="username">' +
+    '<input type="password" id="pw" placeholder="Şifre" autocomplete="current-password">' +
+    '<button class="full" id="lg">Giriş Yap</button></div>';
+  document.getElementById("lg").onclick = login;
+}
+
+function showMsg(title, text){
+  app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>' + esc(title) + '</h1><p class="err">' + esc(text) + '</p><button class="ghost" id="lo">Çıkış</button></div>';
+  document.getElementById("lo").onclick = logout;
+}
+
+async function login(){
+  var em = document.getElementById("em").value.trim();
+  var pw = document.getElementById("pw").value;
+  var b = document.getElementById("lg");
+  b.disabled = true; b.textContent = "Giriş yapılıyor...";
+  try { saveSession(await authCall("password", { email: em, password: pw })); }
+  catch(e){ showLogin(e.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : e.message); return; }
+  await enter();
+}
+
+async function enter(){
+  try {
+    var ok = await rpc("is_admin");
+    if(ok !== true){ showMsg("Yetkisiz", "Bu hesap yönetici değil."); return; }
+    await loadList();
+  } catch(e){ showMsg("Bir sorun oluştu", e.message); }
+}
+
+async function loadList(){
+  var r = await rpc("admin_list_businesses");
+  if(r.status !== "ok") throw new Error(r.status);
+  items = r.items || [];
+  render();
+}
+
+function render(){
+  var opts = "";
+  for(var i = 2; i <= 12; i++){ opts += '<option value="' + i + '"' + (i === 4 ? ' selected' : '') + '>' + i + ' damga</option>'; }
+  app.innerHTML =
+    '<div class="top"><div><div class="brand">Damgalio</div><h1>Yönetici</h1></div><button class="ghost" id="lo">Çıkış</button></div>' +
+    '<div class="card"><div class="nm">Yeni işletme</div>' +
+    '<label class="lb">İşletme adı</label><input type="text" id="n_name" maxlength="60" placeholder="Kahve Durağı">' +
+    '<label class="lb">Ödül</label><input type="text" id="n_rw" maxlength="60" placeholder="Bir filtre kahve">' +
+    '<label class="lb">Damga kuralı</label><input type="text" id="n_ru" maxlength="60" placeholder="Her kahve alışverişinde">' +
+    '<label class="lb">Kaç damgada ödül</label><select id="n_nd">' + opts + '</select>' +
+    '<label class="lb">Damgalar arası bekleme (dakika)</label><input type="number" id="n_cd" value="240" min="0" inputmode="numeric">' +
+    '<label class="tg" style="margin-top:14px"><input type="checkbox" id="n_ap" checked><span>Damga onayı iste (önerilir)</span></label>' +
+    '<button class="full" id="n_go">Oluştur</button></div>' +
+    '<div id="created"></div>' +
+    '<input type="text" id="q" placeholder="İşletme ara">' +
+    '<div class="card" id="list"></div>';
+  document.getElementById("lo").onclick = logout;
+  document.getElementById("n_go").onclick = createBiz;
+  document.getElementById("q").oninput = renderList;
+  renderCreated();
+  renderList();
+}
+
+function bindCopy(root){
+  root.querySelectorAll("button[data-copy]").forEach(function(b){
+    b.onclick = function(){ copyText(b.getAttribute("data-copy")); };
+  });
+}
+
+function renderCreated(){
+  var box = document.getElementById("created");
+  if(!created){ box.innerHTML = ""; return; }
+  var cl = custLink(created.tag_code), il = inviteLink(created.claim_code);
+  var wa = "https://wa.me/?text=" + encodeURIComponent("Merhaba! Damgalio işletme hesabını açmak için bu linke gir: " + il);
+  box.innerHTML = '<div class="card good"><div class="nm">&#10003; ' + esc(created.name) + ' oluşturuldu</div>' +
+    '<p class="sub">1) Davet linki: işletme sahibine gönder, hesabını kendisi açsın.</p>' +
+    '<div class="link">' + esc(il) + '</div>' +
+    '<div class="acts"><button class="ghost" data-copy="' + esc(il) + '">Davet linkini kopyala</button>' +
+    '<a class="btn" href="' + esc(wa) + '" target="_blank" rel="noopener">WhatsApp ile gönder</a></div>' +
+    '<p class="sub" style="margin-top:14px">2) Müşteri linki: NFC damgaya yazılacak adres.</p>' +
+    '<div class="link">' + esc(cl) + '</div>' +
+    '<div class="acts"><button class="ghost" data-copy="' + esc(cl) + '">Müşteri linkini kopyala</button></div></div>';
+  bindCopy(box);
+}
+
+function renderList(){
+  var qn = document.getElementById("q").value.toLowerCase().trim();
+  var rows = items.filter(function(b){ return !qn || (b.name || "").toLowerCase().indexOf(qn) > -1; });
+  var list = document.getElementById("list");
+  if(!rows.length){ list.innerHTML = '<p>İşletme bulunamadı.</p>'; return; }
+  list.innerHTML = '<div class="nm" style="margin-bottom:6px">İşletmeler (' + items.length + ')</div>' + rows.map(function(b){
+    return '<div class="row"><div><div class="nm">' + esc(b.name) +
+      '<span class="badge ' + (b.claimed ? 'ok' : 'wt') + '">' + (b.claimed ? 'Aktif' : 'Davet bekliyor') + '</span></div>' +
+      '<div class="sub">' + esc(fmtDate(b.created_at)) + ' &middot; ' + b.customers + ' müşteri &middot; ' + b.stamps + ' damga &middot; ' + b.tickets + ' bilet</div></div>' +
+      '<div class="acts"><button class="ghost" data-copy="' + esc(custLink(b.tag_code)) + '">Müşteri linki</button>' +
+      (!b.claimed && b.claim_code ? '<button class="ghost" data-copy="' + esc(inviteLink(b.claim_code)) + '">Davet linki</button>' : '') +
+      '</div></div>';
+  }).join("");
+  bindCopy(list);
+}
+
+async function createBiz(){
+  var name = document.getElementById("n_name").value.trim();
+  if(name.length < 2){ alert("İşletme adı en az 2 karakter olmalı."); return; }
+  var cd = document.getElementById("n_cd").value;
+  var body = {
+    p_name: name,
+    p_reward: document.getElementById("n_rw").value,
+    p_rule: document.getElementById("n_ru").value,
+    p_needed: Number(document.getElementById("n_nd").value),
+    p_approval: document.getElementById("n_ap").checked,
+    p_cooldown: cd === "" ? 240 : Number(cd)
+  };
+  var btn = document.getElementById("n_go");
+  btn.disabled = true; btn.textContent = "Oluşturuluyor...";
+  try {
+    var r = await rpc("admin_create_business", body);
+    if(r.status !== "ok"){ alert("Oluşturulamadı: " + r.status); btn.disabled = false; btn.textContent = "Oluştur"; return; }
+    created = r;
+    await loadList();
+  } catch(e){
+    alert(e.message);
+    btn.disabled = false; btn.textContent = "Oluştur";
+  }
+}
+
+(async function(){
+  var rt = savedRefresh();
+  if(!rt){ showLogin(""); return; }
+  app.innerHTML = '<p>Yükleniyor...</p>';
+  try { saveSession(await authCall("refresh_token", { refresh_token: rt })); }
+  catch(e){ clearSession(); showLogin("Oturum süresi doldu, tekrar giriş yap."); return; }
+  await enter();
+})();
+</script>
+</body>
+</html>
