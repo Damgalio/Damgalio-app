@@ -35,6 +35,8 @@ a.btn{display:inline-block;text-decoration:none}
 .tg{display:flex;gap:12px;align-items:flex-start}
 .tg input{width:24px;height:24px;margin:2px 0 0}
 .pend{border-color:var(--ye)}
+.paybox{border:1px dashed var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.paybox .link{font-size:15px;margin:6px 0}
 details summary{font-weight:700;cursor:pointer}
 .lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 .ok{color:#7be0a0}
@@ -44,12 +46,11 @@ details summary{font-weight:700;cursor:pointer}
 <body>
 <div class="wrap" id="app"></div>
 <script>
-var CONTACT_WA = "+905078153538";
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
-var session = null, biz = null, customers = [], pending = [], todayCount = 0, poller = null, tickN = 0;
+var session = null, biz = null, customers = [], pending = [], todayCount = 0, poller = null, tickN = 0, payInfo = {};
 
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
@@ -58,12 +59,37 @@ function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ retu
 function fmtPhone(p){ return String(p || "").replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4"); }
 function fmtDate(d){ return d ? new Date(d).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "-"; }
 function fmtDay(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
+function money(n){ return Number(n || 0).toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " ₺"; }
 function isInactive(b){ return !!b.suspended || new Date(b.paid_until).getTime() <= Date.now(); }
 function daysLeft(b){ return Math.ceil((new Date(b.paid_until).getTime() - Date.now()) / 86400000); }
 
+function payHtml(){
+  var p = payInfo || {};
+  var raw = String(p.pay_iban || "").replace(/\s/g, "");
+  var iban = raw.replace(/(.{4})/g, "$1 ").trim();
+  if(!raw && !p.pay_name) return '<p>Ödeme bilgisi için Damgalio ile iletişime geç.</p>';
+  return '<div class="paybox"><div class="sub">Havale / EFT ile ödeme</div>' +
+    (p.pay_name ? '<div class="nm">' + esc(p.pay_name) + '</div>' : '') +
+    (raw ? '<div class="link">' + esc(iban) + '</div>' : '') +
+    '<div class="sub">Açıklamaya yaz: <b style="color:#fff">' + esc(biz.pay_ref || "") + '</b></div>' +
+    (p.pay_monthly_fee ? '<div class="sub">Aylık ücret: ' + esc(money(p.pay_monthly_fee)) + '</div>' : '') +
+    (p.pay_note ? '<p class="sub">' + esc(p.pay_note) + '</p>' : '') +
+    (raw ? '<button class="ghost" data-iban="' + esc(raw) + '">IBAN kopyala</button>' : '') + '</div>';
+}
+
 function contactHtml(){
-  if(!/^[0-9]{10,15}$/.test(CONTACT_WA)) return "";
-  return '<a class="btn" href="https://wa.me/' + CONTACT_WA + '" target="_blank" rel="noopener">WhatsApp ile yaz</a>';
+  var w = String(payInfo && payInfo.contact_wa || "");
+  if(!/^[0-9]{10,15}$/.test(w)) return "";
+  return '<a class="btn" href="https://wa.me/' + w + '" target="_blank" rel="noopener">WhatsApp ile yaz</a>';
+}
+
+function bindPay(root){
+  root.querySelectorAll("button[data-iban]").forEach(function(b){
+    b.onclick = function(){
+      var t = b.getAttribute("data-iban");
+      try { navigator.clipboard.writeText(t); alert("IBAN kopyalandı."); } catch(e){ prompt("IBAN:", t); }
+    };
+  });
 }
 
 function normUrl(v){
@@ -141,8 +167,10 @@ function showLocked(){
   app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1>' +
     '<p class="err"><b>' + esc(why) + '</b></p>' +
     '<p>Şu an müşterilerin damga ekleyemiyor ve panelin kapalı. Verilerin silinmedi, hizmet yenilendiğinde her şey olduğu gibi açılır.</p>' +
-    '<p>Yenilemek için Damgalio ile iletişime geç.</p>' + contactHtml() +
+    payHtml() + '<div class="acts">' + contactHtml() + '</div>' +
+    '<p class="sub">Ödemeni yaptıktan sonra hizmetin yenilenir. Yenilenince aşağıdaki <b>Yenile</b> düğmesine bas.</p>' +
     '<div class="acts" style="margin-top:14px"><button class="ghost" id="rl">Yenile</button><button class="ghost" id="lo">Çıkış</button></div></div>';
+  bindPay(app);
   document.getElementById("rl").onclick = function(){ loadAll().catch(showFatal); };
   document.getElementById("lo").onclick = logout;
 }
@@ -162,13 +190,14 @@ function pendingQuery(){
 }
 
 async function loadAll(){
-  var bs = await api("businesses?select=id,name,slug,tag_code,stamps_needed,require_approval,reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp,paid_until,suspended&order=created_at");
+  var bs = await api("businesses?select=id,name,slug,tag_code,pay_ref,stamps_needed,require_approval,reward_text,reward_note,stamp_rule,brand_color,website_url,instagram_url,whatsapp,paid_until,suspended&order=created_at");
   if(!bs.length){
     app.innerHTML = '<div class="card"><div class="brand">Damgalio</div><h1>İşletme bulunamadı</h1><p>Bu hesaba bağlı işletme yok.</p><button class="ghost" id="lo">Çıkış</button></div>';
     document.getElementById("lo").onclick = logout;
     return;
   }
   biz = bs[0];
+  try { payInfo = (await api("rpc/payment_info", { method: "POST", body: {} })) || {}; } catch(e){ payInfo = {}; }
   if(isInactive(biz)){ showLocked(); return; }
   customers = await api("customers?select=id,name,phone,stamps,rewards_available,last_stamp_at&business_id=eq." + biz.id + "&order=last_stamp_at.desc.nullslast&limit=500");
   var d = new Date(); d.setHours(0, 0, 0, 0);
@@ -203,7 +232,7 @@ function render(){
   app.innerHTML =
     '<div class="top"><div><div class="brand">Damgalio</div><h1>' + esc(biz.name) + '</h1>' +
     '<div class="sub">Hizmet bitişi: ' + esc(fmtDay(biz.paid_until)) + ' &middot; ' + dl + ' gün kaldı</div></div><button class="ghost" id="lo">Çıkış</button></div>' +
-    (dl <= 7 ? '<div class="card pend"><b>Hizmet süren ' + dl + ' gün sonra bitiyor.</b><p>Kesinti olmaması için yenilemek üzere Damgalio ile iletişime geç.</p>' + contactHtml() + '</div>' : '') +
+    (dl <= 7 ? '<div class="card pend"><b>Hizmet süren ' + dl + ' gün sonra bitiyor.</b><p>Kesinti olmaması için ödemeni yenile.</p>' + payHtml() + '<div class="acts">' + contactHtml() + '</div></div>' : '') +
     '<div class="card pend" id="pend" style="display:none"></div>' +
     '<div class="stats">' +
     '<div class="stat"><b>' + customers.length + '</b><span>Müşteri</span></div>' +
@@ -220,6 +249,7 @@ function render(){
     '<label class="lb">Web sitesi (isteğe bağlı)</label><input type="text" id="s_site" placeholder="https://ornek.com" inputmode="url" autocapitalize="none">' +
     '<label class="lb">Instagram linki (isteğe bağlı)</label><input type="text" id="s_ig" placeholder="https://instagram.com/kullaniciadi" inputmode="url" autocapitalize="none">' +
     '<button class="full" id="s_save">Kaydet</button><p id="s_msg"></p></details>' +
+    '<details class="card"><summary>Ödeme bilgisi</summary>' + payHtml() + '<div class="acts">' + contactHtml() + '</div></details>' +
     '<div class="card"><div class="sub">NFC damgaya yazılacak link</div><div class="link">' + esc(link) + '</div>' +
     '<div class="acts" style="margin-top:8px"><button class="ghost" id="cp">Linki kopyala</button>' +
     '<a class="btn" href="' + esc(link) + '" target="_blank" rel="noopener">Sayfayı aç</a></div></div>' +
@@ -239,6 +269,7 @@ function render(){
   };
   document.getElementById("q").oninput = renderList;
   document.getElementById("ra").onchange = toggleApproval;
+  bindPay(app);
   renderPending();
   renderList();
   if(poller) clearInterval(poller);
