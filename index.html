@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Damgalio | Kafeler için NFC damga kartı</title>
+<meta name="description" content="Kâğıt kart kaybolur, bu damga kaybolmaz. Müşterin telefonunu NFC damgaya yaklaştırır, damgası eklenir. Uygulama yok, kart yok. İlk ay ücretsiz.">
+<meta name="theme-color" content="#EE6A37">
+<meta property="og:title" content="Damgalio | Kafeler için NFC damga kartı">
+<meta property="og:description" content="Müşterin telefonunu damgaya yaklaştırır, damgası eklenir. Uygulama yok, kart yok. İlk ay ücretsiz.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.damgalio.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23EE6A37'/%3E%3Ccircle cx='16' cy='9' r='3.5' fill='none' stroke='%2310221F' stroke-width='2.4'/%3E%3Cpath d='M14 12.5h4v4h-4z' fill='%2310221F'/%3E%3Crect x='7' y='16.5' width='18' height='6' rx='2' fill='%2310221F'/%3E%3Cpath d='M8 26h16' stroke='%2310221F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;display=swap">
+<style>
+:root{
+  --orange:#EE6A37;
+  --ink:#10221F;
+  --paper:#FFFBF3;
+  --yellow:#F7D44C;
+  --muted:#4D5F5C;
+  --line:#E7DFCF;
+  --night-muted:#B9C6C2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
+img,svg{display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* nav */
+.nav{background:var(--orange)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.01em}
+.logo svg{width:34px;height:34px}
+.nav-link{font-weight:600;font-size:16px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+
+/* hero */
+.hero{background:var(--orange);padding:28px 0 72px;overflow:hidden}
+.hero-in{display:grid;gap:44px;align-items:center}
+h1{margin:0;font-size:clamp(2.7rem,10.5vw,5.4rem);line-height:.94;font-weight:800;font-stretch:82%;letter-spacing:-.025em;max-width:11ch}
+h1 span{display:block}
+.lead{margin:22px 0 0;font-size:clamp(1.08rem,2.6vw,1.25rem);line-height:1.5;max-width:34em}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:14px 22px;border-radius:14px;font-weight:700;font-size:17px;text-decoration:none;line-height:1.2}
+.btn svg{width:22px;height:22px;flex:none}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-line{border:2px solid var(--ink);color:var(--ink)}
+.btn-orange{background:var(--orange);color:var(--ink)}
+.btn-ink:hover{background:#1d3a35}
+.btn-line:hover{background:rgba(16,34,31,.08)}
+.btn-orange:hover{background:#f27d50}
+.assure{margin:18px 0 0;font-weight:600}
+
+/* demo card */
+.demo{margin:0;justify-self:center;width:100%;max-width:400px}
+.card{background:var(--paper);border-radius:22px;padding:22px 22px 18px;transform:rotate(-2.5deg);box-shadow:8px 10px 0 rgba(16,34,31,.22)}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:2px dashed var(--line);padding-bottom:14px}
+.card-top b{font-size:22px;font-weight:800;font-stretch:88%}
+.card-top span{color:var(--muted);font-size:15px}
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0 18px}
+.slot{aspect-ratio:1;border-radius:50%;border:2px dashed #CFC5B0;display:grid;place-items:center;position:relative}
+.ink{position:absolute;inset:6%;border-radius:50%;border:3.5px solid var(--orange);display:grid;place-items:center;transform:rotate(var(--r));opacity:.92;animation:press .42s cubic-bezier(.2,.9,.3,1.25) both;animation-delay:var(--d)}
+.ink::before{content:"";width:42%;height:42%;border-radius:50%;background:var(--orange)}
+.ink::after{content:"";position:absolute;inset:16%;border-radius:50%;border:1.5px dashed var(--orange);opacity:.75}
+.gift{border-style:solid;border-color:var(--ink);background:var(--yellow);animation:gift .4s ease-out 2.35s both}
+.gift svg{width:52%;height:52%}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.card-bottom span{font-size:15px;color:var(--muted)}
+.ready{background:var(--ink);color:var(--paper);font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;animation:ready .35s ease-out 2.7s both}
+.demo figcaption{margin-top:22px;text-align:center;font-size:15px;font-weight:600}
+@keyframes press{from{opacity:0;transform:scale(1.7) rotate(var(--r))}to{opacity:.92;transform:scale(1) rotate(var(--r))}}
+@keyframes gift{from{background:transparent;border-color:#CFC5B0;border-style:dashed}to{background:var(--yellow);border-color:var(--ink)}}
+@keyframes ready{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* bands */
+.band{padding:84px 0}
+.band h2{margin:0;font-size:clamp(2rem,6.2vw,3.2rem);line-height:1;font-weight:800;font-stretch:85%;letter-spacing:-.02em;max-width:16ch}
+.band-intro{margin:16px 0 0;color:var(--muted);font-size:1.12rem;max-width:36em}
+
+/* why */
+.why{display:grid;gap:34px;margin-top:44px}
+.why h3,.steps h3,.side h3{margin:0 0 8px;font-size:1.35rem;line-height:1.2;font-weight:750}
+.why p,.steps p,.side p{margin:0;max-width:34em}
+.why p{color:var(--muted)}
+.why-item{border-top:3px solid var(--ink);padding-top:16px}
+
+/* steps */
+.steps{list-style:none;margin:44px 0 0;padding:0;display:grid;gap:30px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;counter-increment:s}
+.steps li::before{content:counter(s);width:64px;height:64px;border-radius:50%;border:3.5px solid var(--orange);color:var(--ink);display:grid;place-items:center;font-size:28px;font-weight:800;transform:rotate(-6deg)}
+.steps li:nth-child(2)::before{transform:rotate(5deg)}
+.steps li:nth-child(3)::before{transform:rotate(-2deg);background:var(--yellow);border-color:var(--ink)}
+.steps p{color:var(--muted)}
+
+/* owner side */
+.night{background:var(--ink);color:var(--paper)}
+.night .band-intro{color:var(--night-muted)}
+.side-grid{display:grid;gap:44px;margin-top:44px;align-items:start}
+.side{display:grid;gap:28px}
+.side p{color:var(--night-muted)}
+.side h3{color:var(--paper)}
+.side h3::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--orange);margin-right:10px;vertical-align:2px}
+.mock-wrap{margin:0}
+.mock-wrap figcaption{margin-top:18px;color:var(--night-muted);font-size:14px}
+.mock{background:var(--paper);color:var(--ink);border-radius:18px;padding:18px;max-width:420px;transform:rotate(1.5deg)}
+.mock-head{font-weight:800;font-size:17px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.mock-head span{background:var(--yellow);border-radius:999px;padding:2px 10px;font-size:14px}
+.mock-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1.5px solid var(--line)}
+.mock-row b{display:block;font-size:16px}
+.mock-row small{color:var(--muted);font-size:14px}
+.mock-btn{background:var(--orange);color:var(--ink);font-weight:700;font-size:14px;padding:8px 14px;border-radius:10px}
+.mock-foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.mock-foot div{border:1.5px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.mock-foot b{display:block;font-size:22px;line-height:1.1}
+.mock-foot small{color:var(--muted);font-size:13px}
+
+/* price */
+.price{margin-top:44px;display:grid;gap:30px;align-items:start}
+.price-main{border:3px solid var(--ink);border-radius:22px;padding:26px;background:#fff}
+.price-num{font-size:clamp(3.4rem,13vw,5rem);font-weight:800;font-stretch:80%;line-height:.9;letter-spacing:-.03em}
+.price-unit{margin:6px 0 0;font-weight:600}
+.price-free{display:inline-block;margin-top:18px;background:var(--yellow);padding:6px 14px;border-radius:999px;font-weight:700}
+.price-main ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.price-main li{display:flex;gap:10px;align-items:flex-start}
+.price-main li svg{width:22px;height:22px;flex:none;margin-top:2px;color:var(--orange)}
+.price-main .btn{margin-top:24px}
+.price-note p{margin:0 0 14px;color:var(--muted);max-width:30em}
+.price-note p b{color:var(--ink)}
+
+/* faq */
+.faq{margin-top:36px;max-width:780px}
+.faq details{border-top:2px solid var(--ink)}
+.faq details:last-child{border-bottom:2px solid var(--ink)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 2px;font-weight:700;font-size:1.12rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:28px;font-weight:500;line-height:1;transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0;padding:0 2px 22px;color:var(--muted);max-width:40em}
+
+/* final */
+.final{background:var(--orange);padding:76px 0}
+.final h2{margin:0;font-size:clamp(2.3rem,8vw,4.2rem);line-height:.95;font-weight:800;font-stretch:82%;letter-spacing:-.025em;max-width:13ch}
+.final p{margin:16px 0 0;font-size:1.15rem;font-weight:600}
+.final .ctas{margin-top:26px}
+
+/* footer */
+footer{background:var(--ink);color:var(--paper);padding:34px 0}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
+.foot nav{display:flex;flex-wrap:wrap;gap:20px}
+.foot a{color:var(--paper);text-underline-offset:4px}
+.foot small{color:var(--night-muted);font-size:14px}
+footer .logo{font-size:20px}
+
+@media (min-width:860px){
+  .hero{padding:40px 0 96px}
+  .hero-in{grid-template-columns:1.15fr .85fr;gap:56px}
+  .why{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+  .steps li{grid-template-columns:1fr;gap:16px}
+  .side-grid{grid-template-columns:1fr 1fr;gap:64px}
+  .price{grid-template-columns:minmax(0,440px) 1fr;gap:56px}
+  .band{padding:110px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ink,.gift,.ready{animation:none}
+  .faq summary::after{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="/" aria-label="Damgalio ana sayfa">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"></circle><path d="M14 12.5h4v4h-4z" fill="#10221F"></path><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"></rect><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"></path></svg>
+      Damgalio
+    </a>
+    <a class="nav-link" href="/panel.html">İşletme girişi</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <h1><span>Kâğıt kart kaybolur.</span> <span>Bu damga kaybolmaz.</span></h1>
+      <p class="lead">Kasana koyduğumuz NFC damgaya müşterin telefonunu yaklaştırır, damgası kartına eklenir. Uygulama indirmek yok, kart taşımak yok. Ödüle yaklaştıkça müşterin tekrar gelir.</p>
+      <div class="ctas">
+        <a class="btn btn-ink js-wa" href="#iletisim">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.200s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
+          WhatsApp'tan bilgi al
+        </a>
+        <a class="btn btn-line" href="#nasil">Nasıl çalıştığını gör</a>
+      </div>
+      <p class="assure">İlk ay ücretsiz. Kurulumu biz yapıyoruz.</p>
+    </div>
+
+    <figure class="demo">
+      <div class="card" role="img" aria-label="Örnek damga kartı: dört damga doluyor ve ödül hazır oluyor">
+        <div class="card-top"><b>Senin Kafen</b><span>Damga kartı</span></div>
+        <div class="slots">
+          <span class="slot"><i class="ink" style="--d:.5s;--r:-9deg"></i></span>
+          <span class="slot"><i class="ink" style="--d:.95s;--r:6deg"></i></span>
+          <span class="slot"><i class="ink" style="--d:1.4s;--r:-3deg"></i></span>
+          <span class="slot"><i class="ink" style="--d:1.85s;--r:11deg"></i></span>
+          <span class="slot gift"><svg viewBox="0 0 24 24" fill="none" stroke="#10221F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></span>
+        </div>
+        <div class="card-bottom"><span>4 damgada 1 kahve bizden</span><span class="ready">Ödülün hazır</span></div>
+      </div>
+      <figcaption>Müşterinin telefonunda gördüğü kart</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Müşteri neden geri gelir?</h2>
+    <p class="band-intro">Çünkü insan başladığı işi bitirmek ister. Damga kartı bu isteği kafene bağlar.</p>
+    <div class="why">
+      <div class="why-item">
+        <h3>Yarım kart rahat bırakmaz</h3>
+        <p>İki damgası olan müşteri ödüle ne kadar yaklaştığını her seferinde görür. Kartı tamamlamak için kahvesini senden almaya devam eder.</p>
+      </div>
+      <div class="why-item">
+        <h3>Kart cüzdanda değil, telefonda</h3>
+        <p>Kâğıt kart unutulur, ıslanır, çöpe gider. Damgalar müşterinin numarasına kayıtlı. Telefonu yanındaysa kartı da yanında.</p>
+      </div>
+      <div class="why-item">
+        <h3>Ödül senin kararın</h3>
+        <p>Bir kahve, bir tatlı, bir indirim. Ödülü ve kartın rengini panelden istediğin zaman değiştirirsin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="nasil" style="padding-top:0">
+  <div class="wrap">
+    <h2>Müşterin için üç adım</h2>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Telefonunu damgaya yaklaştırır</h3>
+          <p>Kart sayfası tarayıcıda açılır. NFC'si olmayan telefonlar tezgahtaki afişin QR kodunu okutur.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Numarasını yazar</h3>
+          <p>Damgası kartına eklenir. Hesap açmak, şifre belirlemek yok.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Ödülünü alır</h3>
+          <p>Kart dolunca ödül bileti çıkar. Kasada gösterir, sen tek dokunuşla kullandırırsın.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="band night">
+  <div class="wrap">
+    <h2>Senin tarafında</h2>
+    <p class="band-intro">Telefonundan açtığın bir panel. Kurulumu biz yapıyoruz, sen sadece kullanıyorsun.</p>
+    <div class="side-grid">
+      <div class="side">
+        <div>
+          <h3>Onaylamadan damga eklenmez</h3>
+          <p>İstersen her damga önce senin onayına düşer. Kimse evden damga toplayamaz, damgalar arasında bekleme süresi de var.</p>
+        </div>
+        <div>
+          <h3>Müdavimlerini tanırsın</h3>
+          <p>Kim kaç damga aldı, en son ne zaman geldi, bugün kaç damga verildi. Hepsi tek ekranda.</p>
+        </div>
+        <div>
+          <h3>Kart senin markanla görünür</h3>
+          <p>Müşterinin kartında senin rengin, ödülün, Instagram ve WhatsApp linklerin yer alır.</p>
+        </div>
+      </div>
+      <figure class="mock-wrap">
+      <div class="mock" aria-hidden="true">
+        <div class="mock-head">Onay bekleyen damgalar <span>2</span></div>
+        <div class="mock-row"><div><b>Elif</b><small>555 ••• 12 34 · şimdi</small></div><span class="mock-btn">Onayla</span></div>
+        <div class="mock-row"><div><b>Mert</b><small>532 ••• 98 76 · 1 dk önce</small></div><span class="mock-btn">Onayla</span></div>
+        <div class="mock-foot">
+          <div><b>128</b><small>Müşteri</small></div>
+          <div><b>23</b><small>Bugün damga</small></div>
+          <div><b>6</b><small>Bekleyen ödül</small></div>
+        </div>
+      </div>
+      <figcaption>Panelin örnek görünümü</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="fiyat">
+  <div class="wrap">
+    <h2>Ne kadar?</h2>
+    <div class="price">
+      <div class="price-main">
+        <div class="price-num">450 ₺</div>
+        <p class="price-unit">kurulum, tek seferlik</p>
+        <span class="price-free">İlk ay ücretsiz</span>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>NFC çipli damga</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>QR kodlu tezgah afişi</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>İşletme paneli</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>Kurulum ve ilk ayarlar</li>
+        </ul>
+        <a class="btn btn-orange js-wa" href="#iletisim">WhatsApp'tan teklif al</a>
+      </div>
+      <div class="price-note">
+        <p><b>İlk ayı ücretsiz kullanırsın.</b> Müşterilerin damga toplamaya başlar, sonucu kendi gözünle görürsün.</p>
+        <p><b>Memnun kalırsan aylık abonelikle devam edersin.</b> Aylık ücreti işletmene göre WhatsApp'tan konuşuruz.</p>
+        <p><b>Devam etmek istemezsen hizmet kapanır.</b> Ek bir ücret çıkmaz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="sss" style="padding-top:0">
+  <div class="wrap">
+    <h2>Aklına takılanlar</h2>
+    <div class="faq">
+      <details>
+        <summary>Müşterinin uygulama indirmesi gerekir mi?</summary>
+        <p>Hayır. Telefon damgaya yaklaşınca kart sayfası tarayıcıda açılır. Hiçbir şey yüklenmez.</p>
+      </details>
+      <details>
+        <summary>NFC'si olmayan telefonlar ne olacak?</summary>
+        <p>Tezgahtaki afişte QR kod var. Müşteri kamerayla okutur, aynı kartı açar.</p>
+      </details>
+      <details>
+        <summary>Biri hile yapıp fazladan damga alabilir mi?</summary>
+        <p>Damga linki tahmin edilemeyen gizli bir koddur. Damgalar arasında bekleme süresi var ve istersen her damga senin onayınla eklenir.</p>
+      </details>
+      <details>
+        <summary>Kaç damgada ödül verileceğine kim karar veriyor?</summary>
+        <p>Sen. Kurulumda birlikte ayarlarız. Ödülü ve kartın rengini sonra panelden kendin değiştirirsin.</p>
+      </details>
+      <details>
+        <summary>Müşteri bilgileri güvende mi?</summary>
+        <p>Müşteriden yalnızca telefon numarası ve isterse adı alınır, sadece damga kartı için kullanılır. Ayrıntılar <a href="/gizlilik.html">gizlilik metninde</a>.</p>
+      </details>
+      <details>
+        <summary>İlk aydan sonra ne olur?</summary>
+        <p>Devam etmek istersen aylık abonelikle sürer. İstemezsen hizmet kapanır, ek ücret çıkmaz.</p>
+      </details>
+    </div>
+  </div>
+</section>
+</main>
+
+<section class="final" id="iletisim">
+  <div class="wrap">
+    <h2>Müşterin bir kez gelmesin, hep gelsin.</h2>
+    <p>Kafende ilk ay ücretsiz dene.</p>
+    <div class="ctas">
+      <a class="btn btn-ink js-wa" href="#iletisim">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
+        WhatsApp'tan yaz
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="/" aria-label="Damgalio ana sayfa">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#EE6A37"></rect><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"></circle><path d="M14 12.5h4v4h-4z" fill="#10221F"></path><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"></rect><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"></path></svg>
+      Damgalio
+    </a>
+    <nav aria-label="Alt menü">
+      <a href="/panel.html">İşletme girişi</a>
+      <a href="/gizlilik.html">Gizlilik</a>
+    </nav>
+    <small>© 2026 Damgalio</small>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+  var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+  var MSG = "Merhaba, Damgalio hakkında bilgi almak istiyorum. İşletmemin adı: ";
+  function setLinks(n) {
+    n = String(n || "").replace(/\D/g, "");
+    if (!/^[0-9]{10,15}$/.test(n)) return;
+    var url = "https://wa.me/" + n + "?text=" + encodeURIComponent(MSG);
+    var links = document.querySelectorAll("a.js-wa");
+    for (var i = 0; i < links.length; i++) {
+      links[i].href = url;
+      links[i].target = "_blank";
+      links[i].rel = "noopener";
+    }
+  }
+  try {
+    fetch(SB_URL + "/rest/v1/rpc/public_contact", {
+      method: "POST",
+      headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+      body: "{}"
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(setLinks)
+      .catch(function () {});
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
