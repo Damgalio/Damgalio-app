@@ -21,6 +21,7 @@ button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:
 button.full{width:100%;margin-top:12px}
 button.ghost,a.btn{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px;border-radius:12px;font-weight:800}
 button.warn{color:#ff9a90;border-color:#5a2420}
+button.danger{background:#b3261e;color:#fff;border:0}
 a.btn{display:inline-block;text-decoration:none}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
@@ -34,6 +35,7 @@ a.btn{display:inline-block;text-decoration:none}
 .badge.ok{background:#1f4d33;color:#7be0a0}
 .badge.wt{background:var(--ye);color:#111}
 .badge.bad{background:#5a2420;color:#ff9a90}
+.badge.arc{background:#333;color:#ddd}
 .link{word-break:break-all;font-size:13px;color:var(--ye);margin:4px 0 8px}
 .acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .acts input[type=date]{width:auto;flex:1;margin:0}
@@ -41,6 +43,7 @@ a.btn{display:inline-block;text-decoration:none}
 .tg input{width:24px;height:24px;margin:0}
 .lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 .good{border-color:#2f8f5b}
+.listbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
 details.mng{margin-top:10px}
 details.mng summary{font-weight:700;cursor:pointer;color:var(--ye)}
 details.mng .acts{margin-top:10px}
@@ -57,7 +60,7 @@ var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
-var session = null, items = [], created = null, settings = {}, summary = null;
+var session = null, items = [], created = null, settings = {}, summary = null, showArchived = false;
 
 var KIND = { kurulum: "Kurulum", abonelik: "Aylık", diger: "Diğer" };
 var METH = { havale: "Havale", kart: "Kart", nakit: "Nakit", diger: "Diğer" };
@@ -197,7 +200,7 @@ function render(){
     '<label class="lb">Ödeme notu</label><input type="text" id="p_note" maxlength="200">' +
     '<label class="lb">Kurulum ücreti (₺)</label><input type="text" id="p_setup" inputmode="decimal">' +
     '<label class="lb">Aylık ücret (₺)</label><input type="text" id="p_month" inputmode="decimal">' +
-    '<label class="lb">İletişim WhatsApp (isteğe bağlı)</label><input type="text" id="p_wa" inputmode="tel" placeholder="0555 123 45 67">' +
+    '<label class="lb">İletişim WhatsApp (sitede ve panelde görünür)</label><input type="text" id="p_wa" inputmode="tel" placeholder="0555 123 45 67">' +
     '<button class="full" id="p_save">Kaydet</button><p id="p_msg"></p></details>' +
     '<details class="card"><summary class="nm">Yeni işletme ekle</summary>' +
     '<label class="lb">İşletme adı</label><input type="text" id="n_name" maxlength="60" placeholder="Kahve Durağı">' +
@@ -230,7 +233,11 @@ function renderStats(){
   var el = document.getElementById("stats");
   if(!el) return;
   var a = 0, x = 0, w = 0;
-  items.forEach(function(b){ if(b.active) a++; else x++; if(!b.claimed) w++; });
+  items.forEach(function(b){
+    if(b.archived) return;
+    if(b.active) a++; else x++;
+    if(!b.claimed) w++;
+  });
   var s = summary || { month_total: 0, total: 0, count: 0 };
   el.innerHTML = '<div class="stats"><div class="stat"><b>' + a + '</b><span>Açık</span></div>' +
     '<div class="stat"><b>' + x + '</b><span>Kapalı</span></div>' +
@@ -295,45 +302,70 @@ function renderCreated(){
 }
 
 function stBadge(b){
+  if(b.archived) return '<span class="badge arc">Arşivde</span>';
   if(b.suspended) return '<span class="badge bad">Durduruldu</span>';
   var d = Math.ceil((new Date(b.paid_until).getTime() - Date.now()) / 86400000);
   if(d <= 0) return '<span class="badge bad">Süresi doldu</span>';
   return '<span class="badge ' + (d <= 7 ? 'wt' : 'ok') + '">' + d + ' gün kaldı</span>';
 }
 
+function manageHtml(b){
+  var id = esc(b.id);
+  if(b.archived){
+    return '<details class="mng"><summary>Yönet</summary>' +
+      '<p class="sub">Bu işletme arşivde. Hizmeti kapalı, verileri saklanıyor.</p>' +
+      '<div class="acts"><button class="ghost" data-act="unarch" data-id="' + id + '">Arşivden çıkar</button>' +
+      '<button class="danger" data-act="del" data-id="' + id + '">Kalıcı sil</button></div>' +
+      '<p class="sub">Kalıcı sil: işletme, müşterileri ve damgaları geri dönüşsüz silinir. Ödeme kayıtların saklanır.</p>' +
+      '</details>';
+  }
+  return '<details class="mng"><summary>Yönet</summary>' +
+    '<div class="sub">Referans kodu: <b style="color:#fff">' + esc(b.pay_ref) + '</b> &middot; Son ödeme: ' + (b.last_paid_at ? esc(fmtDate(b.last_paid_at)) : 'yok') + ' &middot; Toplam: ' + esc(money(b.paid_total)) + '</div>' +
+    '<div class="sep"></div><div class="nm">Ödeme al</div>' +
+    '<label class="lb">Ödeme türü</label><select id="pk_' + id + '" data-kind="' + id + '"><option value="kurulum">Kurulum</option><option value="abonelik">Aylık</option><option value="diger">Diğer</option></select>' +
+    '<label class="lb">Tutar (₺)</label><input type="text" id="pa_' + id + '" inputmode="decimal" value="' + esc(settings.pay_setup_fee || "") + '">' +
+    '<label class="lb">Eklenecek gün</label><input type="number" id="pd_' + id + '" value="30" min="0" inputmode="numeric">' +
+    '<label class="lb">Yöntem</label><select id="pm_' + id + '"><option value="havale">Havale</option><option value="kart">Kart</option><option value="nakit">Nakit</option><option value="diger">Diğer</option></select>' +
+    '<label class="lb">Not (isteğe bağlı)</label><input type="text" id="pn_' + id + '" maxlength="200">' +
+    '<button class="full" data-act="pay" data-id="' + id + '">Ödemeyi kaydet</button>' +
+    '<div class="acts"><button class="ghost" data-act="hist" data-id="' + id + '">Ödeme geçmişi</button></div>' +
+    '<div class="hist" id="h_' + id + '"></div>' +
+    '<div class="sep"></div><div class="nm">Süre ve durum</div>' +
+    '<div class="acts"><button class="ghost" data-act="ext" data-id="' + id + '" data-v="30">+30 gün</button>' +
+    '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="90">+90 gün</button>' +
+    '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="365">+365 gün</button></div>' +
+    '<div class="acts"><input type="date" id="d_' + id + '"><button class="ghost" data-act="date" data-id="' + id + '">Tarihi ayarla</button></div>' +
+    '<div class="acts"><button class="ghost warn" data-act="susp" data-id="' + id + '">' + (b.suspended ? 'Yeniden aç' : 'Durdur') + '</button>' +
+    '<button class="ghost" data-copy="' + esc(custLink(b.tag_code)) + '">Müşteri linki</button>' +
+    (!b.claimed && b.claim_code ? '<button class="ghost" data-copy="' + esc(inviteLink(b.claim_code)) + '">Davet linki</button>' : '') +
+    '</div>' +
+    '<div class="sep"></div>' +
+    '<div class="acts"><button class="ghost warn" data-act="arch" data-id="' + id + '">Arşivle</button></div>' +
+    '<p class="sub">Arşivle: listeden kalkar, hizmeti kapanır, verileri saklanır.</p>' +
+    '</details>';
+}
+
 function renderList(){
   var qn = document.getElementById("q").value.toLowerCase().trim();
-  var rows = items.filter(function(b){
+  var arcCount = items.filter(function(b){ return b.archived; }).length;
+  var pool = items.filter(function(b){ return showArchived ? b.archived : !b.archived; });
+  var rows = pool.filter(function(b){
     return !qn || (b.name || "").toLowerCase().indexOf(qn) > -1 || (b.pay_ref || "").toLowerCase().indexOf(qn) > -1;
   });
   var list = document.getElementById("list");
-  if(!rows.length){ list.innerHTML = '<p>İşletme bulunamadı.</p>'; return; }
-  list.innerHTML = '<div class="nm">İşletmeler (' + items.length + ')</div>' + rows.map(function(b){
-    var id = esc(b.id);
-    return '<div class="item"><div class="nm">' + esc(b.name) + '</div>' +
-      '<div>' + stBadge(b) + (b.claimed ? '' : '<span class="badge wt">Davet bekliyor</span>') + '</div>' +
-      '<div class="sub">Bitiş: ' + esc(fmtDate(b.paid_until)) + ' &middot; ' + b.customers + ' müşteri &middot; ' + b.stamps + ' damga &middot; ' + b.tickets + ' bilet</div>' +
-      '<details class="mng"><summary>Yönet</summary>' +
-      '<div class="sub">Referans kodu: <b style="color:#fff">' + esc(b.pay_ref) + '</b> &middot; Son ödeme: ' + (b.last_paid_at ? esc(fmtDate(b.last_paid_at)) : 'yok') + ' &middot; Toplam: ' + esc(money(b.paid_total)) + '</div>' +
-      '<div class="sep"></div><div class="nm">Ödeme al</div>' +
-      '<label class="lb">Ödeme türü</label><select id="pk_' + id + '" data-kind="' + id + '"><option value="kurulum">Kurulum</option><option value="abonelik">Aylık</option><option value="diger">Diğer</option></select>' +
-      '<label class="lb">Tutar (₺)</label><input type="text" id="pa_' + id + '" inputmode="decimal" value="' + esc(settings.pay_setup_fee || "") + '">' +
-      '<label class="lb">Eklenecek gün</label><input type="number" id="pd_' + id + '" value="30" min="0" inputmode="numeric">' +
-      '<label class="lb">Yöntem</label><select id="pm_' + id + '"><option value="havale">Havale</option><option value="kart">Kart</option><option value="nakit">Nakit</option><option value="diger">Diğer</option></select>' +
-      '<label class="lb">Not (isteğe bağlı)</label><input type="text" id="pn_' + id + '" maxlength="200">' +
-      '<button class="full" data-act="pay" data-id="' + id + '">Ödemeyi kaydet</button>' +
-      '<div class="acts"><button class="ghost" data-act="hist" data-id="' + id + '">Ödeme geçmişi</button></div>' +
-      '<div class="hist" id="h_' + id + '"></div>' +
-      '<div class="sep"></div><div class="nm">Süre ve durum</div>' +
-      '<div class="acts"><button class="ghost" data-act="ext" data-id="' + id + '" data-v="30">+30 gün</button>' +
-      '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="90">+90 gün</button>' +
-      '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="365">+365 gün</button></div>' +
-      '<div class="acts"><input type="date" id="d_' + id + '"><button class="ghost" data-act="date" data-id="' + id + '">Tarihi ayarla</button></div>' +
-      '<div class="acts"><button class="ghost warn" data-act="susp" data-id="' + id + '">' + (b.suspended ? 'Yeniden aç' : 'Durdur') + '</button>' +
-      '<button class="ghost" data-copy="' + esc(custLink(b.tag_code)) + '">Müşteri linki</button>' +
-      (!b.claimed && b.claim_code ? '<button class="ghost" data-copy="' + esc(inviteLink(b.claim_code)) + '">Davet linki</button>' : '') +
-      '</div></details></div>';
-  }).join("");
+  var bar = '<div class="listbar"><div class="nm">' + (showArchived ? 'Arşiv (' + pool.length + ')' : 'İşletmeler (' + pool.length + ')') + '</div>' +
+    '<button class="ghost" id="tgArc">' + (showArchived ? 'Listeye dön' : 'Arşiv (' + arcCount + ')') + '</button></div>';
+  if(!rows.length){
+    list.innerHTML = bar + '<p>' + (showArchived ? 'Arşivde işletme yok.' : 'İşletme bulunamadı.') + '</p>';
+  } else {
+    list.innerHTML = bar + rows.map(function(b){
+      return '<div class="item"><div class="nm">' + esc(b.name) + '</div>' +
+        '<div>' + stBadge(b) + (b.claimed || b.archived ? '' : '<span class="badge wt">Davet bekliyor</span>') + '</div>' +
+        '<div class="sub">Bitiş: ' + esc(fmtDate(b.paid_until)) + ' &middot; ' + b.customers + ' müşteri &middot; ' + b.stamps + ' damga &middot; ' + b.tickets + ' bilet</div>' +
+        manageHtml(b) + '</div>';
+    }).join("");
+  }
+  document.getElementById("tgArc").onclick = function(){ showArchived = !showArchived; renderList(); };
   bindCopy(list);
   list.querySelectorAll("button[data-act]").forEach(function(b){
     b.onclick = function(){ onAct(b); };
@@ -351,9 +383,10 @@ function renderList(){
 async function doRpc(fn, body){
   try {
     var r = await rpc(fn, body);
-    if(r.status !== "ok"){ alert("İşlem yapılamadı: " + r.status); return; }
+    if(r.status !== "ok"){ alert("İşlem yapılamadı: " + r.status); return false; }
     await refresh();
-  } catch(e){ alert(e.message); }
+    return true;
+  } catch(e){ alert(e.message); return false; }
 }
 
 async function showHist(id){
@@ -397,6 +430,19 @@ function onAct(b){
     var nv = !it.suspended;
     var q2 = it.name + (nv ? " durdurulsun mu? Müşteri sayfası ve işletme paneli kapanır." : " yeniden açılsın mı?");
     if(confirm(q2)) doRpc("admin_set_suspended", { p_id: id, p_suspended: nv });
+  } else if(act === "arch"){
+    if(confirm(it.name + " arşivlensin mi? Listeden kalkar ve hizmeti kapanır. Verileri saklanır, istediğin zaman arşivden çıkarabilirsin.")) {
+      doRpc("admin_set_archived", { p_id: id, p_archived: true });
+    }
+  } else if(act === "unarch"){
+    if(confirm(it.name + " arşivden çıkarılsın mı? Hizmeti kapalı kalır. Açmak için Yeniden aç ya da süre ekle.")) {
+      doRpc("admin_set_archived", { p_id: id, p_archived: false }).then(function(ok){ if(ok){ showArchived = false; renderList(); } });
+    }
+  } else if(act === "del"){
+    var typed = prompt("DİKKAT: " + it.name + " ve tüm müşteri ve damga verileri kalıcı olarak silinecek. Geri alınamaz.\n\nOnaylamak için işletme adını aynen yaz:\n" + it.name);
+    if(typed === null) return;
+    if(typed.trim() !== String(it.name).trim()){ alert("İşletme adı eşleşmedi. Silme iptal edildi."); return; }
+    doRpc("admin_delete_business", { p_id: id, p_confirm: typed.trim() }).then(function(ok){ if(ok) alert(it.name + " kalıcı olarak silindi."); });
   }
 }
 
