@@ -73,6 +73,9 @@ function fmtDate(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "
 function money(n){ return Number(n || 0).toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " ₺"; }
 function custLink(t){ return location.origin + "/s/" + t; }
 function inviteLink(c){ return location.origin + "/kayit.html?k=" + c; }
+function panelLink(){ return location.origin + "/panel.html"; }
+function waShare(text){ return "https://wa.me/?text=" + encodeURIComponent(text); }
+function panelMsg(name){ return "Merhaba! " + name + " işletme paneline buradan girebilirsin (hesap açarken belirlediğin e-posta ve şifreyle): " + panelLink(); }
 
 function parseMoney(v){
   v = String(v == null ? "" : v).trim().replace(",", ".");
@@ -287,8 +290,8 @@ function bindCopy(root){
 function renderCreated(){
   var box = document.getElementById("created");
   if(!created){ box.innerHTML = ""; return; }
-  var cl = custLink(created.tag_code), il = inviteLink(created.claim_code);
-  var wa = "https://wa.me/?text=" + encodeURIComponent("Merhaba! Damgalio işletme hesabını açmak için bu linke gir: " + il);
+  var cl = custLink(created.tag_code), il = inviteLink(created.claim_code), pl = panelLink();
+  var wa = waShare("Merhaba! Damgalio işletme hesabını açmak için bu linke gir: " + il);
   box.innerHTML = '<div class="card good"><div class="nm">&#10003; ' + esc(created.name) + ' oluşturuldu</div>' +
     '<p class="sub">Hizmet bitiş tarihi: ' + esc(fmtDate(created.paid_until)) + '</p>' +
     '<p class="sub">1) Davet linki: işletme sahibine gönder, hesabını kendisi açsın.</p>' +
@@ -297,7 +300,11 @@ function renderCreated(){
     '<a class="btn" href="' + esc(wa) + '" target="_blank" rel="noopener">WhatsApp ile gönder</a></div>' +
     '<p class="sub" style="margin-top:14px">2) Müşteri linki: NFC damgaya yazılacak adres.</p>' +
     '<div class="link">' + esc(cl) + '</div>' +
-    '<div class="acts"><button class="ghost" data-copy="' + esc(cl) + '">Müşteri linkini kopyala</button></div></div>';
+    '<div class="acts"><button class="ghost" data-copy="' + esc(cl) + '">Müşteri linkini kopyala</button></div>' +
+    '<p class="sub" style="margin-top:14px">3) Panel linki: işletme sahibi hesabını açtıktan sonra panele buradan girer.</p>' +
+    '<div class="link">' + esc(pl) + '</div>' +
+    '<div class="acts"><button class="ghost" data-copy="' + esc(pl) + '">Panel linkini kopyala</button>' +
+    '<a class="btn" href="' + esc(waShare(panelMsg(created.name))) + '" target="_blank" rel="noopener">WhatsApp ile gönder</a></div></div>';
   bindCopy(box);
 }
 
@@ -335,9 +342,13 @@ function manageHtml(b){
     '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="90">+90 gün</button>' +
     '<button class="ghost" data-act="ext" data-id="' + id + '" data-v="365">+365 gün</button></div>' +
     '<div class="acts"><input type="date" id="d_' + id + '"><button class="ghost" data-act="date" data-id="' + id + '">Tarihi ayarla</button></div>' +
-    '<div class="acts"><button class="ghost warn" data-act="susp" data-id="' + id + '">' + (b.suspended ? 'Yeniden aç' : 'Durdur') + '</button>' +
-    '<button class="ghost" data-copy="' + esc(custLink(b.tag_code)) + '">Müşteri linki</button>' +
-    (!b.claimed && b.claim_code ? '<button class="ghost" data-copy="' + esc(inviteLink(b.claim_code)) + '">Davet linki</button>' : '') +
+    '<div class="acts"><button class="ghost warn" data-act="susp" data-id="' + id + '">' + (b.suspended ? 'Yeniden aç' : 'Durdur') + '</button></div>' +
+    '<div class="sep"></div><div class="nm">Linkler</div>' +
+    '<div class="acts"><button class="ghost" data-copy="' + esc(custLink(b.tag_code)) + '">Müşteri linki</button>' +
+    (!b.claimed && b.claim_code ? '<button class="ghost" data-copy="' + esc(inviteLink(b.claim_code)) + '">Davet linki</button>' +
+      '<a class="btn" href="' + esc(waShare("Merhaba! Damgalio işletme hesabını açmak için bu linke gir: " + inviteLink(b.claim_code))) + '" target="_blank" rel="noopener">Daveti WhatsApp ile gönder</a>' : '') +
+    '<button class="ghost" data-copy="' + esc(panelLink()) + '">Panel linki</button>' +
+    '<a class="btn" href="' + esc(waShare(panelMsg(b.name))) + '" target="_blank" rel="noopener">Paneli WhatsApp ile gönder</a>' +
     '</div>' +
     '<div class="sep"></div>' +
     '<div class="acts"><button class="ghost warn" data-act="arch" data-id="' + id + '">Arşivle</button></div>' +
