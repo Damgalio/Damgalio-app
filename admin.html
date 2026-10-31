@@ -51,6 +51,8 @@ details.mng .acts{margin-top:10px}
 .hist .hr{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:6px 0;border-top:1px solid var(--line);color:var(--mut)}
 .ok{color:#7be0a0}
 .err{color:#ff7b7b}
+.refcard{border-color:#5c3a22}
+.refhit{background:#101010;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -61,6 +63,7 @@ var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
 var session = null, items = [], created = null, settings = {}, summary = null, showArchived = false;
+var refMatchId = null;
 
 var KIND = { kurulum: "Kurulum", abonelik: "Aylık", diger: "Diğer" };
 var METH = { havale: "Havale", kart: "Kart", nakit: "Nakit", diger: "Diğer" };
@@ -196,6 +199,10 @@ function render(){
   app.innerHTML =
     '<div class="top"><div><div class="brand">Damgalio</div><h1>Yönetici</h1></div><button class="ghost" id="lo">Çıkış</button></div>' +
     '<div id="stats"></div>' +
+    '<div class="card refcard"><div class="nm">Havale geldi</div>' +
+    '<p class="sub">Havale açıklamasındaki referans kodunu yaz. Açıklamanın tamamını yapıştırsan da kodu kendisi bulur.</p>' +
+    '<input type="text" id="r_code" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Referans kodu">' +
+    '<div id="r_box"></div></div>' +
     '<details class="card"><summary class="nm">Ödeme ayarları</summary>' +
     '<p class="sub">Bu bilgiler işletme panelinde ödeme bilgisi olarak görünür.</p>' +
     '<label class="lb">Hesap sahibi adı</label><input type="text" id="p_name" maxlength="80">' +
@@ -215,12 +222,14 @@ function render(){
     '<label class="tg" style="margin-top:14px"><input type="checkbox" id="n_ap" checked><span>Damga onayı iste (önerilir)</span></label>' +
     '<button class="full" id="n_go">Oluştur</button></details>' +
     '<div id="created"></div>' +
-    '<input type="text" id="q" placeholder="İşletme ara">' +
+    '<input type="text" id="q" placeholder="İşletme adı ya da referans kodu ara">' +
     '<div class="card" id="list"></div>';
   document.getElementById("lo").onclick = logout;
   document.getElementById("n_go").onclick = createBiz;
   document.getElementById("p_save").onclick = saveSettings;
   document.getElementById("q").oninput = renderList;
+  document.getElementById("r_code").oninput = renderRef;
+  refMatchId = null;
   document.getElementById("p_name").value = settings.pay_name || "";
   document.getElementById("p_iban").value = settings.pay_iban || "";
   document.getElementById("p_note").value = settings.pay_note || "";
@@ -389,6 +398,83 @@ function renderList(){
       amt.value = v || "";
     };
   });
+}
+
+function normRef(s){
+  return String(s == null ? "" : s).replace(/ı/g, "i").replace(/İ/g, "I").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function findByRef(raw){
+  var q = normRef(raw);
+  if(q.length < 3) return { empty: true };
+  var exact = items.filter(function(b){ return normRef(b.pay_ref) === q; });
+  if(exact.length === 1) return { it: exact[0] };
+  if(exact.length > 1) return { multi: true };
+  var inside = items.filter(function(b){
+    var r = normRef(b.pay_ref);
+    return r.length >= 4 && q.indexOf(r) > -1;
+  });
+  if(inside.length === 1) return { it: inside[0] };
+  if(inside.length > 1) return { multi: true };
+  return { none: true };
+}
+
+function renderRef(){
+  var box = document.getElementById("r_box");
+  if(!box) return;
+  var f = findByRef(document.getElementById("r_code").value);
+  if(f.it && f.it.id === refMatchId) return;
+  refMatchId = f.it ? f.it.id : null;
+  if(f.empty){ box.innerHTML = ""; return; }
+  if(f.multi){ box.innerHTML = '<p class="err">Birden fazla işletme eşleşti. Kodu tam olarak yaz.</p>'; return; }
+  if(f.none){ box.innerHTML = '<p class="err">Bu koda ait işletme bulunamadı.</p>'; return; }
+  var b = f.it;
+  var head = '<div class="refhit"><div class="nm">' + esc(b.name) + '</div>' +
+    '<div>' + stBadge(b) + '</div>' +
+    '<div class="sub">Kod: <b style="color:#fff">' + esc(b.pay_ref) + '</b> &middot; Bitiş: ' + esc(fmtDate(b.paid_until)) +
+    ' &middot; Son ödeme: ' + (b.last_paid_at ? esc(fmtDate(b.last_paid_at)) : 'yok') + '</div>';
+  if(b.archived){
+    box.innerHTML = head + '<p class="err">Bu işletme arşivde. Önce listeden Arşiv bölümüne girip arşivden çıkar.</p></div>';
+    return;
+  }
+  box.innerHTML = head +
+    '<label class="lb">Ödeme türü</label><select id="r_kind"><option value="abonelik">Aylık</option><option value="kurulum">Kurulum</option><option value="diger">Diğer</option></select>' +
+    '<label class="lb">Tutar (₺)</label><input type="text" id="r_amt" inputmode="decimal" value="' + esc(settings.pay_monthly_fee || "") + '">' +
+    '<label class="lb">Eklenecek gün</label><input type="number" id="r_days" value="30" min="0" inputmode="numeric">' +
+    '<label class="lb">Yöntem</label><select id="r_meth"><option value="havale">Havale</option><option value="kart">Kart</option><option value="nakit">Nakit</option><option value="diger">Diğer</option></select>' +
+    '<label class="lb">Not (isteğe bağlı)</label><input type="text" id="r_note" maxlength="200">' +
+    '<button class="full" id="r_save">Ödemeyi kaydet ve gün ekle</button></div>';
+  document.getElementById("r_kind").onchange = function(){
+    var k = this.value;
+    var v = k === "kurulum" ? settings.pay_setup_fee : (k === "abonelik" ? settings.pay_monthly_fee : "");
+    document.getElementById("r_amt").value = v || "";
+  };
+  document.getElementById("r_save").onclick = saveRefPay;
+}
+
+async function saveRefPay(){
+  var it = items.filter(function(x){ return x.id === refMatchId; })[0];
+  if(!it) return;
+  var kind = document.getElementById("r_kind").value;
+  var amt = parseMoney(document.getElementById("r_amt").value);
+  var days = Number(document.getElementById("r_days").value || 0);
+  var method = document.getElementById("r_meth").value;
+  var note = document.getElementById("r_note").value.trim();
+  if(amt === "" || amt === false){ alert("Geçerli bir tutar yaz. Örnek: 450"); return; }
+  if(!(days >= 0 && days <= 3650) || Math.floor(days) !== days){ alert("Gün sayısı 0 ile 3650 arasında tam sayı olmalı."); return; }
+  if(!note) note = "Ref: " + it.pay_ref;
+  var q = it.name + " (" + it.pay_ref + ") için " + money(amt) + " ödeme kaydedilsin mi?" +
+    (days > 0 ? " " + days + " gün eklenecek ve durdurulmuşsa yeniden açılacak." : "");
+  if(!confirm(q)) return;
+  var btn = document.getElementById("r_save");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+  var ok = await doRpc("admin_add_payment", { p_id: it.id, p_kind: kind, p_amount: amt, p_days: days, p_method: method, p_note: note });
+  if(!ok){ btn.disabled = false; btn.textContent = "Ödemeyi kaydet ve gün ekle"; return; }
+  var nb = items.filter(function(x){ return x.id === it.id; })[0] || it;
+  document.getElementById("r_code").value = "";
+  refMatchId = null;
+  document.getElementById("r_box").innerHTML = '<p class="ok">&#10003; ' + esc(it.name) + ': ' + esc(money(amt)) + ' kaydedildi' +
+    (days > 0 ? ', ' + days + ' gün eklendi' : '') + '. Yeni bitiş: ' + esc(fmtDate(nb.paid_until)) + '</p>';
 }
 
 async function doRpc(fn, body){
