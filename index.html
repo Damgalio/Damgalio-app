@@ -23,24 +23,32 @@
   --muted:#4D5F5C;
   --line:#E7DFCF;
   --night-muted:#B9C6C2;
+  --night-line:#2C4A44;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
 img,svg{display:block}
 a{color:inherit}
+button{font:inherit}
 :focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
+.night :focus-visible,.dpanel :focus-visible,.result :focus-visible{outline-color:var(--yellow)}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+section[id]{scroll-margin-top:12px}
 
 /* nav */
 .nav{background:var(--orange)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+.nav-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding-top:16px;padding-bottom:12px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.01em}
 .logo svg{width:34px;height:34px}
-.nav-link{font-weight:600;font-size:16px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.nav-link{font-weight:700;font-size:16px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.nav-links{order:3;width:100%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{flex:none;text-decoration:none;font-weight:700;font-size:15px;padding:9px 14px;border-radius:999px;background:rgba(16,34,31,.1)}
+.nav-links a:hover{background:rgba(16,34,31,.18)}
 
 /* hero */
-.hero{background:var(--orange);padding:28px 0 72px;overflow:hidden}
+.hero{background:var(--orange);padding:22px 0 72px;overflow:hidden}
 .hero-in{display:grid;gap:44px;align-items:center}
 h1{margin:0;font-size:clamp(2.7rem,10.5vw,5.4rem);line-height:.94;font-weight:800;font-stretch:82%;letter-spacing:-.025em;max-width:11ch}
 h1 span{display:block}
@@ -54,9 +62,11 @@ h1 span{display:block}
 .btn-ink:hover{background:#1d3a35}
 .btn-line:hover{background:rgba(16,34,31,.08)}
 .btn-orange:hover{background:#f27d50}
-.assure{margin:18px 0 0;font-weight:600}
+.facts{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 30px}
+.facts li{font-weight:600;font-size:16px;line-height:1.2}
+.facts b{display:block;font-size:36px;font-weight:800;font-stretch:80%;line-height:1;letter-spacing:-.02em}
 
-/* demo card */
+/* hero card */
 .demo{margin:0;justify-self:center;width:100%;max-width:400px}
 .card{background:var(--paper);border-radius:22px;padding:22px 22px 18px;transform:rotate(-2.5deg);box-shadow:8px 10px 0 rgba(16,34,31,.22)}
 .card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:2px dashed var(--line);padding-bottom:14px}
@@ -81,11 +91,12 @@ h1 span{display:block}
 .band{padding:84px 0}
 .band h2{margin:0;font-size:clamp(2rem,6.2vw,3.2rem);line-height:1;font-weight:800;font-stretch:85%;letter-spacing:-.02em;max-width:16ch}
 .band-intro{margin:16px 0 0;color:var(--muted);font-size:1.12rem;max-width:36em}
+.kicker{display:inline-block;margin-bottom:14px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 
 /* why */
 .why{display:grid;gap:34px;margin-top:44px}
-.why h3,.steps h3,.side h3{margin:0 0 8px;font-size:1.35rem;line-height:1.2;font-weight:750}
-.why p,.steps p,.side p{margin:0;max-width:34em}
+.why h3,.steps h3,.feat h3{margin:0 0 8px;font-size:1.35rem;line-height:1.2;font-weight:750}
+.why p,.steps p,.feat p{margin:0;max-width:34em}
 .why p{color:var(--muted)}
 .why-item{border-top:3px solid var(--ink);padding-top:16px}
 
@@ -97,27 +108,102 @@ h1 span{display:block}
 .steps li:nth-child(3)::before{transform:rotate(-2deg);background:var(--yellow);border-color:var(--ink)}
 .steps p{color:var(--muted)}
 
+/* live demo */
+.flow{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.flow li{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
+.flow b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:4px;border-radius:50%;background:var(--orange);font-size:14px;vertical-align:-1px}
+.stage{margin-top:30px;display:grid;gap:16px;grid-template-areas:"tap" "panel" "phone"}
+.tap{grid-area:tap}.dpanel{grid-area:panel}.dphone{grid-area:phone}
+.tap{background:#fff;border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;align-items:center;gap:16px}
+.tap-txt{min-width:0}
+.tap-label{display:block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tap-txt p{margin:4px 0 0;font-size:15px;line-height:1.4;color:var(--muted)}
+.stamp-btn{flex:none;width:112px;height:112px;border-radius:50%;border:0;background:var(--orange);color:var(--ink);font-weight:800;font-size:15px;line-height:1.15;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px;box-shadow:0 7px 0 #B94C22;transition:transform .08s ease,box-shadow .08s ease;touch-action:manipulation}
+.stamp-btn svg{width:30px;height:30px}
+.stamp-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #B94C22}
+.stamp-btn[disabled]{background:#EDE4D3;color:var(--muted);box-shadow:0 7px 0 #CFC5B0;cursor:default;transform:none}
+.reset{background:none;border:0;margin-top:6px;padding:8px 0;font-size:15px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.dpanel{background:var(--ink);color:var(--paper);border-radius:22px;padding:18px}
+.dp-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:800;font-size:17px}
+.dp-head small{font-weight:600;color:var(--night-muted);font-size:13px}
+.dp-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}
+.dp-stats div{border:1.5px solid var(--night-line);border-radius:12px;padding:8px 12px}
+.dp-stats b{display:block;font-size:26px;line-height:1.1}
+.dp-stats small{color:var(--night-muted);font-size:13px}
+.dp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 6px;margin:0 -6px;border-top:1.5px solid var(--night-line);border-radius:8px;animation:flash .7s ease-out}
+.dp-row b{display:block;font-size:16px;line-height:1.25}
+.dp-row small{color:var(--night-muted);font-size:13px}
+.dp-acts{display:flex;gap:6px;flex:none}
+.dp-btn{border:0;border-radius:10px;min-height:44px;padding:10px 14px;font-weight:800;font-size:15px;cursor:pointer;background:var(--orange);color:var(--ink);touch-action:manipulation}
+.dp-btn.alt{background:transparent;color:var(--paper);border:1.5px solid var(--night-line)}
+.dp-empty{margin:0;padding:14px 0 4px;border-top:1.5px solid var(--night-line);color:var(--night-muted);font-size:15px}
+@keyframes flash{from{background:rgba(247,212,76,.28)}to{background:transparent}}
+.dphone{justify-self:center;width:100%;max-width:340px;background:var(--ink);border-radius:42px;padding:12px}
+.screen{position:relative;background:var(--paper);border-radius:31px;padding:44px 18px 20px;min-height:400px;display:flex;flex-direction:column;gap:14px}
+.notch{position:absolute;top:12px;left:50%;width:92px;height:24px;margin-left:-46px;border-radius:14px;background:var(--ink)}
+.url{background:#F1EBDD;border-radius:10px;padding:6px 10px;font-size:13px;color:var(--muted);text-align:center}
+.biz{display:flex;align-items:center;gap:10px}
+.biz i{flex:none;width:42px;height:42px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px}
+.biz b{display:block;font-size:18px;line-height:1.15}
+.biz small{color:var(--muted);font-size:13px}
+.dslots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.dslot{aspect-ratio:1;border-radius:50%;border:2px dashed #CFC5B0;position:relative}
+.dslot .ink{animation:none}
+.dslot .ink.new{animation:press .42s cubic-bezier(.2,.9,.3,1.25) both}
+.dprog{height:10px;border-radius:10px;background:#E9E2D2;overflow:hidden}
+.dprog i{display:block;height:100%;background:var(--orange);border-radius:10px;transition:width .4s ease}
+.dcount{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:15px}
+.dcount span:last-child{color:var(--muted);font-weight:600}
+.dmsg{margin-top:auto;border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;line-height:1.35;background:rgba(238,106,55,.16)}
+.dmsg.wait{background:var(--yellow)}
+.dmsg.no{background:#F4D8D1}
+.ticket{background:var(--orange);border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:ready .35s ease-out}
+.ticket small{display:block;font-size:12px;font-weight:800;letter-spacing:.08em}
+.ticket b{display:block;font-size:19px;font-weight:800;font-stretch:88%;line-height:1.1}
+.ticket span{flex:none;background:var(--ink);color:var(--paper);border-radius:999px;padding:5px 10px;font-size:13px;font-weight:700}
+.demo-note{margin:18px 0 0;color:var(--muted);font-size:15px}
+
 /* owner side */
 .night{background:var(--ink);color:var(--paper)}
 .night .band-intro{color:var(--night-muted)}
-.side-grid{display:grid;gap:44px;margin-top:44px;align-items:start}
-.side{display:grid;gap:28px}
-.side p{color:var(--night-muted)}
-.side h3{color:var(--paper)}
-.side h3::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--orange);margin-right:10px;vertical-align:2px}
-.mock-wrap{margin:0}
-.mock-wrap figcaption{margin-top:18px;color:var(--night-muted);font-size:14px}
-.mock{background:var(--paper);color:var(--ink);border-radius:18px;padding:18px;max-width:420px;transform:rotate(1.5deg)}
-.mock-head{font-weight:800;font-size:17px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.mock-head span{background:var(--yellow);border-radius:999px;padding:2px 10px;font-size:14px}
-.mock-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1.5px solid var(--line)}
-.mock-row b{display:block;font-size:16px}
-.mock-row small{color:var(--muted);font-size:14px}
-.mock-btn{background:var(--orange);color:var(--ink);font-weight:700;font-size:14px;padding:8px 14px;border-radius:10px}
-.mock-foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
-.mock-foot div{border:1.5px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
-.mock-foot b{display:block;font-size:22px;line-height:1.1}
-.mock-foot small{color:var(--muted);font-size:13px}
+.feat{display:grid;gap:30px;margin-top:44px}
+.feat p{color:var(--night-muted)}
+.feat h3{color:var(--paper)}
+.feat h3::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--orange);margin-right:10px;vertical-align:2px}
+
+/* compare */
+.cmp-wrap{margin-top:36px;max-width:900px}
+.cmp{width:100%;border-collapse:collapse;font-size:16px;line-height:1.4}
+.cmp th,.cmp td{text-align:left;vertical-align:top;padding:14px 12px;border-top:2px solid var(--line)}
+.cmp thead th{border-top:0;padding-bottom:12px;font-size:15px;vertical-align:middle}
+.cmp thead th span{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:800}
+.cmp thead th:nth-child(2) span{border:2px solid var(--ink)}
+.cmp thead th:nth-child(3) span{background:var(--orange)}
+.cmp tbody th{font-weight:750;width:28%}
+.cmp td{color:var(--muted);width:36%}
+.cmp td:last-child{color:var(--ink);font-weight:650;background:rgba(238,106,55,.09)}
+.cmp tbody tr:last-child th,.cmp tbody tr:last-child td{border-bottom:2px solid var(--line)}
+
+/* calculator */
+.calc-band{background:var(--yellow)}
+.calc-band .band-intro{color:var(--ink)}
+.calc{margin-top:36px;display:grid;gap:28px}
+.field{margin-bottom:20px}
+.field label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-weight:700;line-height:1.3}
+.field output{flex:none;font-weight:800;background:var(--paper);border-radius:8px;padding:2px 10px;min-width:4.6em;text-align:right}
+.field input[type=range]{width:100%;margin:10px 0 0;accent-color:var(--ink);height:30px;cursor:pointer}
+.field small{display:block;color:var(--ink);opacity:.82;font-size:14px;margin-top:2px}
+.result{background:var(--ink);color:var(--paper);border-radius:22px;padding:24px}
+.result h3{margin:0 0 6px;font-size:1.2rem}
+.res-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 0;border-top:1.5px solid var(--night-line)}
+.res-row span{color:var(--night-muted)}
+.res-row b{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:800;font-stretch:85%;line-height:1.1;text-align:right}
+.res-row.big b{color:var(--yellow)}
+.result p{color:var(--night-muted);font-size:14px;margin:12px 0 0;line-height:1.5}
+
+/* sectors */
+.chips{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.chips li{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:700}
 
 /* price */
 .price{margin-top:44px;display:grid;gap:30px;align-items:start}
@@ -150,26 +236,39 @@ h1 span{display:block}
 
 /* footer */
 footer{background:var(--ink);color:var(--paper);padding:34px 0}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
-.foot nav{display:flex;flex-wrap:wrap;gap:20px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:18px}
+.foot nav{display:flex;flex-wrap:wrap;gap:12px 20px}
 .foot a{color:var(--paper);text-underline-offset:4px}
 .foot small{color:var(--night-muted);font-size:14px}
 footer .logo{font-size:20px}
 
+@media (max-width:420px){
+  .cmp{font-size:14.5px}
+  .cmp th,.cmp td{padding:12px 7px}
+}
 @media (min-width:860px){
+  .nav-in{flex-wrap:nowrap;padding-top:18px;padding-bottom:18px}
+  .nav-links{order:0;width:auto;justify-content:center;padding-bottom:0}
   .hero{padding:40px 0 96px}
   .hero-in{grid-template-columns:1.15fr .85fr;gap:56px}
   .why{grid-template-columns:repeat(3,minmax(0,1fr))}
   .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
   .steps li{grid-template-columns:1fr;gap:16px}
-  .side-grid{grid-template-columns:1fr 1fr;gap:64px}
+  .feat{grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 48px}
+  .calc{grid-template-columns:1.1fr .9fr;gap:52px;align-items:start}
   .price{grid-template-columns:minmax(0,440px) 1fr;gap:56px}
   .band{padding:110px 0}
 }
+@media (min-width:980px){
+  .stage{grid-template-columns:.85fr 1fr 1.05fr;grid-template-areas:"tap phone panel";align-items:start;gap:26px}
+  .tap{flex-direction:column;text-align:center;padding:26px 20px}
+  .stamp-btn{width:150px;height:150px;font-size:17px}
+  .stamp-btn svg{width:38px;height:38px}
+}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .ink,.gift,.ready{animation:none}
-  .faq summary::after{transition:none}
+  .ink,.gift,.ready,.ticket,.dp-row,.dslot .ink.new{animation:none}
+  .dprog i,.faq summary::after{transition:none}
 }
 </style>
 </head>
@@ -181,6 +280,13 @@ footer .logo{font-size:20px}
       <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"></circle><path d="M14 12.5h4v4h-4z" fill="#10221F"></path><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"></rect><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"></path></svg>
       Damgalio
     </a>
+    <nav class="nav-links" aria-label="Sayfa menüsü">
+      <a href="#dene">Dene</a>
+      <a href="#karsilastir">Kâğıt kartla farkı</a>
+      <a href="#hesapla">Hesapla</a>
+      <a href="#fiyat">Fiyat</a>
+      <a href="#sss">Sorular</a>
+    </nav>
     <a class="nav-link" href="/panel.html">İşletme girişi</a>
   </div>
 </header>
@@ -193,12 +299,16 @@ footer .logo{font-size:20px}
       <p class="lead">Kasana koyduğumuz NFC damgaya müşterin telefonunu yaklaştırır, damgası kartına eklenir. Uygulama indirmek yok, kart taşımak yok. Ödüle yaklaştıkça müşterin tekrar gelir.</p>
       <div class="ctas">
         <a class="btn btn-ink js-wa" href="#iletisim">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.200s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
           WhatsApp'tan bilgi al
         </a>
-        <a class="btn btn-line" href="#nasil">Nasıl çalıştığını gör</a>
+        <a class="btn btn-line" href="#dene">Kendin dene</a>
       </div>
-      <p class="assure">İlk ay ücretsiz. Kurulumu biz yapıyoruz.</p>
+      <ul class="facts">
+        <li><b>0</b>uygulama</li>
+        <li><b>1</b>dokunuş</li>
+        <li><b>1 ay</b>ücretsiz</li>
+      </ul>
     </div>
 
     <figure class="demo">
@@ -221,11 +331,11 @@ footer .logo{font-size:20px}
 <section class="band">
   <div class="wrap">
     <h2>Müşteri neden geri gelir?</h2>
-    <p class="band-intro">Çünkü insan başladığı işi bitirmek ister. Damga kartı bu isteği kafene bağlar.</p>
+    <p class="band-intro">Çünkü insan başladığı işi bitirmek ister. Damga kartı bu isteği işletmene bağlar.</p>
     <div class="why">
       <div class="why-item">
         <h3>Yarım kart rahat bırakmaz</h3>
-        <p>İki damgası olan müşteri ödüle ne kadar yaklaştığını her seferinde görür. Kartı tamamlamak için kahvesini senden almaya devam eder.</p>
+        <p>İki damgası olan müşteri ödüle ne kadar yaklaştığını her seferinde görür. Kartı tamamlamak için tekrar sana gelir.</p>
       </div>
       <div class="why-item">
         <h3>Kart cüzdanda değil, telefonda</h3>
@@ -265,43 +375,157 @@ footer .logo{font-size:20px}
   </div>
 </section>
 
+<section class="band" id="dene" style="padding-top:0">
+  <div class="wrap">
+    <span class="kicker">Canlı deneme</span>
+    <h2>Kendin dene</h2>
+    <p class="band-intro">Kasadaki bir anı canlandır. Müşteri olarak damgaya dokun, işletme sahibi olarak panelden onayla, kartın dolmasını izle.</p>
+    <ol class="flow">
+      <li><b>1</b> Damgaya dokun</li>
+      <li><b>2</b> Panelden onayla</li>
+      <li><b>3</b> Kartı doldur</li>
+    </ol>
+
+    <div class="stage">
+      <div class="tap">
+        <button class="stamp-btn" id="dStamp" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7"></path><path d="M12 6a8.5 8.5 0 0 1 0 12"></path><path d="M16 3.5a12 12 0 0 1 0 17"></path><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg>
+          <span id="dStampTxt">Damgaya dokun</span>
+        </button>
+        <div class="tap-txt">
+          <span class="tap-label">Kasadaki damga</span>
+          <p>Gerçekte müşteri telefonunu bu damgaya yaklaştırır.</p>
+          <button class="reset" id="dReset" type="button">Baştan başla</button>
+        </div>
+      </div>
+
+      <div class="dpanel">
+        <div class="dp-head">Senin panelin <small>Senin Kafen</small></div>
+        <div class="dp-stats">
+          <div><b id="dToday">0</b><small>Bugün verilen damga</small></div>
+          <div><b id="dWaiting">0</b><small>Bekleyen ödül</small></div>
+        </div>
+        <div id="dList"></div>
+      </div>
+
+      <div class="dphone">
+        <div class="screen" id="dScreen"></div>
+      </div>
+    </div>
+    <p class="demo-note">Bu bir canlandırmadır, gerçek bir kart açılmaz.</p>
+  </div>
+</section>
+
 <section class="band night">
   <div class="wrap">
     <h2>Senin tarafında</h2>
     <p class="band-intro">Telefonundan açtığın bir panel. Kurulumu biz yapıyoruz, sen sadece kullanıyorsun.</p>
-    <div class="side-grid">
-      <div class="side">
-        <div>
-          <h3>Onaylamadan damga eklenmez</h3>
-          <p>İstersen her damga önce senin onayına düşer. Kimse evden damga toplayamaz, damgalar arasında bekleme süresi de var.</p>
-        </div>
-        <div>
-          <h3>Müdavimlerini tanırsın</h3>
-          <p>Kim kaç damga aldı, en son ne zaman geldi, bugün kaç damga verildi. Hepsi tek ekranda.</p>
-        </div>
-        <div>
-          <h3>Kart senin markanla görünür</h3>
-          <p>Müşterinin kartında senin rengin, ödülün, Instagram ve WhatsApp linklerin yer alır.</p>
-        </div>
+    <div class="feat">
+      <div>
+        <h3>Onaylamadan damga eklenmez</h3>
+        <p>İstersen her damga önce senin onayına düşer. Kasada olmayan biri damga toplayamaz.</p>
       </div>
-      <figure class="mock-wrap">
-      <div class="mock" aria-hidden="true">
-        <div class="mock-head">Onay bekleyen damgalar <span>2</span></div>
-        <div class="mock-row"><div><b>Elif</b><small>555 ••• 12 34 · şimdi</small></div><span class="mock-btn">Onayla</span></div>
-        <div class="mock-row"><div><b>Mert</b><small>532 ••• 98 76 · 1 dk önce</small></div><span class="mock-btn">Onayla</span></div>
-        <div class="mock-foot">
-          <div><b>128</b><small>Müşteri</small></div>
-          <div><b>23</b><small>Bugün damga</small></div>
-          <div><b>6</b><small>Bekleyen ödül</small></div>
-        </div>
+      <div>
+        <h3>Damgalar arasında bekleme</h3>
+        <p>Aynı müşteri kısa sürede üst üste damga alamaz. Bekleme süresini sen belirlersin.</p>
       </div>
-      <figcaption>Panelin örnek görünümü</figcaption>
-      </figure>
+      <div>
+        <h3>Ödül bileti tek dokunuşla</h3>
+        <p>Kart dolunca müşteriye bilet çıkar. Kasada gösterir, sen panelden kullandırırsın.</p>
+      </div>
+      <div>
+        <h3>Müdavimlerini tanırsın</h3>
+        <p>Kim kaç damga aldı, en son ne zaman geldi, bugün kaç damga verildi. Hepsi tek ekranda.</p>
+      </div>
+      <div>
+        <h3>Kart senin markanla görünür</h3>
+        <p>Müşterinin kartında senin rengin, ödülün, Instagram ve WhatsApp linklerin yer alır.</p>
+      </div>
+      <div>
+        <h3>Kurulacak bir şey yok</h3>
+        <p>Panel telefonunun tarayıcısında açılır. Kasaya bilgisayar ya da cihaz gerekmez.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="band" id="fiyat">
+<section class="band" id="karsilastir">
+  <div class="wrap">
+    <h2>Kâğıt kart mı, Damgalio mu?</h2>
+    <p class="band-intro">Kâğıt kart işini görür, ta ki kaybolana ya da taklit edilene kadar.</p>
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <thead>
+          <tr><th scope="col">Konu</th><th scope="col"><span>Kâğıt kart</span></th><th scope="col"><span>Damgalio</span></th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Kart kaybolursa</th><td>Damgalar da gider</td><td>Numaraya kayıtlı, kaybolmaz</td></tr>
+          <tr><th scope="row">Sahte damga</th><td>Kaşe ya da kalemle taklit edilebilir</td><td>İstersen her damga senin onayından geçer</td></tr>
+          <tr><th scope="row">Üst üste damga</th><td>Aynı gün beş damga basılabilir</td><td>İki damga arasına bekleme süresi koyarsın</td></tr>
+          <tr><th scope="row">Ödülü değiştirmek</th><td>Yeni kart bastırmak gerekir</td><td>Panelden bir dakikada</td></tr>
+          <tr><th scope="row">Kim ne kadar geliyor</th><td>Bilemezsin</td><td>Panelde görürsün</td></tr>
+          <tr><th scope="row">Müşteri için</th><td>Cüzdanda yer kaplar, unutulur</td><td>Telefonunda, uygulama indirmeden</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band calc-band" id="hesapla">
+  <div class="wrap">
+    <h2>Kazancını kabaca hesapla</h2>
+    <p class="band-intro">Kendi işletmenin rakamlarını gir. Kart kullanan müşterilerin biraz daha sık gelmesi ayda ne kadar fark eder, gör.</p>
+    <div class="calc">
+      <form class="fields" id="calc" onsubmit="return false">
+        <div class="field">
+          <label for="cDaily">Günde kaç müşteri geliyor? <output for="cDaily" id="oDaily"></output></label>
+          <input type="range" id="cDaily" min="10" max="600" step="10" value="80">
+        </div>
+        <div class="field">
+          <label for="cAvg">Ortalama hesap <output for="cAvg" id="oAvg"></output></label>
+          <input type="range" id="cAvg" min="20" max="1000" step="10" value="120">
+        </div>
+        <div class="field">
+          <label for="cUse">Kartı kullanan müşteri oranı <output for="cUse" id="oUse"></output></label>
+          <input type="range" id="cUse" min="5" max="80" step="5" value="30">
+        </div>
+        <div class="field">
+          <label for="cLift">Kart kullananların gelişindeki artış <output for="cLift" id="oLift"></output></label>
+          <input type="range" id="cLift" min="5" max="50" step="5" value="15">
+          <small>Örneğin ayda 4 kez gelen müşteri, kart sayesinde ara sıra 5. kez de gelirse.</small>
+        </div>
+        <div class="field">
+          <label for="cNeed">Kaç damgada ödül? <output for="cNeed" id="oNeed"></output></label>
+          <input type="range" id="cNeed" min="2" max="12" step="1" value="4">
+        </div>
+        <div class="field">
+          <label for="cCost">Ödülün sana maliyeti <output for="cCost" id="oCost"></output></label>
+          <input type="range" id="cCost" min="5" max="300" step="5" value="30">
+          <small>Satış fiyatı değil, sana kaça mal olduğu.</small>
+        </div>
+      </form>
+      <div class="result" aria-live="polite">
+        <h3>Aylık tahmin</h3>
+        <div class="res-row"><span>Ek ziyaret</span><b id="rVisits">-</b></div>
+        <div class="res-row big"><span>Ek ciro</span><b id="rCiro">-</b></div>
+        <div class="res-row"><span>Ödüllerin maliyeti</span><b id="rCost">-</b></div>
+        <p>Bu bir tahmindir, garanti değildir. Ek ciro kâr değildir, ürün maliyetini düşmeyi unutma. Ödül maliyetine zaten düzenli gelen müşterilerin alacağı ödüller de dahildir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Sadece kafeler için değil</h2>
+    <p class="band-intro">Müşterisi tekrar tekrar gelen her işletmede çalışır. Damga kuralını sen koyarsın: her kahvede, her tıraşta, her yıkamada.</p>
+    <ul class="chips">
+      <li>Kafe</li><li>Kahveci</li><li>Pastane</li><li>Fırın</li><li>Tatlıcı</li><li>Dondurmacı</li><li>Restoran</li><li>Dönerci</li><li>Çiğköfteci</li><li>Berber</li><li>Kuaför</li><li>Güzellik salonu</li><li>Oto yıkama</li><li>Kuru temizleme</li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" id="fiyat" style="padding-top:0">
   <div class="wrap">
     <h2>Ne kadar?</h2>
     <div class="price">
@@ -311,9 +535,9 @@ footer .logo{font-size:20px}
         <span class="price-free">İlk ay ücretsiz</span>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>NFC çipli damga</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>QR kodlu tezgah afişi</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>QR kodlu tezgah kartı</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>İşletme paneli</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>Kurulum ve ilk ayarlar</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>Yerinde kurulum ve ilk ayarlar</li>
         </ul>
         <a class="btn btn-orange js-wa" href="#iletisim">WhatsApp'tan teklif al</a>
       </div>
@@ -335,16 +559,28 @@ footer .logo{font-size:20px}
         <p>Hayır. Telefon damgaya yaklaşınca kart sayfası tarayıcıda açılır. Hiçbir şey yüklenmez.</p>
       </details>
       <details>
-        <summary>NFC'si olmayan telefonlar ne olacak?</summary>
-        <p>Tezgahtaki afişte QR kod var. Müşteri kamerayla okutur, aynı kartı açar.</p>
+        <summary>Hangi telefonlarda çalışır?</summary>
+        <p>Yeni iPhone'lar ve NFC'si açık Android telefonlar damgaya dokunarak kartı açar. iPhone'da telefonun üst kısmını, Android'de arka yüzün ortasını yaklaştırmak yeterli. NFC'si olmayan ya da kapalı olan telefonlar tezgahtaki QR kodu kamerayla okutur.</p>
       </details>
       <details>
         <summary>Biri hile yapıp fazladan damga alabilir mi?</summary>
         <p>Damga linki tahmin edilemeyen gizli bir koddur. Damgalar arasında bekleme süresi var ve istersen her damga senin onayınla eklenir.</p>
       </details>
       <details>
+        <summary>Müşteri telefonunu değiştirirse damgaları ne olur?</summary>
+        <p>Damgalar telefon numarasına kayıtlı. Yeni telefondan aynı numarayla girince kart kaldığı yerden devam eder.</p>
+      </details>
+      <details>
+        <summary>Müşterinin internete ihtiyacı var mı?</summary>
+        <p>Evet, kart sayfası açılırken telefonun internete bağlı olması gerekir. Mobil veri yeterli.</p>
+      </details>
+      <details>
         <summary>Kaç damgada ödül verileceğine kim karar veriyor?</summary>
         <p>Sen. Kurulumda birlikte ayarlarız. Ödülü ve kartın rengini sonra panelden kendin değiştirirsin.</p>
+      </details>
+      <details>
+        <summary>Kurulumu kim yapıyor?</summary>
+        <p>Biz. Kayseri'de işletmene gelip damgayı ve tezgah kartını yerleştiriyor, paneli birlikte açıyoruz. Başka bir şehirdeysen WhatsApp'tan yaz, birlikte bakalım.</p>
       </details>
       <details>
         <summary>Müşteri bilgileri güvende mi?</summary>
@@ -362,12 +598,13 @@ footer .logo{font-size:20px}
 <section class="final" id="iletisim">
   <div class="wrap">
     <h2>Müşterin bir kez gelmesin, hep gelsin.</h2>
-    <p>Kafende ilk ay ücretsiz dene.</p>
+    <p>İşletmende ilk ay ücretsiz dene.</p>
     <div class="ctas">
       <a class="btn btn-ink js-wa" href="#iletisim">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
         WhatsApp'tan yaz
       </a>
+      <a class="btn btn-line" href="#dene">Önce dene</a>
     </div>
   </div>
 </section>
@@ -379,6 +616,9 @@ footer .logo{font-size:20px}
       Damgalio
     </a>
     <nav aria-label="Alt menü">
+      <a href="#dene">Dene</a>
+      <a href="#hesapla">Hesapla</a>
+      <a href="#fiyat">Fiyat</a>
       <a href="/panel.html">İşletme girişi</a>
       <a href="/gizlilik.html">Gizlilik</a>
     </nav>
@@ -411,6 +651,129 @@ footer .logo{font-size:20px}
       .then(setLinks)
       .catch(function () {});
   } catch (e) {}
+})();
+
+(function () {
+  var NEED = 4, REWARD = "Bir filtre kahve";
+  var ROT = [-9, 6, -3, 11];
+  var st = { stamps: 0, pending: false, rewards: 0, today: 0, busy: false, fresh: -1, msg: "start" };
+  var btn = document.getElementById("dStamp");
+  var btnTxt = document.getElementById("dStampTxt");
+  var list = document.getElementById("dList");
+  var screen = document.getElementById("dScreen");
+  var today = document.getElementById("dToday");
+  var waiting = document.getElementById("dWaiting");
+  if (!btn || !screen) return;
+
+  var MSGS = {
+    start: ["", "Damgaya dokununca damgan buraya eklenir."],
+    wait: ["wait", "Onay bekleniyor. Kasadaki çalışan onaylayınca damgan eklenecek."],
+    added: ["", ""],
+    full: ["", "Kartın doldu! Ödül biletin hazır, kasada göster."],
+    no: ["no", "Bu damga onaylanmadı."],
+    used: ["", "Afiyet olsun! Yeni kartın başladı."]
+  };
+
+  function phone() {
+    var slots = "";
+    for (var i = 0; i < NEED; i++) {
+      slots += '<span class="dslot">' + (i < st.stamps ? '<i class="ink' + (i === st.fresh ? ' new' : '') + '" style="--d:0s;--r:' + ROT[i % 4] + 'deg"></i>' : '') + '</span>';
+    }
+    var left = NEED - st.stamps;
+    var m = MSGS[st.msg] || MSGS.start;
+    var text = st.msg === "added" ? "Damga eklendi. Ödüle " + left + " damga kaldı." : m[1];
+    screen.innerHTML =
+      '<span class="notch" aria-hidden="true"></span>' +
+      '<div class="url">damgalio.com/s/senin-kafen</div>' +
+      '<div class="biz"><i aria-hidden="true">SK</i><div><b>Senin Kafen</b><small>Damga kartı</small></div></div>' +
+      (st.rewards > 0 ? '<div class="ticket"><div><small>ÖDÜL BİLETİ' + (st.rewards > 1 ? ' x' + st.rewards : '') + '</small><b>' + REWARD + '</b></div><span>Kasada göster</span></div>' : '') +
+      '<div class="dslots" role="img" aria-label="' + st.stamps + ' / ' + NEED + ' damga">' + slots + '</div>' +
+      '<div class="dprog"><i style="width:' + Math.round(st.stamps / NEED * 100) + '%"></i></div>' +
+      '<div class="dcount"><span>' + st.stamps + ' / ' + NEED + ' damga</span><span>Ödül: ' + REWARD + '</span></div>' +
+      '<div class="dmsg ' + m[0] + '" role="status">' + text + '</div>';
+  }
+
+  function row(title, sub, acts) {
+    return '<div class="dp-row"><div><b>' + title + '</b><small>' + sub + '</small></div><div class="dp-acts">' + acts + '</div></div>';
+  }
+
+  function panel() {
+    var html = "";
+    if (st.pending) html += row("Yeni damga isteği", "Elif · 5•• ••• •• 34 · şimdi", '<button class="dp-btn alt" type="button" data-a="no">Reddet</button><button class="dp-btn" type="button" data-a="ok">Onayla</button>');
+    if (st.rewards > 0) html += row("Ödül bileti", "Elif · " + REWARD, '<button class="dp-btn" type="button" data-a="use">Kullandır</button>');
+    if (!html) html = '<p class="dp-empty">Bekleyen bir şey yok. Damgaya dokunarak başla.</p>';
+    list.innerHTML = html;
+    today.textContent = st.today;
+    waiting.textContent = st.rewards;
+    btn.disabled = st.pending || st.busy;
+    btnTxt.textContent = st.pending ? "Onay bekleniyor" : "Damgaya dokun";
+  }
+
+  function draw() { phone(); panel(); }
+
+  btn.addEventListener("click", function () {
+    if (st.pending || st.busy) return;
+    st.pending = true; st.fresh = -1; st.msg = "wait";
+    draw();
+  });
+
+  list.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button[data-a]") : null;
+    if (!b) return;
+    var a = b.getAttribute("data-a");
+    if (a === "ok" && st.pending) {
+      st.pending = false; st.today++; st.stamps++; st.fresh = st.stamps - 1;
+      if (st.stamps >= NEED) {
+        st.busy = true; st.msg = "added";
+        draw();
+        setTimeout(function () {
+          st.stamps = 0; st.rewards++; st.fresh = -1; st.busy = false; st.msg = "full";
+          draw();
+        }, 900);
+        return;
+      }
+      st.msg = "added";
+    } else if (a === "no" && st.pending) {
+      st.pending = false; st.fresh = -1; st.msg = "no";
+    } else if (a === "use" && st.rewards > 0) {
+      st.rewards--; st.fresh = -1; st.msg = "used";
+    } else {
+      return;
+    }
+    draw();
+  });
+
+  document.getElementById("dReset").addEventListener("click", function () {
+    st = { stamps: 0, pending: false, rewards: 0, today: 0, busy: false, fresh: -1, msg: "start" };
+    draw();
+  });
+
+  draw();
+})();
+
+(function () {
+  function $(id) { return document.getElementById(id); }
+  if (!$("calc")) return;
+  function n(x) { return Math.round(x).toLocaleString("tr-TR"); }
+  function tl(x) { return n(x) + " ₺"; }
+  var ins = ["cDaily", "cAvg", "cUse", "cLift", "cNeed", "cCost"];
+  function calc() {
+    var G = +$("cDaily").value, H = +$("cAvg").value, K = +$("cUse").value / 100;
+    var A = +$("cLift").value / 100, N = +$("cNeed").value, M = +$("cCost").value;
+    $("oDaily").textContent = n(G);
+    $("oAvg").textContent = tl(H);
+    $("oUse").textContent = "%" + Math.round(K * 100);
+    $("oLift").textContent = "%" + Math.round(A * 100);
+    $("oNeed").textContent = N;
+    $("oCost").textContent = tl(M);
+    var cardVisits = G * 30 * K;
+    var extra = Math.round(cardVisits * A);
+    $("rVisits").textContent = n(extra);
+    $("rCiro").textContent = tl(extra * H);
+    $("rCost").textContent = tl((cardVisits + extra) / N * M);
+  }
+  for (var i = 0; i < ins.length; i++) $(ins[i]).addEventListener("input", calc);
+  calc();
 })();
 </script>
 </body>
