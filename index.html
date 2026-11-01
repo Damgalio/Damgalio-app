@@ -205,6 +205,20 @@ h1 span{display:block}
 .chips{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
 .chips li{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:700}
 
+/* places map */
+.places{margin-top:32px;display:grid;gap:16px}
+.map-box{border:3px solid var(--ink);border-radius:22px;overflow:hidden;background:#E9E2D2;height:300px}
+.map-box iframe{display:block;width:100%;height:100%;border:0}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:10px;align-content:start}
+.pitem{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:6px 8px 6px 6px}
+.pitem.on{border-color:var(--ink);box-shadow:4px 4px 0 var(--orange)}
+.pbtn{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px;cursor:pointer;color:var(--ink);display:grid;gap:2px}
+.pbtn b{font-size:18px;line-height:1.2}
+.pbtn small{color:var(--muted);font-size:14px}
+.pbtn span{font-size:14px;font-weight:600}
+.plink{flex:none;text-decoration:none;font-weight:700;font-size:14px;background:var(--orange);color:var(--ink);border-radius:12px;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center}
+.plink:hover{background:#f27d50}
+
 /* price */
 .price{margin-top:44px;display:grid;gap:30px;align-items:start}
 .price-main{border:3px solid var(--ink);border-radius:22px;padding:26px;background:#fff}
@@ -256,6 +270,9 @@ footer .logo{font-size:20px}
   .steps li{grid-template-columns:1fr;gap:16px}
   .feat{grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 48px}
   .calc{grid-template-columns:1.1fr .9fr;gap:52px;align-items:start}
+  .places{grid-template-columns:1.35fr 1fr;align-items:start;gap:22px}
+  .map-box{height:440px}
+  .plist{max-height:440px;overflow:auto;padding:2px 6px 6px 2px}
   .price{grid-template-columns:minmax(0,440px) 1fr;gap:56px}
   .band{padding:110px 0}
 }
@@ -282,6 +299,7 @@ footer .logo{font-size:20px}
     </a>
     <nav class="nav-links" aria-label="Sayfa menüsü">
       <a href="#dene">Dene</a>
+      <a href="#isletmeler" id="navPlaces" hidden>İşletmeler</a>
       <a href="#karsilastir">Kâğıt kartla farkı</a>
       <a href="#hesapla">Hesapla</a>
       <a href="#fiyat">Fiyat</a>
@@ -525,6 +543,17 @@ footer .logo{font-size:20px}
   </div>
 </section>
 
+<section class="band" id="isletmeler" style="padding-top:0" hidden>
+  <div class="wrap">
+    <h2>Damgalio kullanan işletmeler</h2>
+    <p class="band-intro">Damga toplayabileceğin yerler. Birine dokun, haritada gör ya da yol tarifi al.</p>
+    <div class="places">
+      <div class="map-box"><iframe id="pMap" title="Damgalio kullanan işletmelerin haritası" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+      <ul class="plist" id="pList"></ul>
+    </div>
+  </div>
+</section>
+
 <section class="band" id="fiyat" style="padding-top:0">
   <div class="wrap">
     <h2>Ne kadar?</h2>
@@ -749,6 +778,51 @@ footer .logo{font-size:20px}
   });
 
   draw();
+})();
+
+(function () {
+  var sec = document.getElementById("isletmeler");
+  if (!sec || !window.fetch) return;
+  var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+  var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+  var MIN = /[?&]harita=goster/.test(location.search) ? 1 : 3;
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+  function ll(p) { return Number(p.lat).toFixed(6) + "," + Number(p.lng).toFixed(6); }
+  function embed(p) { return "https://maps.google.com/maps?q=" + ll(p) + "&z=16&hl=tr&output=embed"; }
+  function route(p) { return "https://www.google.com/maps/dir/?api=1&destination=" + ll(p); }
+  fetch(SB_URL + "/rest/v1/rpc/public_map_businesses", {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: "{}"
+  }).then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (list) {
+      list = (Array.isArray(list) ? list : []).filter(function (p) { return isFinite(p.lat) && isFinite(p.lng) && p.lat !== null && p.lng !== null; });
+      if (list.length < MIN) return;
+      var ul = document.getElementById("pList");
+      var map = document.getElementById("pMap");
+      ul.innerHTML = list.map(function (p, i) {
+        var rw = p.reward ? (p.needed ? p.needed + " damgada: " : "Ödül: ") + p.reward : "";
+        return '<li class="pitem"><button class="pbtn" type="button" data-i="' + i + '"><b>' + esc(p.name) + '</b>' +
+          (p.area ? '<small>' + esc(p.area) + '</small>' : '') + (rw ? '<span>' + esc(rw) + '</span>' : '') + '</button>' +
+          '<a class="plink" href="' + route(p) + '" target="_blank" rel="noopener">Yol tarifi</a></li>';
+      }).join("");
+      function pick(i) {
+        map.src = embed(list[i]);
+        for (var j = 0; j < ul.children.length; j++) {
+          ul.children[j].className = "pitem" + (j === i ? " on" : "");
+          ul.children[j].querySelector(".pbtn").setAttribute("aria-pressed", j === i ? "true" : "false");
+        }
+      }
+      ul.addEventListener("click", function (e) {
+        var b = e.target.closest ? e.target.closest(".pbtn") : null;
+        if (b) pick(Number(b.getAttribute("data-i")));
+      });
+      pick(0);
+      sec.hidden = false;
+      var nl = document.getElementById("navPlaces");
+      if (nl) nl.hidden = false;
+    })
+    .catch(function () {});
 })();
 
 (function () {
