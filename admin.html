@@ -63,7 +63,7 @@ var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
 var session = null, items = [], created = null, settings = {}, summary = null, showArchived = false;
-var refMatchId = null;
+var refMatchId = null, mapReady = false;
 
 var KIND = { kurulum: "Kurulum", abonelik: "Aylık", diger: "Diğer" };
 var METH = { havale: "Havale", kart: "Kart", nakit: "Nakit", diger: "Diğer" };
@@ -79,6 +79,19 @@ function inviteLink(c){ return location.origin + "/kayit.html?k=" + c; }
 function panelLink(){ return location.origin + "/panel.html"; }
 function waShare(text){ return "https://wa.me/?text=" + encodeURIComponent(text); }
 function panelMsg(name){ return "Merhaba! " + name + " işletme paneline buradan girebilirsin (hesap açarken belirlediğin e-posta ve şifreyle): " + panelLink(); }
+
+function parseLatLng(v){
+  var m = String(v == null ? "" : v).match(/-?\d{1,3}[.,]\d{3,}/g);
+  if(!m || m.length < 2) return null;
+  var lat = Number(m[0].replace(",", ".")), lng = Number(m[1].replace(",", "."));
+  if(isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  return { lat: lat, lng: lng };
+}
+function gmapsLink(lat, lng){ return "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng; }
+function waOwnerMsg(name, email, pw){
+  return "Merhaba! " + name + " için Damgalio panel şifreni sıfırladım.\n\nE-posta: " + email + "\nGeçici şifre: " + pw +
+    "\n\nGiriş: " + panelLink() + "\nGirince yeni şifreni belirlemen istenecek.";
+}
 
 function parseMoney(v){
   v = String(v == null ? "" : v).trim().replace(",", ".");
@@ -169,6 +182,16 @@ async function fetchItems(){
   var r = await rpc("admin_list_businesses");
   if(r.status !== "ok") throw new Error(r.status);
   items = r.items || [];
+  mapReady = false;
+  try {
+    var m = await rpc("admin_map_list");
+    if(m && m.status === "ok"){
+      var byId = {};
+      (m.items || []).forEach(function(x){ byId[String(x.id)] = x; });
+      items.forEach(function(b){ b.map = byId[String(b.id)] || null; });
+      mapReady = true;
+    }
+  } catch(e){}
 }
 async function fetchSummary(){
   var r = await rpc("admin_payment_summary");
@@ -325,6 +348,47 @@ function stBadge(b){
   return '<span class="badge ' + (d <= 7 ? 'wt' : 'ok') + '">' + d + ' gün kaldı</span>';
 }
 
+function mapHtml(b){
+  var id = esc(b.id);
+  if(!mapReady) return '<p class="sub err">Harita için önce yeni SQL kodunu Supabase\'de çalıştır.</p>';
+  var m = b.map || {};
+  var has = m.lat != null && m.lng != null;
+  var form = '<div id="mf_' + id + '" style="display:none">' +
+    '<label class="lb">Konum (koordinat)</label>' +
+    '<input type="text" id="mc_' + id + '" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="38.72250, 35.48750" value="' + (has ? esc(m.lat + ", " + m.lng) : '') + '">' +
+    '<p class="sub">Google Haritalar\'da işletmenin tam yerine parmağını basılı tut. İğne düşünce üstte çıkan koordinatı kopyala ve buraya yapıştır. Apple Haritalar\'dan da olur.</p>' +
+    '<label class="lb">Semt ve tür (sitede görünür)</label>' +
+    '<input type="text" id="ma_' + id + '" maxlength="40" placeholder="Talas · Kafe" value="' + esc(m.area || '') + '">' +
+    '<button class="full" data-act="mapsave" data-id="' + id + '">' + (m.visible ? 'Kaydet' : 'Kaydet ve haritaya ekle') + '</button>' +
+    '<p class="sub">İşletme sahibinden sitede gösterme izni almayı unutma.</p></div>';
+  if(m.visible){
+    return '<div><span class="badge ok">Sitedeki haritada</span> <span class="sub">' + esc(m.area || '') + '</span></div>' +
+      '<div class="acts" style="margin-top:8px"><a class="btn" href="' + esc(gmapsLink(m.lat, m.lng)) + '" target="_blank" rel="noopener">Konumu kontrol et</a>' +
+      '<button class="ghost" data-act="mapopen" data-id="' + id + '">Düzenle</button>' +
+      '<button class="ghost warn" data-act="mapoff" data-id="' + id + '">Haritadan kaldır</button></div>' + form;
+  }
+  return '<p class="sub">Sitemizdeki "Damgalio kullanan işletmeler" haritasında görünmüyor.</p>' +
+    '<div class="acts"><button class="ghost" data-act="mapopen" data-id="' + id + '">Haritaya ekle</button></div>' + form;
+}
+
+async function resetPw(it){
+  if(!confirm(it.name + " sahibinin panel şifresi sıfırlansın mı? Eski şifresi artık çalışmaz.")) return;
+  var box = document.getElementById("pw_" + it.id);
+  if(!box) return;
+  box.innerHTML = '<p class="sub">Sıfırlanıyor...</p>';
+  try {
+    var r = await rpc("admin_reset_owner_password", { p_id: String(it.id) });
+    if(!r || r.status !== "ok"){ box.innerHTML = '<p class="err">Sıfırlanamadı: ' + esc(r && r.status) + '</p>'; return; }
+    var msg = waOwnerMsg(it.name, r.email, r.password);
+    box.innerHTML = '<div class="refhit"><div class="sub">E-posta</div><div class="nm">' + esc(r.email) + '</div>' +
+      '<div class="sub" style="margin-top:8px">Geçici şifre</div><div class="nm" style="font-size:22px;letter-spacing:1px">' + esc(r.password) + '</div>' +
+      '<div class="acts" style="margin-top:10px"><a class="btn" href="' + esc(waShare(msg)) + '" target="_blank" rel="noopener">WhatsApp ile gönder</a>' +
+      '<button class="ghost" id="pwc_' + esc(it.id) + '">Mesajı kopyala</button></div>' +
+      '<p class="sub">Bu şifreyi bir daha göremezsin. Göndermeden bu sayfayı kapatma.</p></div>';
+    document.getElementById("pwc_" + it.id).onclick = function(){ copyText(msg); };
+  } catch(e){ box.innerHTML = '<p class="err">' + esc(e.message) + '</p>'; }
+}
+
 function manageHtml(b){
   var id = esc(b.id);
   if(b.archived){
@@ -359,6 +423,13 @@ function manageHtml(b){
     '<button class="ghost" data-copy="' + esc(panelLink()) + '">Panel linki</button>' +
     '<a class="btn" href="' + esc(waShare(panelMsg(b.name))) + '" target="_blank" rel="noopener">Paneli WhatsApp ile gönder</a>' +
     '</div>' +
+    '<div class="sep"></div><div class="nm">Harita</div>' + mapHtml(b) +
+    '<div class="sep"></div><div class="nm">Panel şifresi</div>' +
+    (b.claimed ?
+      '<p class="sub">İşletme sahibi şifresini unuttuysa geçici bir şifre oluştur ve WhatsApp ile gönder. Girişte yeni şifre belirlemesi istenir.</p>' +
+      '<div class="acts"><button class="ghost warn" data-act="pwreset" data-id="' + id + '">Şifre sıfırla</button></div>' +
+      '<div id="pw_' + id + '"></div>'
+      : '<p class="sub">İşletme sahibi henüz hesabını açmadı.</p>') +
     '<div class="sep"></div>' +
     '<div class="acts"><button class="ghost warn" data-act="arch" data-id="' + id + '">Arşivle</button></div>' +
     '<p class="sub">Arşivle: listeden kalkar, hizmeti kapanır, verileri saklanır.</p>' +
@@ -517,6 +588,20 @@ function onAct(b){
     if(confirm(q)) doRpc("admin_add_payment", { p_id: id, p_kind: kind, p_amount: amt, p_days: days, p_method: method, p_note: note });
   } else if(act === "hist"){
     showHist(id);
+  } else if(act === "mapopen"){
+    var mf = document.getElementById("mf_" + id);
+    if(mf) mf.style.display = mf.style.display === "none" ? "block" : "none";
+  } else if(act === "mapsave"){
+    var ll = parseLatLng(document.getElementById("mc_" + id).value);
+    if(!ll){ alert("Koordinat okunamadı. Örnek: 38.72250, 35.48750"); return; }
+    var area = document.getElementById("ma_" + id).value.trim();
+    doRpc("admin_set_map", { p_id: String(id), p_visible: true, p_lat: ll.lat, p_lng: ll.lng, p_area: area }).then(function(ok){
+      if(ok) alert(it.name + " sitedeki haritaya eklendi.");
+    });
+  } else if(act === "mapoff"){
+    if(confirm(it.name + " sitedeki haritadan kaldırılsın mı?")) doRpc("admin_set_map", { p_id: String(id), p_visible: false });
+  } else if(act === "pwreset"){
+    resetPw(it);
   } else if(act === "ext"){
     if(confirm(it.name + " için " + v + " gün eklensin mi?")) doRpc("admin_extend_business", { p_id: id, p_days: Number(v) });
   } else if(act === "date"){
