@@ -51,6 +51,7 @@ var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
 var app = document.getElementById("app");
 var SK = "dmg_panel_rt";
 var session = null, biz = null, customers = [], pending = [], todayCount = 0, poller = null, tickN = 0, payInfo = {};
+var reviewReady = false;
 
 function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
@@ -293,6 +294,11 @@ async function loadAll(){
   }
   biz = bs[0];
   try { payInfo = (await api("rpc/payment_info", { method: "POST", body: {} })) || {}; } catch(e){ payInfo = {}; }
+  reviewReady = false;
+  try {
+    var g = await api("rpc/owner_get_review_url", { method: "POST", body: { p_id: String(biz.id) } });
+    if(g && g.status === "ok"){ biz.google_review_url = g.url || null; reviewReady = true; }
+  } catch(e){}
   if(isInactive(biz)){ showLocked(); return; }
   customers = await api("customers?select=id,name,phone,stamps,rewards_available,last_stamp_at&business_id=eq." + biz.id + "&order=last_stamp_at.desc.nullslast&limit=500");
   var d = new Date(); d.setHours(0, 0, 0, 0);
@@ -343,6 +349,10 @@ function render(){
     '<label class="lb">WhatsApp numarası (isteğe bağlı)</label><input type="text" id="s_wa" placeholder="0555 123 45 67" inputmode="tel">' +
     '<label class="lb">Web sitesi (isteğe bağlı)</label><input type="text" id="s_site" placeholder="https://ornek.com" inputmode="url" autocapitalize="none">' +
     '<label class="lb">Instagram linki (isteğe bağlı)</label><input type="text" id="s_ig" placeholder="https://instagram.com/kullaniciadi" inputmode="url" autocapitalize="none">' +
+    (reviewReady
+      ? '<label class="lb">Google yorum linki (isteğe bağlı)</label><input type="text" id="s_gr" placeholder="https://g.page/r/.../review" inputmode="url" autocapitalize="none">' +
+        '<p class="sub">Müşteri kartında "Yorum yap" butonu olarak görünür. Google İşletme Profili\'nde "Yorum iste" bölümündeki linki kopyalayıp yapıştır.</p>'
+      : '') +
     '<button class="full" id="s_save">Kaydet</button><p id="s_msg"></p></details>' +
     '<details class="card"><summary>Ödeme bilgisi</summary>' + payHtml() + '<div class="acts">' + contactHtml() + '</div></details>' +
     '<details class="card"><summary>Şifremi değiştir</summary>' + pwFormHtml("chp") + '</details>' +
@@ -358,6 +368,7 @@ function render(){
   document.getElementById("s_wa").value = biz.whatsapp || "";
   document.getElementById("s_site").value = biz.website_url || "";
   document.getElementById("s_ig").value = biz.instagram_url || "";
+  if(reviewReady) document.getElementById("s_gr").value = biz.google_review_url || "";
   document.getElementById("s_save").onclick = saveSettings;
   bindPwForm("chp", null);
   document.getElementById("lo").onclick = logout;
@@ -382,7 +393,10 @@ async function saveSettings(){
   var wa = normWa(document.getElementById("s_wa").value);
   var site = normUrl(document.getElementById("s_site").value);
   var ig = normUrl(document.getElementById("s_ig").value);
+  var grEl = document.getElementById("s_gr");
+  var gr = grEl ? normUrl(grEl.value) : null;
   var msg = document.getElementById("s_msg");
+  if(gr === false){ alert("Google yorum linki geçersiz. Örnek: https://g.page/r/.../review"); return; }
   if(!rt || rt.length > 60){ alert("Ödül metni 1 ile 60 karakter arasında olmalı."); return; }
   if(!nt || nt.length > 80){ alert("Ödül notu 1 ile 80 karakter arasında olmalı."); return; }
   if(!ru || ru.length > 60){ alert("Damga kuralı 1 ile 60 karakter arasında olmalı."); return; }
@@ -408,6 +422,12 @@ async function saveSettings(){
     document.getElementById("s_wa").value = biz.whatsapp || "";
     document.getElementById("s_site").value = biz.website_url || "";
     document.getElementById("s_ig").value = biz.instagram_url || "";
+    if(grEl && (gr || null) !== (biz.google_review_url || null)){
+      var gres = await api("rpc/owner_set_review_url", { method: "POST", body: { p_id: String(biz.id), p_url: gr || "" } });
+      if(!gres || gres.status !== "ok") throw new Error("Google yorum linki kaydedilemedi: " + (gres && gres.status));
+      biz.google_review_url = gres.url || null;
+      grEl.value = biz.google_review_url || "";
+    }
     msg.className = "ok"; msg.textContent = "Kaydedildi.";
   } catch(e){
     msg.className = "err"; msg.textContent = e.message;
