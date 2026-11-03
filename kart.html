@@ -70,6 +70,12 @@ button.gh{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:1
 .dock a.ig{background:#fbe9f1}
 .dock a.wa{background:#e5f5ec}
 .dock a.web{background:var(--acsoft)}
+.rv{display:flex;align-items:center;gap:12px;margin:22px 0 0;padding:14px 14px 14px 16px;border:1.5px solid var(--line);border-radius:18px;background:#fff}
+.rv svg{flex:none;color:var(--ac)}
+.rvt{flex:1;min-width:0;line-height:1.35}
+.rvt b{display:block;font-size:16px}
+.rvt span{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.rva{flex:none;background:var(--ac);color:var(--onac);text-decoration:none;font-weight:800;font-size:15px;padding:12px 14px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -81,6 +87,7 @@ var app = document.getElementById("app");
 var parts = location.pathname.split("/").filter(Boolean);
 var slug = parts[0] === "s" ? decodeURIComponent(parts[1] || "") : "";
 var brand = null, memToken = null, pollTimer = null, cdTimer = null, deadline = 0, S = null, phoneDigits = "";
+var reviewUrl = null;
 
 try {
   for(var i = localStorage.length - 1; i >= 0; i--){
@@ -158,6 +165,13 @@ function dockHtml(){
   if(brand.wa && /^[0-9]{10,15}$/.test(brand.wa)) h += '<a class="wa" href="https://wa.me/' + brand.wa + '" target="_blank" rel="noopener">WhatsApp</a>';
   if(okUrl(brand.site)) h += '<a class="web" href="' + esc(brand.site) + '" target="_blank" rel="noopener">Web sitemiz</a>';
   return h ? '<div class="dock">' + h + '</div>' : "";
+}
+
+function reviewHtml(){
+  if(!okUrl(reviewUrl)) return "";
+  return '<div class="rv"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>' +
+    '<div class="rvt"><b>' + esc(bn()) + ' nasıldı?</b><span>Google\'da birkaç kelime yazarsan bize çok yardımcı olur.</span></div>' +
+    '<a class="rva" href="' + esc(reviewUrl) + '" target="_blank" rel="noopener">Yorum yap</a></div>';
 }
 
 function page(inner){
@@ -293,13 +307,15 @@ function bindCarousel(){
   });
 }
 
-function showCard(r, banner, tone, sec){
+function showCard(r, banner, tone, sec, reviewTop){
   S = r;
   var rw = r.rewards || 0;
   var n = Math.min(rw, 10);
+  var showRv = tone !== "wait" && tone !== "bad";
   var h = '<div class="top"><div class="lab">' + esc(bn()) + '</div><h1>Kartın şu an</h1>' +
     '<p class="subt">' + r.stamps + ' / ' + r.needed + ' damga &middot; ' + rw + ' kullanılmamış bilet</p></div>';
   if(banner) h += '<div class="banner ' + (tone || '') + '">' + esc(banner) + '</div>';
+  if(showRv && reviewTop) h += reviewHtml();
 
   if(n > 0){
     var tks = "", dts = "";
@@ -333,6 +349,7 @@ function showCard(r, banner, tone, sec){
     '<div class="ir"><span class="lab">Damga</span><span class="v">' + esc(brand.rule) + '</span></div>' +
     '<div class="ir"><span class="lab">Son damga</span><span class="v">' + esc(fmtLast(r.last)) + '</span></div>' +
     '<div class="ir"><span class="lab">Kartın</span><span class="v">' + esc(maskPhone(phoneDigits)) + '</span></div></div>';
+  if(showRv && !reviewTop) h += reviewHtml();
 
   if(sec){
     h += '<p class="sub2 c" style="margin-top:22px">Güvenlik için <span id="cd">' + sec + '</span> sn sonra oturum kapanacak.</p>' +
@@ -391,7 +408,7 @@ function startRewardPoll(){
       } else if(S && r.rewards < S.rewards){
         stopPoll();
         setBrand(r.brand);
-        showCard(r, "Ödülün kullanıldı. Afiyet olsun!", "", secFor(r));
+        showCard(r, "Ödülün kullanıldı. Afiyet olsun!", "", secFor(r), true);
         afterCard(r);
       }
     } catch(e){}
@@ -424,7 +441,7 @@ function showResult(r){
   } else {
     banner = "Damga eklendi. Ödüle " + (r.needed - r.stamps) + " damga kaldı.";
   }
-  showCard(r, banner, "", secFor(r));
+  showCard(r, banner, "", secFor(r), !!r.earned);
   afterCard(r);
 }
 
@@ -435,7 +452,14 @@ function showResult(r){
     return;
   }
   page('<div class="top"><p class="subt">Yükleniyor...</p></div>');
-  try { showResult(await rpc("add_stamp", { p_slug: slug })); }
+  var rvP = rpc("public_review_url", { p_slug: slug })
+    .then(function(u){ reviewUrl = okUrl(u) ? u : null; })
+    .catch(function(){});
+  try {
+    var first = await rpc("add_stamp", { p_slug: slug });
+    await rvP;
+    showResult(first);
+  }
   catch(e){ showError(e); }
 })();
 </script>
