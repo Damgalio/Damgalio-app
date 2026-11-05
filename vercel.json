@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/s/:slug", "destination": "/kart.html" }
+    { "source": "/s/:slug", "destination": "/kart.html" },
+    { "source": "/m/:tok", "destination": "/masa.html" }
   ]
 }
