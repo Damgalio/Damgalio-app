@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0d0d">
+<title>Damgalio Kasa</title>
+<style>
+:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto}
+.narrow{max-width:520px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.brand{color:var(--or);font-weight:800}
+h1{font-size:22px;margin:4px 0}
+h2{font-size:18px;margin:0}
+p{color:var(--mut);line-height:1.5;margin:6px 0}
+input[type=text],input[type=email],input[type=password],input[type=number],textarea{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px;font-family:inherit}
+textarea{min-height:120px;resize:vertical}
+button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer}
+button.full{width:100%;margin-top:8px}
+button.ghost,a.btn{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px;border-radius:12px;font-weight:800}
+button.on{color:#111;background:var(--ye);border-color:var(--ye)}
+a.btn{display:inline-block;text-decoration:none}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.nm{font-weight:700}
+.sub{font-size:13px;color:var(--mut)}
+.link{word-break:break-all;font-size:13px;color:var(--ye)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
+.ok{color:#7be0a0}
+.err{color:#ff7b7b}
+details summary{font-weight:700;cursor:pointer}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.hdr h1{font-size:24px}
+.lay{display:grid;grid-template-columns:1fr;gap:12px;align-items:start}
+@media(min-width:900px){.lay{grid-template-columns:1.25fr 1fr}.side{position:sticky;top:16px}}
+.cnt{display:inline-block;min-width:26px;padding:2px 8px;border-radius:999px;background:var(--ye);color:#111;font-size:14px;font-weight:800;text-align:center;margin-left:6px}
+.callx{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#2a2410;border:2px solid var(--ye);border-radius:16px;padding:14px 16px;margin-top:10px;animation:pop .35s ease}
+.callx .no{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.callx .kd{font-size:16px;font-weight:700;color:var(--ye)}
+.callx.hs{border-color:var(--or);background:#2a1a12}
+.callx.hs .kd{color:#ffa27c}
+.callx button{font-size:18px;padding:14px 22px}
+@keyframes pop{0%{transform:scale(.97);opacity:.4}100%{transform:none;opacity:1}}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-top:10px}
+.tb{background:#101010;border:1px solid var(--line);color:#fff;border-radius:14px;padding:16px 6px;text-align:center;font-size:15px}
+.tb b{display:block;font-size:18px}
+.tb span{display:block;font-size:14px;color:var(--mut);font-weight:700;margin-top:4px}
+.tb.has span{color:var(--ye)}
+.tb.call{border-color:var(--ye);background:#2a2410}
+.tb.sel{border-color:var(--or);box-shadow:inset 0 0 0 2px var(--or)}
+.qk{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.qk button{background:#101010;color:#fff;border:1px solid var(--line);font-size:15px;padding:11px 13px}
+.addf{display:grid;grid-template-columns:1fr 64px 92px;gap:6px}
+.addf input{margin:0}
+.tot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.tot b{font-size:26px;color:var(--ye)}
+.empty{color:var(--mut);padding:8px 0}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var app = document.getElementById("app");
+var SK = "dmg_kasa_rt";
+var session = null, biz = null, poller = null;
+var tst = null, selT = null, selI = null, seenCalls = null, actx = null, wl = null;
+var sndOn = false;
+try { sndOn = localStorage.getItem("dmgk_snd") !== "0"; } catch(e){ sndOn = true; }
+
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
+function clearSession(){ session = null; try { localStorage.removeItem(SK); } catch(e){} }
+function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
+function fmtDay(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
+function isInactive(b){ return !!b.suspended || new Date(b.paid_until).getTime() <= Date.now(); }
+function tm(n){
+  n = Number(n || 0);
+  return n.toLocaleString("tr-TR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " ₺";
+}
+function normUrl(v){
+  v = (v || "").trim();
+  if(!v) return null;
+  if(/^http:\/\//i.test(v)) v = "https://" + v.slice(7);
+  else if(!/^https:\/\//i.test(v)) v = "https://" + v;
+  if(v.length > 300 || !/^https:\/\/[^\s"'<>]+$/.test(v)) return false;
+  return v;
+}
+
+async function authCall(grant, body){
+  var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var j = await r.json();
+  if(!r.ok) throw new Error(j.error_description || j.msg || ("Hata " + r.status));
+  return j;
+}
+
+async function api(path, opts, retry){
+  opts = opts || {};
+  var h = { "apikey": SB_KEY, "Authorization": "Bearer " + session.access_token, "Content-Type": "application/json" };
+  var r = await fetch(SB_URL + "/rest/v1/" + path, {
+    method: opts.method || "GET",
+    headers: h,
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if(r.status === 401 && !retry){
+    saveSession(await authCall("refresh_token", { refresh_token: session.refresh_token }));
+    return api(path, opts, true);
+  }
+  var t = await r.text();
+  if(!r.ok){ throw new Error(r.status + " " + t); }
+  return t ? JSON.parse(t) : null;
+}
+function rpc(fn, body){ return api("rpc/" + fn, { method: "POST", body: body }); }
+
+function stopPoll(){ if(poller){ clearInterval(poller); poller = null; } }
+function logout(){
+  stopPoll();
+  document.title = "Damgalio Kasa";
+  clearSession();
+  showLogin("");
+}
+
+function simpleCard(title, html){
+  stopPoll();
+  app.innerHTML = '<div class="narrow"><div class="card"><div class="brand">Damgalio Kasa</div><h1>' + esc(title) + '</h1>' + html +
+    '<div class="acts" style="margin-top:14px"><button class="ghost" id="rl">Yenile</button><button class="ghost" id="lo">Çıkış</button></div></div></div>';
+  document.getElementById("rl").onclick = function(){ start(); };
+  document.getElementById("lo").onclick = logout;
+}
+
+function showLogin(msg){
+  stopPoll();
+  app.innerHTML = '<div class="narrow"><div class="card"><div class="brand">Damgalio</div><h1>Kasa ekranı</h1>' +
+    '<p>Garson çağrıları ve masa hesapları burada. İşletme paneline girdiğin e-posta ve şifreyle giriş yap.</p>' +
+    (msg ? '<p class="err">' + esc(msg) + '</p>' : '') +
+    '<input type="email" id="em" placeholder="E-posta" autocomplete="username">' +
+    '<input type="password" id="pw" placeholder="Şifre" autocomplete="current-password">' +
+    '<button class="full" id="lg">Giriş Yap</button>' +
+    '<p class="sub" style="margin-top:12px">Şifreni unuttuysan <a href="/panel.html" style="color:var(--ye)">işletme panelindeki</a> "Şifremi unuttum" bağlantısını kullan.</p></div></div>';
+  document.getElementById("lg").onclick = login;
+  document.getElementById("pw").onkeydown = function(e){ if(e.key === "Enter") login(); };
+}
+
+function needsNewPw(){
+  var u = session && session.user;
+  return !!(u && u.user_metadata && u.user_metadata.temp_pw);
+}
+
+async function login(){
+  var em = document.getElementById("em").value.trim();
+  var pw = document.getElementById("pw").value;
+  var b = document.getElementById("lg");
+  b.disabled = true; b.textContent = "Giriş yapılıyor...";
+  try { saveSession(await authCall("password", { email: em, password: pw })); }
+  catch(e){ showLogin(e.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : e.message); return; }
+  if(sndOn) unlockAudio();
+  afterAuth();
+}
+
+function afterAuth(){
+  if(needsNewPw()){
+    simpleCard("Önce yeni şifreni belirle", '<p>Geçici şifreyle girdin. <a href="/panel.html" style="color:var(--ye)">İşletme panelini</a> açıp yeni şifreni belirle, sonra kasa ekranına yeni şifrenle gir.</p>');
+    return;
+  }
+  loadAll().catch(function(e){ simpleCard("Bir sorun oluştu", '<p class="err">' + esc(e.message) + '</p>'); });
+}
+
+async function loadAll(){
+  var bs = await api("businesses?select=id,name,paid_until,suspended&order=created_at");
+  if(!bs.length){ simpleCard("İşletme bulunamadı", "<p>Bu hesaba bağlı işletme yok.</p>"); return; }
+  biz = bs[0];
+  if(isInactive(biz)){
+    simpleCard(biz.name, '<p class="err"><b>' + esc(biz.suspended ? "Hesabın durduruldu." : "Hizmet süren " + fmtDay(biz.paid_until) + " tarihinde doldu.") + '</b></p>' +
+      '<p>Kasa ekranı şu an kapalı. Ödeme bilgisi için <a href="/panel.html" style="color:var(--ye)">işletme paneline</a> bak.</p>');
+    return;
+  }
+  var ts;
+  try { ts = await rpc("owner_tables_state", { p_id: String(biz.id) }); }
+  catch(e){ simpleCard("Masa özelliği kapalı", "<p>Bu hesapta masa özelliği henüz açılmamış. Damgalio ile iletişime geç.</p>"); return; }
+  if(!ts || ts.status !== "ok"){ simpleCard("Masa bilgisi alınamadı", '<p class="err">' + esc(ts && ts.status) + '</p>'); return; }
+  seenCalls = null;
+  setTst(ts);
+  render();
+  stopPoll();
+  poller = setInterval(poll, 4000);
+}
+
+async function poll(){
+  if(document.hidden || !biz) return;
+  try {
+    var ts = await rpc("owner_tables_state", { p_id: String(biz.id) });
+    if(!ts || ts.status !== "ok") return;
+    setTst(ts);
+    renderCalls(); renderGrid();
+    if(selT && selI){
+      var t = findT(selT);
+      if(!t){ selT = null; selI = null; renderEdit(); }
+      else if(Number(t.total) !== Number(selI.total) || t.n !== selI.items.length){
+        var busy = document.activeElement && document.activeElement.closest && document.activeElement.closest("#tedit");
+        var typed = (document.getElementById("te_n") || {}).value || (document.getElementById("te_p") || {}).value;
+        if(!busy && !typed){
+          var r = await rpc("owner_table_items", { p_id: String(biz.id), p_table: selT });
+          if(r && r.status === "ok" && selT === r.table_id){ selI = r; renderEdit(); }
+        }
+      }
+    }
+  } catch(e){}
+}
+document.addEventListener("visibilitychange", function(){ if(!document.hidden){ keepAwake(); poll(); } });
+
+function updTitle(){
+  var n = tst ? (tst.calls || []).length : 0;
+  document.title = n ? "(" + n + ") Kasa · Damgalio" : "Kasa · Damgalio";
+}
+function copyText(v, okMsg){
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(v).then(function(){ alert(okMsg); }, function(){ prompt("Kopyala:", v); });
+      return;
+    }
+  } catch(e){}
+  prompt("Kopyala:", v);
+}
+function setTst(ts){
+  var ids = {}, fresh = false;
+  (ts.calls || []).forEach(function(c){ ids[c.id] = 1; if(seenCalls && !seenCalls[c.id]) fresh = true; });
+  seenCalls = ids;
+  tst = ts;
+  if(fresh) alertCall();
+}
+function agoS(at){
+  var now = tst && tst.now ? new Date(tst.now).getTime() : Date.now();
+  var s = Math.max(0, Math.round((now - new Date(at).getTime()) / 1000));
+  return s < 60 ? "az önce" : Math.floor(s / 60) + " dk önce";
+}
+function findT(id){
+  var ts = (tst && tst.tables) || [];
+  for(var i = 0; i < ts.length; i++){ if(ts[i].id === id) return ts[i]; }
+  return null;
+}
+
+/* sesli uyarı + ekranı açık tutma */
+function renderSnd(){
+  var b = document.getElementById("snd");
+  if(!b) return;
+  b.textContent = "Sesli uyarı: " + (sndOn ? "Açık" : "Kapalı");
+  b.className = "ghost" + (sndOn ? " on" : "");
+  var h = document.getElementById("sndh");
+  if(h) h.style.display = sndOn && (!actx || actx.state !== "running") ? "block" : "none";
+}
+async function keepAwake(){
+  try {
+    if(sndOn && !wl && navigator.wakeLock && !document.hidden){
+      wl = await navigator.wakeLock.request("screen");
+      wl.addEventListener("release", function(){ wl = null; });
+    }
+  } catch(e){}
+}
+function unlockAudio(){
+  try {
+    if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(!AC) return; actx = new AC(); }
+    if(actx.state !== "running") actx.resume();
+  } catch(e){}
+  keepAwake();
+  setTimeout(renderSnd, 250);
+}
+function beep(){
+  if(!sndOn || !actx || actx.state !== "running") return;
+  var t = actx.currentTime;
+  [0, 0.22, 0.6, 0.82].forEach(function(d, k){
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine"; o.frequency.value = k % 2 ? 1175 : 880;
+    g.gain.setValueAtTime(0.0001, t + d);
+    g.gain.exponentialRampToValueAtTime(0.45, t + d + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.32);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t + d); o.stop(t + d + 0.36);
+  });
+}
+function alertCall(){
+  beep();
+  try { if(navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch(e){}
+}
+document.addEventListener("click", function(){ if(sndOn) unlockAudio(); }, true);
+document.addEventListener("touchend", function(){ if(sndOn) unlockAudio(); }, true);
+
+/* ekran */
+function render(){
+  var none = !(tst.tables || []).length;
+  app.innerHTML =
+    '<div class="hdr"><div><div class="brand">Damgalio Kasa</div><h1>' + esc(biz.name) + '</h1></div>' +
+    '<div class="acts"><button class="ghost" id="snd"></button><a class="btn" href="/panel.html" target="_blank" rel="noopener">İşletme paneli</a><button class="ghost" id="lo">Çıkış</button></div></div>' +
+    '<div class="card" id="sndh" style="display:none;border-color:var(--ye)"><p style="margin:0;color:#fff"><b>Sesin çalması için ekrana bir kez dokun.</b> Telefonlar sesi ancak bir dokunuştan sonra açıyor.</p></div>' +
+    '<div class="lay"><div>' +
+      '<div class="card"><h2>Çağrılar<span class="cnt" id="ccnt">0</span></h2><div id="tcalls"></div></div>' +
+      '<div class="card"><h2>Masalar</h2><div class="tgrid" id="tgrid"></div>' +
+        '<p class="sub" id="tnone" style="display:none">Başlamak için aşağıdaki <b>Masa ayarlarından</b> masa sayını gir.</p></div>' +
+      '<div class="card"><details' + (none ? ' open' : '') + '><summary>Masa ayarları</summary>' +
+        '<label class="lb">Masa sayısı</label><input type="number" id="t_n" min="0" max="100" inputmode="numeric">' +
+        '<label class="lb">Wi-Fi ağ adı (isteğe bağlı)</label><input type="text" id="t_wn" maxlength="64" autocapitalize="none" autocomplete="off">' +
+        '<label class="lb">Wi-Fi şifresi (isteğe bağlı)</label><input type="text" id="t_wp" maxlength="64" autocapitalize="none" autocomplete="off">' +
+        '<label class="lb">Menü linki (isteğe bağlı)</label><input type="text" id="t_mn" placeholder="https://..." inputmode="url" autocapitalize="none">' +
+        '<label class="lb">Hızlı ürünler (her satıra bir ürün: Ürün = fiyat)</label>' +
+        '<textarea id="t_q" placeholder="Latte = 120&#10;Türk kahvesi = 80&#10;Cheesecake = 150"></textarea>' +
+        '<p class="sub">Hesaba eklerken bu ürünlere tek dokunuşla eklersin.</p>' +
+        '<button class="full" id="t_save">Kaydet</button><p id="t_msg"></p></details></div>' +
+      '<div class="card"><details><summary>Masa linkleri (NFC ve QR için)</summary><div id="tlinks"></div></details></div>' +
+    '</div><div class="side" id="tedit"></div></div>';
+  var s = tst.settings || {};
+  document.getElementById("t_n").value = (tst.tables || []).length;
+  document.getElementById("t_wn").value = s.wifi_name || "";
+  document.getElementById("t_wp").value = s.wifi_pass || "";
+  document.getElementById("t_mn").value = s.menu_url || "";
+  document.getElementById("t_q").value = (s.quick || []).map(function(q){ return q.n + " = " + String(q.p).replace(".", ","); }).join("\n");
+  document.getElementById("t_save").onclick = saveTables;
+  document.getElementById("lo").onclick = logout;
+  document.getElementById("snd").onclick = function(){
+    sndOn = !sndOn;
+    try { localStorage.setItem("dmgk_snd", sndOn ? "1" : "0"); } catch(e){}
+    if(sndOn){ unlockAudio(); setTimeout(beep, 300); }
+    else if(wl){ try { wl.release(); } catch(e){} wl = null; }
+    renderSnd();
+  };
+  renderSnd(); renderCalls(); renderGrid(); renderEdit(); renderLinks();
+  if(sndOn) keepAwake();
+}
+
+function renderCalls(){
+  var box = document.getElementById("tcalls");
+  if(!box) return;
+  updTitle();
+  var cs = tst.calls || [];
+  document.getElementById("ccnt").textContent = cs.length;
+  if(!cs.length){ box.innerHTML = '<p class="empty">Şu an bekleyen çağrı yok.</p>'; return; }
+  box.innerHTML = cs.map(function(c){
+    var hs = c.kind === "hesap";
+    return '<div class="callx' + (hs ? ' hs' : '') + '"><div><div class="no">Masa ' + esc(c.no) + '</div>' +
+      '<div class="kd">' + (hs ? "Hesap istiyor" : "Garson çağırıyor") + '</div><div class="sub">' + esc(agoS(c.at)) + '</div></div>' +
+      '<div class="acts">' + (hs ? '<button class="ghost" data-ot="' + esc(String(c.table_id)) + '">Hesabı aç</button>' : '') +
+      '<button data-cd="' + esc(String(c.id)) + '">Tamam</button></div></div>';
+  }).join("");
+  box.querySelectorAll("button[data-cd]").forEach(function(b){
+    b.onclick = async function(){
+      b.disabled = true;
+      try {
+        await rpc("owner_call_done", { p_id: String(biz.id), p_call: Number(b.getAttribute("data-cd")) });
+        await poll();
+      } catch(e){ alert(e.message); b.disabled = false; }
+    };
+  });
+  box.querySelectorAll("button[data-ot]").forEach(function(b){
+    b.onclick = function(){ var id = Number(b.getAttribute("data-ot")); if(selT !== id) openTable(id); else scrollEdit(); };
+  });
+}
+
+function renderGrid(){
+  var g = document.getElementById("tgrid");
+  if(!g) return;
+  var ts = tst.tables || [], calls = {};
+  (tst.calls || []).forEach(function(c){ calls[c.table_id] = 1; });
+  document.getElementById("tnone").style.display = ts.length ? "none" : "block";
+  g.style.display = ts.length ? "grid" : "none";
+  g.innerHTML = ts.map(function(t){
+    var tot = Number(t.total) || 0;
+    var cl = "tb" + (tot > 0 ? " has" : "") + (calls[t.id] ? " call" : "") + (selT === t.id ? " sel" : "");
+    return '<button class="' + cl + '" data-t="' + t.id + '"><b>Masa ' + t.no + '</b><span>' + (tot > 0 ? esc(tm(tot)) : "Boş") + '</span></button>';
+  }).join("");
+  g.querySelectorAll("button[data-t]").forEach(function(b){
+    b.onclick = function(){ openTable(Number(b.getAttribute("data-t"))); };
+  });
+}
+
+function scrollEdit(){
+  var box = document.getElementById("tedit");
+  if(box && box.scrollIntoView && window.innerWidth < 900) box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function openTable(id){
+  if(selT === id){ selT = null; selI = null; renderGrid(); renderEdit(); return; }
+  selT = id; selI = null;
+  renderGrid(); renderEdit(); scrollEdit();
+  try {
+    var r = await rpc("owner_table_items", { p_id: String(biz.id), p_table: id });
+    if(selT !== id) return;
+    if(!r || r.status !== "ok"){ selT = null; renderGrid(); renderEdit(); alert("Masa açılamadı."); return; }
+    selI = r;
+    renderEdit();
+  } catch(e){ alert(e.message); }
+}
+
+function renderEdit(){
+  var box = document.getElementById("tedit");
+  if(!box) return;
+  var t = selT ? findT(selT) : null;
+  if(!t){
+    selT = null; selI = null;
+    box.innerHTML = (tst.tables || []).length ? '<div class="card"><p style="margin:0">Hesabını görmek ya da ürün eklemek için bir masaya dokun.</p></div>' : '';
+    return;
+  }
+  if(!selI){ box.innerHTML = '<div class="card"><p>Masa ' + t.no + ' yükleniyor...</p></div>'; return; }
+  var q = (tst.settings && tst.settings.quick) || [];
+  var h = '<div class="card" style="border-color:var(--or)"><div class="hdr" style="margin-bottom:4px"><h2>Masa ' + t.no + ' hesabı</h2><button class="ghost" id="te_x">Kapat</button></div>';
+  h += selI.items.length ? selI.items.map(function(i){
+    return '<div class="row"><div><div class="nm">' + esc(i.qty) + ' × ' + esc(i.name) + '</div><div class="sub">' + esc(tm(i.price)) + ' / adet</div></div>' +
+      '<div class="acts"><b>' + esc(tm(i.qty * i.price)) + '</b><button class="ghost" data-di="' + i.id + '">Sil</button></div></div>';
+  }).join("") : '<p class="empty">Bu masanın hesabı boş.</p>';
+  h += '<div class="tot"><span class="nm">Toplam</span><b>' + esc(tm(selI.total)) + '</b></div>';
+  if(q.length){
+    h += '<span class="lb">Hızlı ekle</span><div class="qk">' + q.map(function(x, k){
+      return '<button data-qk="' + k + '">' + esc(x.n) + ' &middot; ' + esc(tm(x.p)) + '</button>';
+    }).join("") + '</div>';
+  }
+  h += '<span class="lb">Elle ekle (ürün, adet, birim fiyat)</span><div class="addf"><input type="text" id="te_n" maxlength="60" placeholder="Ürün">' +
+    '<input type="number" id="te_q" min="1" max="99" value="1" inputmode="numeric"><input type="text" id="te_p" placeholder="Fiyat" inputmode="decimal"></div>' +
+    '<button class="full" id="te_add">Hesaba ekle</button>' +
+    '<div class="acts" style="margin-top:12px"><button class="ghost" id="te_clr">Hesabı kapat (sıfırla)</button>' +
+    '<a class="btn" href="/m/' + esc(t.token) + '" target="_blank" rel="noopener">Müşteri ekranı</a></div></div>';
+  box.innerHTML = h;
+  document.getElementById("te_x").onclick = function(){ selT = null; selI = null; renderGrid(); renderEdit(); };
+  box.querySelectorAll("button[data-di]").forEach(function(b){
+    b.onclick = function(){ tItem("owner_item_del", { p_id: String(biz.id), p_item: Number(b.getAttribute("data-di")) }, b); };
+  });
+  box.querySelectorAll("button[data-qk]").forEach(function(b){
+    b.onclick = function(){
+      var x = q[Number(b.getAttribute("data-qk"))];
+      tItem("owner_item_add", { p_id: String(biz.id), p_table: t.id, p_name: x.n, p_qty: 1, p_price: x.p }, b);
+    };
+  });
+  document.getElementById("te_add").onclick = function(){
+    var n = document.getElementById("te_n").value.trim();
+    var qt = parseInt(document.getElementById("te_q").value, 10);
+    var p = parsePrice(document.getElementById("te_p").value);
+    if(!n){ alert("Ürün adını yaz."); return; }
+    if(!(qt >= 1 && qt <= 99)){ alert("Adet 1 ile 99 arasında olmalı."); return; }
+    if(p === null){ alert("Fiyatı yaz. Örnek: 120 ya da 85,50"); return; }
+    tItem("owner_item_add", { p_id: String(biz.id), p_table: t.id, p_name: n, p_qty: qt, p_price: p }, this);
+  };
+  document.getElementById("te_clr").onclick = function(){
+    if(!confirm("Masa " + t.no + " hesabı sıfırlansın mı? Bunu ödeme alındıktan sonra yap.")) return;
+    tItem("owner_table_clear", { p_id: String(biz.id), p_table: t.id }, this, true);
+  };
+}
+
+function parsePrice(v){
+  v = String(v || "").trim().replace(/\s|₺|tl/gi, "").replace(",", ".");
+  if(!/^[0-9]{1,6}(\.[0-9]{1,2})?$/.test(v)) return null;
+  var n = Number(v);
+  return n >= 0 && n <= 100000 ? n : null;
+}
+
+async function tItem(fn, body, btn, refresh){
+  if(btn) btn.disabled = true;
+  try {
+    var r = await rpc(fn, body);
+    if(!r || r.status !== "ok"){ alert("İşlem yapılamadı: " + (r && r.status)); if(btn) btn.disabled = false; return; }
+    selI = r;
+    var t = findT(r.table_id);
+    if(t){ t.total = r.total; t.n = r.items.length; }
+    renderGrid(); renderEdit();
+    if(refresh) await poll();
+  } catch(e){ alert(e.message); if(btn) btn.disabled = false; }
+}
+
+function parseQuick(text){
+  var out = [], lines = String(text || "").split("\n");
+  for(var i = 0; i < lines.length; i++){
+    var l = lines[i].trim();
+    if(!l) continue;
+    var m = l.match(/^(.+?)\s*[=:]?\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s*(?:₺|tl)?$/i);
+    if(!m){ alert((i + 1) + ". satır anlaşılmadı: \"" + l + "\"\nÖrnek: Latte = 120"); return false; }
+    var n = m[1].replace(/[=:]\s*$/, "").trim(), p = Number(m[2].replace(",", "."));
+    if(!n || n.length > 40){ alert((i + 1) + ". satırdaki ürün adı 1 ile 40 karakter arasında olmalı."); return false; }
+    if(!(p >= 0 && p <= 100000)){ alert((i + 1) + ". satırdaki fiyat geçersiz."); return false; }
+    out.push({ n: n, p: p });
+  }
+  if(out.length > 40){ alert("En fazla 40 hızlı ürün ekleyebilirsin."); return false; }
+  return out;
+}
+
+async function saveTables(){
+  var n = parseInt(document.getElementById("t_n").value, 10);
+  var wn = document.getElementById("t_wn").value.trim();
+  var wp = document.getElementById("t_wp").value.trim();
+  var mn = normUrl(document.getElementById("t_mn").value);
+  var msg = document.getElementById("t_msg");
+  if(!(n >= 0 && n <= 100)){ alert("Masa sayısı 0 ile 100 arasında olmalı."); return; }
+  if(mn === false){ alert("Menü linki geçersiz. Örnek: https://ornek.com/menu"); return; }
+  var q = parseQuick(document.getElementById("t_q").value);
+  if(q === false) return;
+  var before = (tst.tables || []).length;
+  if(n < before && !confirm((before - n) + " masa kapatılacak. Kapanan masaların linkleri çalışmaz. Devam edilsin mi?")) return;
+  var btn = document.getElementById("t_save");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+  try {
+    var r = await rpc("owner_tables_save", { p_id: String(biz.id), p_count: n, p_wifi_name: wn, p_wifi_pass: wp, p_menu_url: mn || "", p_quick: q });
+    var errs = { bad_count: "Masa sayısı geçersiz.", bad_wifi: "Wi-Fi bilgisi çok uzun.", bad_url: "Menü linki geçersiz.", bad_quick: "Hızlı ürün listesi geçersiz." };
+    if(!r || r.status !== "ok") throw new Error(errs[r && r.status] || ("Kaydedilemedi: " + (r && r.status)));
+    setTst(r);
+    renderCalls(); renderGrid(); renderEdit(); renderLinks();
+    msg.className = "ok"; msg.textContent = "Kaydedildi.";
+  } catch(e){ msg.className = "err"; msg.textContent = e.message; }
+  btn.disabled = false; btn.textContent = "Kaydet";
+}
+
+function renderLinks(){
+  var box = document.getElementById("tlinks");
+  if(!box) return;
+  var ts = tst.tables || [];
+  if(!ts.length){ box.innerHTML = '<p class="sub">Önce masa sayısını gir.</p>'; return; }
+  var base = location.origin + "/m/";
+  box.innerHTML = '<p class="sub">Her masanın NFC etiketine ve QR koduna kendi linki yazılır. Linkler değişmez.</p>' +
+    ts.map(function(t){
+      return '<div class="row"><div><div class="nm">Masa ' + t.no + '</div><div class="link">' + esc(base + t.token) + '</div></div>' +
+        '<button class="ghost" data-cl="' + esc(base + t.token) + '">Kopyala</button></div>';
+    }).join("") + '<button class="full" id="t_all">Tüm linkleri kopyala</button>';
+  box.querySelectorAll("button[data-cl]").forEach(function(b){
+    b.onclick = function(){ copyText(b.getAttribute("data-cl"), "Link kopyalandı."); };
+  });
+  document.getElementById("t_all").onclick = function(){
+    copyText(biz.name + " masa linkleri\n" + ts.map(function(t){ return "Masa " + t.no + ": " + base + t.token; }).join("\n"), "Tüm linkler kopyalandı.");
+  };
+}
+
+async function start(){
+  var rt = savedRefresh();
+  if(!rt){ showLogin(""); return; }
+  app.innerHTML = '<p>Yükleniyor...</p>';
+  try { saveSession(await authCall("refresh_token", { refresh_token: rt })); }
+  catch(e){ clearSession(); showLogin("Oturum süresi doldu, tekrar giriş yap."); return; }
+  afterAuth();
+}
+start();
+</script>
+</body>
+</html>
