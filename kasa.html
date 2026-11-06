@@ -2,87 +2,2155 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kasa">
+<meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1715" media="(prefers-color-scheme: dark)">
 <title>Damgalio Kasa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0d0d;--card:#181818;--line:#2a2a2a;--mut:#a8a8a8;--or:#ee6a37;--ye:#f7d44c}
-*{box-sizing:border-box}
-body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1100px;margin:0 auto}
-.narrow{max-width:520px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
-.brand{color:var(--or);font-weight:800}
-h1{font-size:22px;margin:4px 0}
-h2{font-size:18px;margin:0}
-p{color:var(--mut);line-height:1.5;margin:6px 0}
-input[type=text],input[type=email],input[type=password],input[type=number],textarea{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff;font-size:16px;font-family:inherit}
-textarea{min-height:120px;resize:vertical}
-button{padding:12px 16px;border:0;border-radius:12px;background:var(--or);color:#111;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer}
-button.full{width:100%;margin-top:8px}
-button.ghost,a.btn{background:transparent;color:var(--mut);border:1px solid var(--line);padding:10px 14px;font-size:14px;border-radius:12px;font-weight:800}
-button.on{color:#111;background:var(--ye);border-color:var(--ye)}
-a.btn{display:inline-block;text-decoration:none}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
-.row:first-child{border-top:0}
-.nm{font-weight:700}
-.sub{font-size:13px;color:var(--mut)}
-.link{word-break:break-all;font-size:13px;color:var(--ye)}
-.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.lb{display:block;font-size:13px;color:var(--mut);margin-top:12px}
-.ok{color:#7be0a0}
-.err{color:#ff7b7b}
-details summary{font-weight:700;cursor:pointer}
-.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.hdr h1{font-size:24px}
-.lay{display:grid;grid-template-columns:1fr;gap:12px;align-items:start}
-@media(min-width:900px){.lay{grid-template-columns:1.25fr 1fr}.side{position:sticky;top:16px}}
-.cnt{display:inline-block;min-width:26px;padding:2px 8px;border-radius:999px;background:var(--ye);color:#111;font-size:14px;font-weight:800;text-align:center;margin-left:6px}
-.callx{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#2a2410;border:2px solid var(--ye);border-radius:16px;padding:14px 16px;margin-top:10px;animation:pop .35s ease}
-.callx .no{font-size:26px;font-weight:800;letter-spacing:-.5px}
-.callx .kd{font-size:16px;font-weight:700;color:var(--ye)}
-.callx.hs{border-color:var(--or);background:#2a1a12}
-.callx.hs .kd{color:#ffa27c}
-.callx button{font-size:18px;padding:14px 22px}
-@keyframes pop{0%{transform:scale(.97);opacity:.4}100%{transform:none;opacity:1}}
-.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-top:10px}
-.tb{background:#101010;border:1px solid var(--line);color:#fff;border-radius:14px;padding:16px 6px;text-align:center;font-size:15px}
-.tb b{display:block;font-size:18px}
-.tb span{display:block;font-size:14px;color:var(--mut);font-weight:700;margin-top:4px}
-.tb.has span{color:var(--ye)}
-.tb.call{border-color:var(--ye);background:#2a2410}
-.tb.sel{border-color:var(--or);box-shadow:inset 0 0 0 2px var(--or)}
-.qk{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.qk button{background:#101010;color:#fff;border:1px solid var(--line);font-size:15px;padding:11px 13px}
-.addf{display:grid;grid-template-columns:1fr 64px 92px;gap:6px}
-.addf input{margin:0}
-.tot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
-.tot b{font-size:26px;color:var(--ye)}
-.empty{color:var(--mut);padding:8px 0}
+:root {
+  --bg: #F6F1E7;
+  --bg-2: #EFE8DA;
+  --surface: #FFFDF8;
+  --surface-2: #FBF6EC;
+  --ink: #12231F;
+  --ink-2: #3E504C;
+  --muted: #74837F;
+  --line: #E4DACA;
+  --line-2: #D6CAB6;
+  --accent: #E8612C;
+  --accent-ink: #B8461A;
+  --accent-soft: #FBE3D6;
+  --on-accent: #FFFFFF;
+  --teal: #24504C;
+  --teal-soft: #DDEAE6;
+  --sun: #F2C94C;
+  --sun-soft: #FCF1CC;
+  --good: #1E7F55;
+  --good-soft: #DCF1E6;
+  --warn: #A86B00;
+  --warn-soft: #FBEFD2;
+  --bad: #B93A26;
+  --bad-soft: #F9E0DA;
+  --shadow: 0 1px 0 rgba(18, 35, 31, .04), 0 10px 30px -18px rgba(18, 35, 31, .35);
+  --shadow-lg: 0 30px 80px -30px rgba(18, 35, 31, .45);
+  --scrim: rgba(18, 35, 31, .38);
+  --chart-grid: #E9E1D2;
+  --seg-on: #FFFFFF;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r-sm: 10px;
+  --r: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --tab-h: 64px;
+  --hdr-h: 60px;
+  color-scheme: light;
+}
+[hidden] {
+  display: none !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1715;
+    --bg-2: #10201D;
+    --surface: #14231F;
+    --surface-2: #182A26;
+    --ink: #F1ECE2;
+    --ink-2: #C3CDC9;
+    --muted: #8D9C98;
+    --line: #243631;
+    --line-2: #2F443E;
+    --accent: #F0743F;
+    --accent-ink: #F59A70;
+    --accent-soft: #3A2117;
+    --on-accent: #1A0E08;
+    --teal: #8FC3B8;
+    --teal-soft: #1C3530;
+    --sun: #F2CF5B;
+    --sun-soft: #3A3115;
+    --good: #5BCB95;
+    --good-soft: #15352A;
+    --warn: #F0BE55;
+    --warn-soft: #3A2E12;
+    --bad: #F08A76;
+    --bad-soft: #3D1C17;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .25), 0 12px 30px -18px rgba(0, 0, 0, .7);
+    --shadow-lg: 0 30px 80px -30px rgba(0, 0, 0, .8);
+    --scrim: rgba(0, 0, 0, .55);
+    --chart-grid: #22342F;
+    --seg-on: #2B423C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1715;
+  --bg-2: #10201D;
+  --surface: #14231F;
+  --surface-2: #182A26;
+  --ink: #F1ECE2;
+  --ink-2: #C3CDC9;
+  --muted: #8D9C98;
+  --line: #243631;
+  --line-2: #2F443E;
+  --accent: #F0743F;
+  --accent-ink: #F59A70;
+  --accent-soft: #3A2117;
+  --on-accent: #1A0E08;
+  --teal: #8FC3B8;
+  --teal-soft: #1C3530;
+  --sun: #F2CF5B;
+  --sun-soft: #3A3115;
+  --good: #5BCB95;
+  --good-soft: #15352A;
+  --warn: #F0BE55;
+  --warn-soft: #3A2E12;
+  --bad: #F08A76;
+  --bad-soft: #3D1C17;
+  --shadow: 0 1px 0 rgba(0, 0, 0, .25), 0 12px 30px -18px rgba(0, 0, 0, .7);
+  --shadow-lg: 0 30px 80px -30px rgba(0, 0, 0, .8);
+  --scrim: rgba(0, 0, 0, .55);
+  --chart-grid: #22342F;
+  --seg-on: #2B423C;
+  color-scheme: dark;
+}
+/* Damgalio Kasa
+   Düzen: üstte durum çubuğu ve çağrı şeridi; masa ızgarası; masa seçilince ürünler + adisyon.
+   Telefonda adisyon alttan açılan çekmecede, tablette sağda sabit. */
+:root {
+  --top-h: 64px;
+  --tile: 132px;
+}
+[hidden] {
+  display: none !important;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 1.12;
+  letter-spacing: -.01em;
+}
+h1 {
+  font-size: 28px;
+  font-weight: 800;
+}
+h2 {
+  font-size: 20px;
+  font-weight: 800;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+p {
+  margin: 0;
+}
+a {
+  color: var(--accent-ink);
+}
+svg {
+  flex: none;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+.mono {
+  font-family: var(--font-mono);
+}
+.muted {
+  color: var(--muted);
+}
+.ink2 {
+  color: var(--ink-2);
+}
+.small {
+  font-size: 13px;
+}
+.tiny {
+  font-size: 11.5px;
+}
+.ell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.row.wrap {
+  flex-wrap: wrap;
+}
+.between {
+  justify-content: space-between;
+}
+.stack {
+  display: grid;
+  gap: 12px;
+}
+.eyebrow {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+/* ---------- düğmeler ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .08s ease, background .15s ease, opacity .15s ease;
+  user-select: none;
+}
+.btn:active:not(:disabled) {
+  transform: scale(.97);
+}
+.btn:disabled {
+  opacity: .45;
+  cursor: default;
+}
+.btn svg {
+  width: 19px;
+  height: 19px;
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+.btn.soft {
+  background: var(--bg-2);
+  color: var(--ink);
+}
+.btn.dark {
+  background: var(--ink);
+  color: var(--surface);
+}
+.btn.good {
+  background: var(--good);
+  color: #fff;
+}
+.btn.danger {
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+.btn.sm {
+  min-height: 38px;
+  padding: 7px 13px;
+  font-size: 14px;
+  border-radius: 12px;
+}
+.btn.xs {
+  min-height: 32px;
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+.btn.xl {
+  min-height: 58px;
+  padding: 14px 22px;
+  font-size: 18px;
+  border-radius: 18px;
+}
+.btn.block {
+  width: 100%;
+}
+.icon-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--ink);
+  flex: none;
+}
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.icon-btn.sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+}
+.icon-btn.sm svg {
+  width: 17px;
+  height: 17px;
+}
+.icon-btn.on {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+.icon-btn:disabled {
+  opacity: .4;
+}
+.icon-btn .dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 18px;
+}
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- form ---------- */
+.field {
+  display: grid;
+  gap: 6px;
+}
+.field label,
+.lbl {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.input,
+.textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.input:focus,
+.textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.input.bad {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bad) 18%, transparent);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--muted);
+}
+.hint {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.seg {
+  display: inline-flex;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 14px;
+  background: var(--bg-2);
+}
+.seg button {
+  min-height: 38px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--seg-on);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  flex: none;
+}
+.switch input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: var(--line-2);
+  transition: background .2s ease;
+  pointer-events: none;
+}
+.switch span::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  transition: transform .2s ease;
+}
+.switch input:checked + span {
+  background: var(--good);
+}
+.switch input:checked + span::after {
+  transform: translateX(20px);
+}
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.stepper button {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 700;
+}
+.stepper button:active {
+  background: var(--bg-2);
+}
+.stepper input {
+  width: 58px;
+  height: 46px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: transparent;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 7px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.chip b {
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--ink);
+  font-size: 12px;
+  text-align: center;
+}
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.chip[aria-pressed="true"] b {
+  background: color-mix(in srgb, var(--surface) 20%, transparent);
+  color: var(--surface);
+}
+.chip.hot b {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.card {
+  padding: 18px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 28px 12px;
+  color: var(--muted);
+  text-align: center;
+}
+.empty svg {
+  width: 42px;
+  height: 42px;
+  color: var(--line-2);
+}
+.empty b {
+  color: var(--ink);
+  font-size: 15px;
+}
+.form-msg {
+  font-size: 14px;
+  font-weight: 600;
+}
+.form-msg.err {
+  color: var(--bad);
+}
+.form-msg.ok {
+  color: var(--good);
+}
+
+/* ---------- giriş / mesaj ekranları ---------- */
+.gate {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: max(24px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.gate-box {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 18px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+}
+.brand .logo {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.brand .logo svg {
+  width: 21px;
+  height: 21px;
+}
+.brand small {
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+.gate-card {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.gate .demo-go {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+.gate .demo-go svg {
+  width: 18px;
+  height: 18px;
+}
+.boot {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+.spin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px dashed var(--accent);
+  animation: rot 1.2s linear infinite;
+}
+.spin.sm {
+  width: 22px;
+  height: 22px;
+  border-width: 3px;
+}
+@keyframes rot {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- üst çubuk ---------- */
+.demo-bar {
+  padding: 8px max(16px, env(safe-area-inset-left, 0px));
+  background: var(--teal);
+  color: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+.demo-bar a {
+  color: inherit;
+  font-weight: 800;
+}
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(1.3) blur(14px);
+  backdrop-filter: saturate(1.3) blur(14px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.top-in {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--top-h);
+  padding: 0 max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px));
+}
+.top .brand {
+  min-width: 0;
+}
+.top .brand .ttl {
+  display: grid;
+  min-width: 0;
+  line-height: 1.15;
+}
+.top .brand .ttl b {
+  font-size: 16px;
+}
+.top .brand .ttl span {
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+}
+.clock {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.sum-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+}
+.sum-pill svg {
+  width: 18px;
+  height: 18px;
+  color: var(--good);
+}
+.sum-pill .lbl {
+  color: var(--muted);
+  font-size: 12px;
+}
+.sum-pill b {
+  font-family: var(--font-display);
+  font-size: 17px;
+  white-space: nowrap;
+}
+.net {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: var(--bad-soft);
+  color: var(--bad);
+  font-size: 12px;
+  font-weight: 800;
+}
+.net svg {
+  width: 15px;
+  height: 15px;
+}
+.snd-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px max(14px, env(safe-area-inset-left, 0px));
+  background: var(--sun-soft);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+.snd-hint svg {
+  width: 18px;
+  height: 18px;
+  color: var(--warn);
+}
+
+/* ---------- çağrı şeridi ---------- */
+.calls {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 12px max(14px, env(safe-area-inset-left, 0px));
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.calls::-webkit-scrollbar {
+  display: none;
+}
+.call {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 270px;
+  padding: 10px 10px 10px 12px;
+  border-radius: 18px;
+  border: 2px solid var(--sun);
+  background: var(--sun-soft);
+  animation: popIn .3s ease both;
+}
+.call.hesap {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.call.late {
+  animation: popIn .3s ease both, callPulse 1.6s ease-in-out infinite;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes callPulse {
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent); }
+}
+.call-no {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  flex: none;
+}
+.call .grow {
+  display: grid;
+  line-height: 1.25;
+}
+.call .grow b {
+  font-size: 15px;
+}
+.call .grow span {
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.call .btn {
+  min-height: 44px;
+}
+
+/* ---------- ana alan ---------- */
+.main {
+  padding: 16px max(14px, env(safe-area-inset-right, 0px)) calc(110px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.tv-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.tv-stats {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: var(--ink-2);
+  font-size: 13.5px;
+}
+.tv-stats b {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 16px;
+}
+
+/* ---------- masa ızgarası ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--tile), 1fr));
+  gap: 12px;
+}
+.tile {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+  min-height: 118px;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  transition: transform .1s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.tile:hover {
+  box-shadow: var(--shadow);
+}
+.tile:active {
+  transform: scale(.97);
+}
+.tile .t-no {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: .9;
+}
+.tile .t-no small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+.tile .t-amt {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+}
+.tile .t-sub {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.tile.free {
+  border-style: dashed;
+  border-color: var(--line-2);
+  background: transparent;
+}
+.tile.free .t-no {
+  color: var(--muted);
+}
+.tile.open {
+  border-color: color-mix(in srgb, var(--teal) 55%, var(--line));
+  background: color-mix(in srgb, var(--teal-soft) 55%, var(--surface));
+}
+.tile.open .t-amt {
+  color: var(--teal);
+}
+.tile.calling {
+  border: 2px solid var(--sun);
+  background: var(--sun-soft);
+  animation: tilePulse 1.6s ease-in-out infinite;
+}
+.tile.calling.hesap {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+@keyframes tilePulse {
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--sun) 35%, transparent); }
+}
+.tile .t-bell {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 800;
+}
+.tile .t-bell svg {
+  width: 13px;
+  height: 13px;
+}
+.tiles-empty {
+  grid-column: 1 / -1;
+}
+.jump {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  z-index: 90;
+  transform: translate(-50%, -50%);
+  padding: 18px 28px;
+  border-radius: 22px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 800;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+
+/* ---------- masa ekranı ---------- */
+.tbl-view {
+  display: grid;
+  gap: 16px;
+}
+.tv-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tv-bar .back {
+  padding-left: 10px;
+}
+.tv-bar .back svg {
+  transform: rotate(180deg);
+}
+.tv-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.tv-title h1 {
+  font-size: 30px;
+}
+.tbl-switch {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.tbl-switch::-webkit-scrollbar {
+  display: none;
+}
+.tbl-switch button {
+  flex: none;
+  min-width: 44px;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+.tbl-switch button.open {
+  border-color: color-mix(in srgb, var(--teal) 55%, var(--line));
+  color: var(--teal);
+}
+.tbl-switch button.calling {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.tbl-switch button[aria-current="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.call-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--sun);
+  background: var(--sun-soft);
+  font-weight: 700;
+}
+.call-banner.hesap {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.call-banner svg {
+  width: 20px;
+  height: 20px;
+}
+.pos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.pos > *,
+.tbl-view > * {
+  min-width: 0;
+}
+.tbl-view {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* ürünler */
+.prods {
+  display: grid;
+  gap: 12px;
+}
+.p-search {
+  position: relative;
+}
+.p-search svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 19px;
+  height: 19px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+.p-search .input {
+  padding-left: 44px;
+  padding-right: 44px;
+}
+.p-search .clr {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+.p-search .clr svg {
+  position: static;
+  transform: none;
+}
+.p-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 10px;
+}
+.prod {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+  min-height: 92px;
+  padding: 12px 12px 11px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  transition: transform .08s ease, border-color .15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.prod:active {
+  transform: scale(.96);
+}
+.prod .pn {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.prod .pp {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+.prod .pq {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 13px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 26px;
+  text-align: center;
+  box-shadow: 0 0 0 3px var(--bg);
+}
+.prod.hit {
+  animation: hit .35s ease;
+}
+@keyframes hit {
+  30% { border-color: var(--accent); background: var(--accent-soft); }
+}
+.prod.new {
+  border-style: dashed;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.prod.new .pn {
+  color: var(--accent-ink);
+}
+.man {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px dashed var(--line-2);
+}
+.man-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  gap: 8px;
+}
+.man-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.check input {
+  width: 19px;
+  height: 19px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+/* adisyon */
+.bill {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.bill-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px dashed var(--line-2);
+}
+.bill-h .eyebrow {
+  margin-bottom: 2px;
+}
+.bill-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 10px;
+  min-height: 120px;
+}
+.li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "n t" "q q";
+  gap: 6px 10px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  transition: opacity .2s ease, background .2s ease;
+}
+.li:last-child {
+  border-bottom: 0;
+}
+.li.tmp {
+  opacity: .6;
+}
+.li.flash {
+  background: var(--accent-soft);
+  border-radius: 12px;
+}
+.li .ln {
+  grid-area: n;
+  font-weight: 700;
+  min-width: 0;
+}
+.li .ln span {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.li .lt {
+  grid-area: t;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  text-align: right;
+}
+.li .lq {
+  grid-area: q;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.qbtn {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 800;
+}
+.qbtn svg {
+  width: 17px;
+  height: 17px;
+}
+.qbtn.del {
+  color: var(--bad);
+  border-color: color-mix(in srgb, var(--bad) 40%, var(--line));
+}
+.qbtn:active {
+  background: var(--bg-2);
+}
+.qv {
+  min-width: 34px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+}
+.bill-tot {
+  padding: 14px 18px;
+  border-top: 1px dashed var(--line-2);
+  background: var(--surface-2);
+}
+.bill-tot .row {
+  align-items: baseline;
+}
+.bill-tot .big {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+.bill-acts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 14px 14px;
+  background: var(--surface-2);
+}
+.bill-acts .btn {
+  flex-direction: column;
+  gap: 4px;
+  min-height: 62px;
+  padding: 8px 4px;
+  font-size: 12.5px;
+}
+.bill-pay {
+  padding: 0 14px 14px;
+  background: var(--surface-2);
+}
+.bill-empty {
+  padding: 30px 14px;
+}
+
+/* telefonda alt adisyon çubuğu */
+.billbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  padding: 10px max(12px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+.billbar-in {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.billbar .bb-sum {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  min-height: 58px;
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+.bb-sum .bb-n {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 800;
+}
+.bb-sum .grow {
+  display: grid;
+  line-height: 1.2;
+}
+.bb-sum .grow span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.bb-sum .grow b {
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+.bb-sum svg {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  transform: rotate(-90deg);
+}
+.billbar .btn.xl {
+  min-height: 58px;
+}
+.billbar.bump .bb-sum {
+  animation: bump .35s ease;
+}
+@keyframes bump {
+  40% { transform: scale(1.03); border-color: var(--accent); }
+}
+
+/* ---------- alt sayfa, diyalog, bildirim ---------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--scrim);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+.scrim.on {
+  opacity: 1;
+}
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  max-height: calc(100% - 30px - env(safe-area-inset-top, 0px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px 26px 0 0;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(105%);
+  transition: transform .28s cubic-bezier(.2, .9, .3, 1);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.sheet.on {
+  transform: none;
+}
+.sheet.tall {
+  height: calc(100% - 30px - env(safe-area-inset-top, 0px));
+}
+.sheet-grab {
+  width: 44px;
+  height: 5px;
+  margin: 10px auto 0;
+  border-radius: 9px;
+  background: var(--line-2);
+  flex: none;
+}
+.sheet-h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+.sheet-b {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 18px 22px;
+  display: grid;
+  grid-auto-rows: max-content;
+  gap: 16px;
+}
+.sheet-f {
+  flex: none;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.sheet .bill {
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+}
+.dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 110;
+  width: min(400px, calc(100% - 32px));
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  transform: translate(-50%, -46%) scale(.96);
+  opacity: 0;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.dialog.on {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+.dialog .acts {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.dialog .acts .btn {
+  flex: 1;
+}
+.scrim.top {
+  z-index: 105;
+}
+.toasts {
+  position: fixed;
+  left: 50%;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  z-index: 130;
+  display: grid;
+  gap: 8px;
+  width: min(440px, calc(100% - 24px));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  animation: toastIn .25s ease both;
+}
+.toast.out {
+  animation: toastOut .25s ease both;
+}
+.toast svg {
+  width: 18px;
+  height: 18px;
+  color: var(--good);
+}
+.toast.bad svg {
+  color: var(--bad);
+}
+.toast span {
+  flex: 1;
+}
+.toast button {
+  border: 0;
+  border-radius: 10px;
+  padding: 7px 12px;
+  background: color-mix(in srgb, var(--surface) 18%, transparent);
+  color: var(--surface);
+  font-weight: 800;
+  font-size: 13px;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px); }
+}
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+/* ---------- ödeme ---------- */
+.pay-total {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 10px 0 4px;
+}
+.pay-total .big {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.pay-total s {
+  color: var(--muted);
+  font-size: 15px;
+}
+.methods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.method {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border-radius: 18px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 800;
+}
+.method svg {
+  width: 28px;
+  height: 28px;
+}
+.method[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.cash {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bg-2);
+}
+.cash-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cash-btns .chip {
+  min-height: 44px;
+  font-family: var(--font-mono);
+}
+.change {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-weight: 700;
+}
+.change b {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--good);
+}
+.change.neg b {
+  color: var(--bad);
+}
+details.more-opt summary {
+  cursor: pointer;
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 14px;
+  list-style: none;
+}
+details.more-opt summary::-webkit-details-marker {
+  display: none;
+}
+details.more-opt summary::before {
+  content: "+ ";
+}
+details.more-opt[open] summary::before {
+  content: "− ";
+}
+details.more-opt > div {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* ---------- böl / taşı ---------- */
+.split-big {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--bg-2);
+}
+.split-big b {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 800;
+}
+.sp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.sp-item .grow {
+  display: grid;
+}
+.mv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+}
+.mv-grid button {
+  display: grid;
+  gap: 2px;
+  padding: 12px 6px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.mv-grid button b {
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+.mv-grid button span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.mv-grid button.open {
+  border-color: color-mix(in srgb, var(--teal) 55%, var(--line));
+}
+.mv-grid button.open span {
+  color: var(--teal);
+}
+
+/* ---------- bugün ---------- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.kpi {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bg-2);
+}
+.kpi span {
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.kpi b {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+}
+.kpi.hero {
+  grid-column: 1 / -1;
+  background: var(--ink);
+  color: var(--surface);
+}
+.kpi.hero span {
+  color: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+.kpi.hero b {
+  font-size: 38px;
+}
+.mbar {
+  display: flex;
+  height: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-2);
+  gap: 2px;
+}
+.mbar i {
+  display: block;
+  height: 100%;
+}
+.mbar .nakit { background: var(--good); }
+.mbar .kart { background: var(--teal); }
+.mbar .diger { background: var(--sun); }
+.mleg {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.mleg span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.mleg i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.mleg .nakit { background: var(--good); }
+.mleg .kart { background: var(--teal); }
+.mleg .diger { background: var(--sun); }
+.bl-i {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.bl-i .bno {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--bg-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  flex: none;
+}
+.bl-i .grow {
+  display: grid;
+}
+.bl-i .amt {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+.mtag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.mtag.nakit { background: var(--good-soft); color: var(--good); }
+.mtag.kart { background: var(--teal-soft); color: var(--teal); }
+.mtag.diger { background: var(--sun-soft); color: var(--warn); }
+.top-p {
+  display: grid;
+  gap: 6px;
+}
+.top-p div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+.top-p b {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.pre {
+  margin: 0;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px dashed var(--line-2);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ---------- ayarlar ---------- */
+.set-sec {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+}
+.set-sec h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.set-sec h3 svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-ink);
+}
+.qp-list {
+  display: grid;
+  gap: 8px;
+}
+.qp-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px auto;
+  gap: 6px;
+  align-items: center;
+}
+.qp-row .input {
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 15px;
+}
+.qp-row .acts {
+  display: flex;
+  gap: 4px;
+}
+.lk-i {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lk-i .grow {
+  display: grid;
+}
+.lk-i code {
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  word-break: break-all;
+}
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.opt .grow {
+  display: grid;
+  gap: 2px;
+}
+
+/* ---------- yazdırma (bilgi fişi) ---------- */
+#printArea {
+  display: none;
+}
+@media print {
+  body.printing > *:not(#printArea) {
+    display: none !important;
+  }
+  body.printing #printArea {
+    display: block !important;
+    color: #000;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+  }
+  .rc {
+    width: 72mm;
+    margin: 0 auto;
+    padding: 4mm 0;
+  }
+  .rc h2 {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 2mm;
+  }
+  .rc .c {
+    text-align: center;
+  }
+  .rc hr {
+    border: 0;
+    border-top: 1px dashed #000;
+    margin: 2mm 0;
+  }
+  .rc .l {
+    display: flex;
+    justify-content: space-between;
+    gap: 3mm;
+  }
+  .rc .t {
+    font-size: 15px;
+    font-weight: 700;
+  }
+}
+
+/* ---------- geniş ekranlar ---------- */
+@media (min-width: 560px) {
+  :root {
+    --tile: 150px;
+  }
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .kpi.hero {
+    grid-column: span 2;
+  }
+  .p-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+@media (min-width: 760px) {
+  .sheet {
+    left: 50%;
+    right: auto;
+    width: 600px;
+    transform: translate(-50%, 105%);
+  }
+  .sheet.on {
+    transform: translate(-50%, 0);
+  }
+  .main {
+    padding-top: 22px;
+  }
+}
+@media (min-width: 960px) {
+  .pos {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 22px;
+  }
+  .pos .bill-side {
+    position: sticky;
+    top: calc(var(--top-h) + 16px);
+  }
+  .pos .bill {
+    max-height: calc(100vh - var(--top-h) - 120px);
+  }
+  .billbar {
+    display: none;
+  }
+  .main {
+    padding-bottom: 40px;
+  }
+  .toasts {
+    bottom: 24px;
+  }
+}
+@media (max-width: 959px) {
+  .pos .bill-side {
+    display: none;
+  }
+  .hide-m {
+    display: none !important;
+  }
+}
+@media (max-width: 559px) {
+  .hide-s {
+    display: none !important;
+  }
+  .sum-pill {
+    padding: 6px 10px;
+  }
+  .sum-pill svg {
+    display: none;
+  }
+  .top .brand .ttl span {
+    display: none;
+  }
+  .top-in {
+    gap: 8px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  .tv-title h1 {
+    font-size: 26px;
+  }
+  .call {
+    min-width: 250px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div id="app"></div>
 <script>
+/* =========================================================
+   Damgalio Kasa: ayarlar, yardımcılar, sunucu bağlantısı
+   ========================================================= */
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
-var app = document.getElementById("app");
 var SK = "dmg_kasa_rt";
-var session = null, biz = null, poller = null;
-var tst = null, selT = null, selI = null, seenCalls = null, actx = null, wl = null;
-var sndOn = false;
-try { sndOn = localStorage.getItem("dmgk_snd") !== "0"; } catch(e){ sndOn = true; }
+var SITE = "https://www.damgalio.com";
+var DEMO = /[?&]demo=1\b/.test(location.search) || !!window.DMG_FORCE_DEMO;
+var app = document.getElementById("app");
 
-function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-function saveSession(s){ session = s; try { localStorage.setItem(SK, s.refresh_token); } catch(e){} }
-function clearSession(){ session = null; try { localStorage.removeItem(SK); } catch(e){} }
-function savedRefresh(){ try { return localStorage.getItem(SK); } catch(e){ return null; } }
-function fmtDay(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
-function isInactive(b){ return !!b.suspended || new Date(b.paid_until).getTime() <= Date.now(); }
+var K = {
+  session: null, biz: null, ts: null, ext: null,
+  sel: null, items: null, pending: 0, chain: Promise.resolve(),
+  filter: "all", q: "", seenCalls: null, poller: null, tick: 0,
+  bills: null, billsAt: 0, audio: null, wl: null, clockT: null, jump: "", jumpT: null
+};
+
+/* ---------- yardımcılar ---------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+function attr(s){ return esc(s).replace(/"/g, "&quot;"); }
+function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k, v){ try { if(v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch(e){} }
+function saveSession(s){ K.session = s; if(!DEMO) lsSet(SK, s.refresh_token); }
+function clearSession(){ K.session = null; if(!DEMO) lsSet(SK, null); }
 function tm(n){
-  n = Number(n || 0);
+  n = Math.round(Number(n || 0) * 100) / 100;
   return n.toLocaleString("tr-TR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " ₺";
+}
+function fmtDay(d){ return d ? new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-"; }
+function fmtHM(d){ return new Date(d).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); }
+function fmtLong(d){ return new Date(d).toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" }); }
+function startOfDay(d){ d = new Date(d); d.setHours(0, 0, 0, 0); return d; }
+function isInactive(b){ return !!b.suspended || new Date(b.paid_until).getTime() <= Date.now(); }
+function serverNow(){ return K.ts && K.ts.now ? new Date(K.ts.now).getTime() + (Date.now() - K.tsAt) : Date.now(); }
+function ageMin(at){ return Math.max(0, (serverNow() - new Date(at).getTime()) / 60000); }
+function ago(at){
+  var m = ageMin(at);
+  if(m < 1) return "az önce";
+  if(m < 60) return Math.floor(m) + " dk";
+  return Math.floor(m / 60) + " sa " + Math.floor(m % 60) + " dk";
+}
+function parsePrice(v){
+  v = String(v == null ? "" : v).trim().replace(/\s|₺|tl/gi, "").replace(",", ".");
+  if(!/^[0-9]{1,6}(\.[0-9]{1,2})?$/.test(v)) return null;
+  var n = Number(v);
+  return n >= 0 && n <= 100000 ? n : null;
 }
 function normUrl(v){
   v = (v || "").trim();
@@ -92,8 +2160,211 @@ function normUrl(v){
   if(v.length > 300 || !/^https:\/\/[^\s"'<>]+$/.test(v)) return false;
   return v;
 }
+function tableBase(){ return (DEMO ? SITE : location.origin) + "/m/"; }
+function netMsg(e){
+  var m = (e && e.message) || String(e || "");
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return "İnternet bağlantısı yok gibi görünüyor.";
+  if(/^4\d\d /.test(m) || /^5\d\d /.test(m)) return "Sunucu isteği kabul etmedi (" + m.slice(0, 3) + ").";
+  return m;
+}
+function online(){ return navigator.onLine !== false; }
 
+/* ---------- ikonlar ---------- */
+var I = (function(){
+  function s(p){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; }
+  return {
+    logo: s('<path d="M8 21h8M12 21v-4M7 17h10a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-1V8.5a2 2 0 1 0-4 0V12H9a3 3 0 0 0-3 3v1a1 1 0 0 0 1 1z"/>'),
+    table: s('<path d="M3 8h18M6 8v12M18 8v12M6 14h12M9 8V4h6v4"/>'),
+    bell: s('<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>'),
+    receipt: s('<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
+    cash: s('<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v.01M18 14.5v.01"/>'),
+    card: s('<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/>'),
+    other: s('<circle cx="12" cy="12" r="9"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>'),
+    x: s('<path d="M18 6 6 18M6 6l12 12"/>'),
+    check: s('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
+    plus: s('<path d="M12 5v14M5 12h14"/>'),
+    minus: s('<path d="M5 12h14"/>'),
+    trash: s('<path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/>'),
+    search: s('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
+    gear: s('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+    sound: s('<path d="M4 10v4h3l5 4V6L7 10z"/><path d="M16 9a4 4 0 0 1 0 6M18.8 6.2a8 8 0 0 1 0 11.6"/>'),
+    mute: s('<path d="M4 10v4h3l5 4V6L7 10zM16 9.5l5 5M21 9.5l-5 5"/>'),
+    chev: s('<path d="m9 6 6 6-6 6"/>'),
+    move: s('<path d="M5 9 2 12l3 3M19 9l3 3-3 3M2 12h20M9 5l3-3 3 3"/>'),
+    split: s('<path d="M12 3v18M5 8l-2 4 2 4M19 8l2 4-2 4"/>'),
+    print: s('<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/>'),
+    undo: s('<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'),
+    ext: s('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'),
+    copy: s('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>'),
+    sun: s('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+    moon: s('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'),
+    wifi: s('<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01"/>'),
+    wifiOff: s('<path d="m3 3 18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4.7-2.7M14.3 10.3A10 10 0 0 1 19 13M2 9.5a15 15 0 0 1 4.4-2.8M12 20h.01M17.6 6.7A15 15 0 0 1 22 9.5"/>'),
+    list: s('<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'),
+    link: s('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+    out: s('<path d="M14 4h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-5M10 16l4-4-4-4M14 12H4"/>'),
+    chart: s('<path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/>'),
+    up: s('<path d="m6 15 6-6 6 6"/>'),
+    down: s('<path d="m6 9 6 6 6-6"/>'),
+    edit: s('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>'),
+    menu: s('<path d="M4 6h16M4 12h16M4 18h10"/>'),
+    alert: s('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4h.01"/>'),
+    coffee: s('<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M7 3.5c0 1.2 1 1.3 1 2.5M11 3.5c0 1.2 1 1.3 1 2.5"/>'),
+    panel: s('<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/>'),
+    expand: s('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
+    share: s('<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.4 13.3 7.2 4.4M15.6 6.3l-7.2 4.4"/>')
+  };
+})();
+
+/* ---------- bildirim, diyalog, alt sayfa ---------- */
+function toast(msg, kind, action, ms){
+  var host = $("toasts");
+  if(!host){ host = document.createElement("div"); host.id = "toasts"; host.className = "toasts"; host.setAttribute("aria-live", "polite"); document.body.appendChild(host); }
+  var el = document.createElement("div");
+  el.className = "toast " + (kind || "good");
+  el.innerHTML = (kind === "bad" ? I.alert : I.check) + "<span>" + esc(msg) + "</span>" + (action ? '<button type="button">' + esc(action.label) + '</button>' : '');
+  host.appendChild(el);
+  while(host.children.length > 3) host.firstChild.remove();
+  var t = setTimeout(gone, ms || (action ? 6000 : 2600));
+  function gone(){ el.classList.add("out"); setTimeout(function(){ el.remove(); }, 260); }
+  if(action) el.querySelector("button").onclick = function(){ clearTimeout(t); gone(); action.fn(); };
+}
+
+var scrimEl = null;
+function scrim(on, onClick){
+  if(on){
+    if(!scrimEl){ scrimEl = document.createElement("div"); scrimEl.className = "scrim"; document.body.appendChild(scrimEl); }
+    scrimEl.onclick = onClick || null;
+    requestAnimationFrame(function(){ if(scrimEl) scrimEl.classList.add("on"); });
+  } else if(scrimEl){
+    var s = scrimEl; scrimEl = null;
+    s.classList.remove("on");
+    setTimeout(function(){ s.remove(); }, 220);
+  }
+}
+
+function confirmBox(o){
+  return new Promise(function(resolve){
+    var d = document.createElement("div");
+    d.className = "dialog";
+    d.setAttribute("role", "dialog");
+    d.setAttribute("aria-modal", "true");
+    d.innerHTML = '<h2>' + esc(o.title) + '</h2>' + (o.text ? '<p class="ink2">' + esc(o.text) + '</p>' : '') +
+      '<div class="acts"><button class="btn ghost" type="button" data-r="0">' + esc(o.cancel || "Vazgeç") + '</button>' +
+      '<button class="btn ' + (o.danger ? "danger" : "") + '" type="button" data-r="1">' + esc(o.ok || "Tamam") + '</button></div>';
+    document.body.appendChild(d);
+    var sc = document.createElement("div"); sc.className = "scrim top"; document.body.appendChild(sc);
+    requestAnimationFrame(function(){ sc.classList.add("on"); d.classList.add("on"); d.querySelector('[data-r="1"]').focus(); });
+    function done(v){
+      d.classList.remove("on"); sc.classList.remove("on");
+      setTimeout(function(){ d.remove(); sc.remove(); }, 200);
+      document.removeEventListener("keydown", key, true);
+      resolve(v);
+    }
+    function key(e){ if(e.key === "Escape"){ e.stopPropagation(); done(false); } }
+    document.addEventListener("keydown", key, true);
+    sc.onclick = function(){ done(false); };
+    d.querySelectorAll("button").forEach(function(b){ b.onclick = function(){ done(b.getAttribute("data-r") === "1"); }; });
+  });
+}
+
+var sheetEl = null, sheetClose = null;
+function openSheet(titleHtml, bodyHtml, o){
+  o = o || {};
+  closeSheet(true);
+  var el = document.createElement("section");
+  el.className = "sheet" + (o.tall ? " tall" : "");
+  el.setAttribute("role", "dialog");
+  el.setAttribute("aria-modal", "true");
+  el.innerHTML = '<div class="sheet-grab"></div><div class="sheet-h">' + titleHtml +
+    '<button class="icon-btn sm" type="button" id="sheetX" aria-label="Kapat" style="margin-left:auto">' + I.x + '</button></div>' +
+    '<div class="sheet-b" id="sheetB">' + bodyHtml + '</div>' + (o.foot ? '<div class="sheet-f" id="sheetF">' + o.foot + '</div>' : '');
+  document.body.appendChild(el);
+  sheetEl = el; sheetClose = o.onClose || null;
+  if(o.k) el.setAttribute("data-k", o.k);
+  scrim(true, function(){ closeSheet(); });
+  $("sheetX").onclick = function(){ closeSheet(); };
+  requestAnimationFrame(function(){ el.classList.add("on"); });
+  return el;
+}
+function closeSheet(instant){
+  if(!sheetEl) return;
+  var el = sheetEl, cb = sheetClose;
+  sheetEl = null; sheetClose = null;
+  if(instant){ el.remove(); scrim(false); return; }
+  el.querySelectorAll("[id]").forEach(function(x){ x.removeAttribute("id"); });
+  el.classList.remove("on");
+  scrim(false);
+  setTimeout(function(){ el.remove(); }, 280);
+  if(cb) cb();
+}
+function sheetIs(k){ return sheetEl && sheetEl.getAttribute("data-k") === k; }
+
+function copyText(t, okMsg){
+  function fallback(){
+    var i = document.createElement("textarea");
+    i.value = t; i.setAttribute("readonly", ""); i.style.position = "fixed"; i.style.opacity = "0";
+    document.body.appendChild(i); i.select(); i.setSelectionRange(0, 99999);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){}
+    i.remove();
+    toast(ok ? (okMsg || "Kopyalandı") : "Kopyalanamadı, elle seçip kopyala", ok ? "good" : "bad");
+  }
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){ toast(okMsg || "Kopyalandı"); }, fallback);
+      return;
+    }
+  } catch(e){}
+  fallback();
+}
+
+/* ---------- tema ---------- */
+function themeGet(){ var t = lsGet("dmgk_theme"); return t === "light" || t === "dark" ? t : "system"; }
+function themeApply(t){ var r = document.documentElement; if(t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme"); }
+function themeSet(t){ lsSet("dmgk_theme", t === "system" ? null : t); themeApply(t); }
+themeApply(themeGet());
+
+/* ---------- ses ve ekranı açık tutma ---------- */
+function sndOn(){ return lsGet("dmgk_snd") !== "0"; }
+function awakeOn(){ return lsGet("dmgk_awake") !== "0"; }
+function unlockAudio(){
+  try {
+    if(!K.audio){ var AC = window.AudioContext || window.webkitAudioContext; if(!AC) return; K.audio = new AC(); }
+    if(K.audio.state !== "running") K.audio.resume();
+  } catch(e){}
+  keepAwake();
+  setTimeout(sndHint, 250);
+}
+function audioReady(){ return K.audio && K.audio.state === "running"; }
+function beep(kind){
+  if(!sndOn() || !audioReady()) return;
+  var a = K.audio, t = a.currentTime;
+  var seq = kind === "hesap" ? [[0, 660], [0.18, 880], [0.36, 1100]] : kind === "tik" ? [[0, 1400]] : [[0, 880], [0.22, 1175], [0.6, 880], [0.82, 1175]];
+  seq.forEach(function(n){
+    var o = a.createOscillator(), g = a.createGain(), len = kind === "tik" ? 0.05 : 0.3;
+    o.type = "sine"; o.frequency.value = n[1];
+    g.gain.setValueAtTime(0.0001, t + n[0]);
+    g.gain.exponentialRampToValueAtTime(kind === "tik" ? 0.08 : 0.42, t + n[0] + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + n[0] + len);
+    o.connect(g); g.connect(a.destination);
+    o.start(t + n[0]); o.stop(t + n[0] + len + 0.05);
+  });
+}
+async function keepAwake(){
+  try {
+    if(awakeOn() && !K.wl && navigator.wakeLock && !document.hidden){
+      K.wl = await navigator.wakeLock.request("screen");
+      K.wl.addEventListener("release", function(){ K.wl = null; });
+    }
+  } catch(e){}
+}
+function releaseAwake(){ try { if(K.wl) K.wl.release(); } catch(e){} K.wl = null; }
+document.addEventListener("pointerdown", function(){ if(sndOn() || awakeOn()) unlockAudio(); }, true);
+
+/* ---------- sunucu ---------- */
 async function authCall(grant, body){
+  if(DEMO) return Demo.auth();
   var r = await fetch(SB_URL + "/auth/v1/token?grant_type=" + grant, {
     method: "POST",
     headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
@@ -103,17 +2374,17 @@ async function authCall(grant, body){
   if(!r.ok) throw new Error(j.error_description || j.msg || ("Hata " + r.status));
   return j;
 }
-
 async function api(path, opts, retry){
   opts = opts || {};
-  var h = { "apikey": SB_KEY, "Authorization": "Bearer " + session.access_token, "Content-Type": "application/json" };
+  if(DEMO) return Demo.api(path, opts);
+  var h = { "apikey": SB_KEY, "Authorization": "Bearer " + K.session.access_token, "Content-Type": "application/json" };
   var r = await fetch(SB_URL + "/rest/v1/" + path, {
     method: opts.method || "GET",
     headers: h,
     body: opts.body ? JSON.stringify(opts.body) : undefined
   });
   if(r.status === 401 && !retry){
-    saveSession(await authCall("refresh_token", { refresh_token: session.refresh_token }));
+    saveSession(await authCall("refresh_token", { refresh_token: K.session.refresh_token }));
     return api(path, opts, true);
   }
   var t = await r.text();
@@ -121,422 +2392,1214 @@ async function api(path, opts, retry){
   return t ? JSON.parse(t) : null;
 }
 function rpc(fn, body){ return api("rpc/" + fn, { method: "POST", body: body }); }
+function bid(){ return String(K.biz.id); }
 
-function stopPoll(){ if(poller){ clearInterval(poller); poller = null; } }
-function logout(){
-  stopPoll();
-  document.title = "Damgalio Kasa";
-  clearSession();
-  showLogin("");
+/* =========================================================
+   Demo: giriş yapmadan örnek verilerle
+   ========================================================= */
+var Demo = (function(){
+  var D = null, seed = 7;
+  function rnd(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  var QUICK = [["Türk kahvesi", 80], ["Filtre kahve", 95], ["Latte", 110], ["Cappuccino", 110], ["Americano", 100], ["Espresso", 75], ["Çay", 25],
+    ["Bitki çayı", 70], ["Limonata", 90], ["Su", 15], ["Soda", 35], ["Cheesecake", 150], ["Brownie", 120], ["Tost", 140], ["Kruvasan", 95], ["Kurabiye", 45]];
+  function build(){
+    var now = Date.now(), id = 100;
+    D = { biz: { id: "demo-kasa", name: "Köşe Kahve", paid_until: new Date(now + 23 * 86400000).toISOString(), suspended: false },
+      settings: { wifi_name: "KoseKahve_Misafir", wifi_pass: "kahve2026", menu_url: "https://ornek.com/menu", quick: QUICK.map(function(q){ return { n: q[0], p: q[1] }; }) },
+      tables: [], items: {}, calls: [], bills: [], nid: 1000 };
+    for(var t = 1; t <= 12; t++) D.tables.push({ id: t, no: t, token: "demo" + t });
+    var fill = { 2: [["Latte", 2, 110], ["Cheesecake", 1, 150]], 4: [["Filtre kahve", 3, 95], ["Su", 2, 15], ["Tost", 1, 140]], 5: [["Türk kahvesi", 2, 80]],
+      7: [["Çay", 4, 25], ["Kurabiye", 2, 45]], 9: [["Americano", 1, 100], ["Brownie", 1, 120], ["Limonata", 2, 90]] };
+    Object.keys(fill).forEach(function(k){ D.items[k] = fill[k].map(function(x){ return { id: id++, name: x[0], qty: x[1], price: x[2] }; }); });
+    D.calls.push({ id: 1, table_id: 4, no: 4, kind: "garson", at: new Date(now - 95000).toISOString() });
+    D.calls.push({ id: 2, table_id: 9, no: 9, kind: "hesap", at: new Date(now - 25000).toISOString() });
+    var t0 = startOfDay(now).getTime(), h = new Date().getHours();
+    var n = Math.max(6, Math.min(22, (h - 7) * 2));
+    for(var b = 0; b < n; b++){
+      var its = [], k = 1 + Math.floor(rnd() * 3), tot = 0;
+      for(var j = 0; j < k; j++){ var q = QUICK[Math.floor(rnd() * QUICK.length)], qq = 1 + Math.floor(rnd() * 2); its.push({ n: q[0], q: qq, p: q[1] }); tot += qq * q[1]; }
+      var disc = rnd() < 0.12 ? Math.round(tot * 0.1) : 0, at = t0 + (8 + rnd() * Math.max(1, h - 8)) * 3600000;
+      if(at > now - 60000) at = now - (b + 2) * 300000;
+      D.bills.push({ id: id++, no: 1 + Math.floor(rnd() * 12), items: its, total: tot, discount: disc, paid: tot - disc, method: rnd() < 0.55 ? "kart" : (rnd() < 0.9 ? "nakit" : "diger"), at: new Date(at).toISOString() });
+    }
+    D.bills.sort(function(a, b2){ return a.at < b2.at ? 1 : -1; });
+  }
+  function tableState(){
+    return { status: "ok", now: new Date().toISOString(), settings: clone(D.settings),
+      tables: D.tables.filter(function(t){ return !t.off; }).map(function(t){ var it = D.items[t.id] || []; return { id: t.id, no: t.no, token: t.token, total: it.reduce(function(a, x){ return a + x.qty * x.price; }, 0), n: it.length }; }),
+      calls: clone(D.calls) };
+  }
+  function itemsOf(tid){
+    var t = D.tables.filter(function(x){ return x.id === tid; })[0];
+    if(!t) return { status: "not_found" };
+    var it = D.items[tid] || [];
+    return { status: "ok", table_id: tid, no: t.no, items: clone(it), total: it.reduce(function(a, x){ return a + x.qty * x.price; }, 0), upd: new Date().toISOString() };
+  }
+  function maybeCall(){
+    if(D.calls.length >= 3 || Math.random() > 0.05) return;
+    var t = D.tables[Math.floor(Math.random() * D.tables.length)];
+    if(D.calls.some(function(c){ return c.table_id === t.id; })) return;
+    D.calls.push({ id: D.nid++, table_id: t.id, no: t.no, kind: Math.random() < 0.6 ? "garson" : "hesap", at: new Date().toISOString() });
+  }
+  async function handle(path, opts){
+    var b = opts.body || {};
+    await sleep(90 + Math.random() * 140);
+    if(/^businesses\?/.test(path)) return [clone(D.biz)];
+    var fn = path.replace(/^rpc\//, "");
+    if(fn === "owner_tables_state"){ maybeCall(); return tableState(); }
+    if(fn === "owner_tables_save"){
+      D.settings = { wifi_name: b.p_wifi_name || null, wifi_pass: b.p_wifi_pass || null, menu_url: b.p_menu_url || null, quick: clone(b.p_quick || []) };
+      for(var i = 1; i <= b.p_count; i++){ var ex = D.tables.filter(function(t){ return t.no === i; })[0]; if(ex) ex.off = false; else D.tables.push({ id: 100 + i, no: i, token: "demo" + i }); }
+      D.tables.forEach(function(t){ if(t.no > b.p_count) t.off = true; });
+      D.tables.sort(function(a, c){ return a.no - c.no; });
+      return tableState();
+    }
+    if(fn === "owner_table_items") return itemsOf(b.p_table);
+    if(fn === "owner_item_add"){
+      var list = D.items[b.p_table] || (D.items[b.p_table] = []);
+      var m = list.filter(function(x){ return x.name === b.p_name && Number(x.price) === Number(b.p_price); })[0];
+      if(m) m.qty = Math.min(99, m.qty + b.p_qty); else list.push({ id: D.nid++, name: b.p_name, qty: b.p_qty, price: Number(b.p_price) });
+      return itemsOf(b.p_table);
+    }
+    if(fn === "owner_item_del" || fn === "owner_item_qty"){
+      for(var tid in D.items){
+        var arr = D.items[tid], ix = -1;
+        arr.forEach(function(x, k){ if(x.id === b.p_item) ix = k; });
+        if(ix > -1){
+          if(fn === "owner_item_del" || b.p_qty === 0) arr.splice(ix, 1); else arr[ix].qty = b.p_qty;
+          return itemsOf(Number(tid));
+        }
+      }
+      return { status: "not_found" };
+    }
+    if(fn === "owner_table_clear"){ D.items[b.p_table] = []; D.calls = D.calls.filter(function(c){ return c.table_id !== b.p_table; }); return itemsOf(b.p_table); }
+    if(fn === "owner_call_done"){ var n0 = D.calls.length; D.calls = D.calls.filter(function(c){ return c.id !== b.p_call; }); return { status: n0 !== D.calls.length ? "ok" : "not_found" }; }
+    if(fn === "owner_table_close"){
+      var it2 = D.items[b.p_table] || [], tot = it2.reduce(function(a, x){ return a + x.qty * x.price; }, 0);
+      if(!tot) return { status: "empty" };
+      var tb = D.tables.filter(function(t){ return t.id === b.p_table; })[0];
+      var bill = { id: D.nid++, no: tb.no, table_id: tb.id, items: it2.map(function(x){ return { n: x.name, q: x.qty, p: x.price }; }), total: tot, discount: b.p_discount || 0, paid: tot - (b.p_discount || 0), method: b.p_method, at: new Date().toISOString() };
+      D.bills.unshift(bill);
+      D.items[b.p_table] = [];
+      D.calls = D.calls.filter(function(c){ return c.table_id !== b.p_table; });
+      var r = itemsOf(b.p_table); r.bill_id = bill.id; r.paid = bill.paid; return r;
+    }
+    if(fn === "owner_bill_reopen"){
+      var bl = D.bills.filter(function(x){ return x.id === b.p_bill; })[0];
+      if(!bl) return { status: "not_found" };
+      var tgt = D.items[bl.table_id] || (D.items[bl.table_id] = []);
+      bl.items.forEach(function(e){ var mm = tgt.filter(function(x){ return x.name === e.n && x.price === e.p; })[0]; if(mm) mm.qty += e.q; else tgt.push({ id: D.nid++, name: e.n, qty: e.q, price: e.p }); });
+      D.bills = D.bills.filter(function(x){ return x !== bl; });
+      return itemsOf(bl.table_id);
+    }
+    if(fn === "owner_table_move"){
+      if(b.p_from === b.p_to) return { status: "same" };
+      var src = D.items[b.p_from] || [], dst = D.items[b.p_to] || (D.items[b.p_to] = []);
+      src.forEach(function(x){ var mm = dst.filter(function(y){ return y.name === x.name && y.price === x.price; })[0]; if(mm) mm.qty = Math.min(99, mm.qty + x.qty); else dst.push(x); });
+      D.items[b.p_from] = [];
+      D.calls = D.calls.filter(function(c){ return c.table_id !== b.p_from; });
+      return itemsOf(b.p_to);
+    }
+    if(fn === "owner_bills"){
+      var since = b.p_since ? new Date(b.p_since).toISOString() : new Date(Date.now() - 86400000).toISOString();
+      return { status: "ok", bills: clone(D.bills.filter(function(x){ return x.at >= since; })) };
+    }
+    throw new Error("Demo: bilinmeyen istek " + path);
+  }
+  return {
+    auth: async function(){ if(!D) build(); await sleep(200); return { access_token: "demo", refresh_token: "demo", user: { user_metadata: {} } }; },
+    api: async function(path, opts){ if(!D) build(); return handle(path, opts || {}); },
+    reset: function(){ D = null; }
+  };
+})();
+/* =========================================================
+   Giriş ve bilgi ekranları
+   ========================================================= */
+function brandHtml(name){
+  return '<span class="brand"><span class="logo">' + I.logo + '</span>' + (name ? '<span class="ttl"><b class="ell">' + esc(name) + '</b><span>Kasa ekranı</span></span>' : 'Damgalio <small>KASA</small>') + '</span>';
 }
-
-function simpleCard(title, html){
-  stopPoll();
-  app.innerHTML = '<div class="narrow"><div class="card"><div class="brand">Damgalio Kasa</div><h1>' + esc(title) + '</h1>' + html +
-    '<div class="acts" style="margin-top:14px"><button class="ghost" id="rl">Yenile</button><button class="ghost" id="lo">Çıkış</button></div></div></div>';
-  document.getElementById("rl").onclick = function(){ start(); };
-  document.getElementById("lo").onclick = logout;
+function gate(inner){ app.innerHTML = '<div class="gate"><div class="gate-box">' + inner + '</div></div>'; }
+function stopAll(){
+  if(K.poller){ clearInterval(K.poller); K.poller = null; }
+  if(K.clockT){ clearInterval(K.clockT); K.clockT = null; }
+  closeSheet(true);
 }
 
 function showLogin(msg){
-  stopPoll();
-  app.innerHTML = '<div class="narrow"><div class="card"><div class="brand">Damgalio</div><h1>Kasa ekranı</h1>' +
-    '<p>Garson çağrıları ve masa hesapları burada. İşletme paneline girdiğin e-posta ve şifreyle giriş yap.</p>' +
-    (msg ? '<p class="err">' + esc(msg) + '</p>' : '') +
-    '<input type="email" id="em" placeholder="E-posta" autocomplete="username">' +
-    '<input type="password" id="pw" placeholder="Şifre" autocomplete="current-password">' +
-    '<button class="full" id="lg">Giriş Yap</button>' +
-    '<p class="sub" style="margin-top:12px">Şifreni unuttuysan <a href="/panel.html" style="color:var(--ye)">işletme panelindeki</a> "Şifremi unuttum" bağlantısını kullan.</p></div></div>';
-  document.getElementById("lg").onclick = login;
-  document.getElementById("pw").onkeydown = function(e){ if(e.key === "Enter") login(); };
+  stopAll();
+  document.title = "Damgalio Kasa";
+  gate(brandHtml() +
+    '<form class="gate-card" id="lf" novalidate><div><div class="eyebrow">Kasa ekranı</div><h1 style="margin-top:4px">Giriş yap</h1>' +
+    '<p class="ink2" style="margin-top:6px">Garson çağrıları ve masa hesapları burada. İşletme paneline girdiğin e-posta ve şifreyi kullan.</p></div>' +
+    (msg ? '<p class="form-msg err" role="alert">' + esc(msg) + '</p>' : '') +
+    '<div class="field"><label for="em">E-posta</label><input class="input" type="email" id="em" autocomplete="username" inputmode="email" placeholder="ornek@isletme.com"></div>' +
+    '<div class="field"><label for="pw">Şifre</label><input class="input" type="password" id="pw" autocomplete="current-password" placeholder="Şifren"></div>' +
+    '<button class="btn xl block" id="lg" type="submit">Giriş yap</button>' +
+    '<p class="small muted">Şifreni unuttuysan <a href="/panel.html">işletme panelindeki</a> "Şifremi unuttum" bağlantısını kullan.</p></form>' +
+    '<button class="demo-go" type="button" id="demoGo"><span><b>Kasayı örnek verilerle dene</b><br><span class="small muted">Giriş yapmadan bütün ekranları gez</span></span>' + I.chev + '</button>');
+  $("lf").onsubmit = function(e){ e.preventDefault(); login(); };
+  $("demoGo").onclick = function(){ DEMO = true; Demo.reset(); start(); };
 }
 
-function needsNewPw(){
-  var u = session && session.user;
-  return !!(u && u.user_metadata && u.user_metadata.temp_pw);
+function showMsg(title, html, o){
+  o = o || {};
+  stopAll();
+  gate(brandHtml(K.biz && K.biz.name) +
+    '<div class="gate-card">' + (o.icon ? '<div style="color:var(--accent-ink)">' + o.icon.replace('<svg', '<svg style="width:40px;height:40px"') + '</div>' : '') +
+    '<h1>' + esc(title) + '</h1>' + html +
+    '<div class="row wrap"><button class="btn" type="button" id="rl">Yenile</button>' +
+    '<a class="btn ghost" href="' + (DEMO ? SITE : "") + '/panel.html" target="_blank" rel="noopener">' + I.panel + 'İşletme paneli</a>' +
+    '<button class="btn ghost" type="button" id="lo">' + I.out + 'Çıkış</button></div></div>');
+  $("rl").onclick = function(){ start(); };
+  $("lo").onclick = logout;
 }
 
 async function login(){
-  var em = document.getElementById("em").value.trim();
-  var pw = document.getElementById("pw").value;
-  var b = document.getElementById("lg");
+  var em = $("em").value.trim(), pw = $("pw").value, b = $("lg");
+  if(!em || !pw){ showLogin("E-posta ve şifreni yaz."); return; }
   b.disabled = true; b.textContent = "Giriş yapılıyor...";
+  unlockAudio();
   try { saveSession(await authCall("password", { email: em, password: pw })); }
-  catch(e){ showLogin(e.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : e.message); return; }
-  if(sndOn) unlockAudio();
+  catch(e){ showLogin(e.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : netMsg(e)); return; }
   afterAuth();
 }
 
+function needsNewPw(){
+  var u = K.session && K.session.user;
+  return !!(u && u.user_metadata && u.user_metadata.temp_pw);
+}
 function afterAuth(){
   if(needsNewPw()){
-    simpleCard("Önce yeni şifreni belirle", '<p>Geçici şifreyle girdin. <a href="/panel.html" style="color:var(--ye)">İşletme panelini</a> açıp yeni şifreni belirle, sonra kasa ekranına yeni şifrenle gir.</p>');
+    showMsg("Önce yeni şifreni belirle", '<p class="ink2">Geçici şifreyle girdin. <a href="/panel.html">İşletme panelini</a> açıp yeni şifreni belirle, sonra kasa ekranına yeni şifrenle gir.</p>', { icon: I.alert });
     return;
   }
-  loadAll().catch(function(e){ simpleCard("Bir sorun oluştu", '<p class="err">' + esc(e.message) + '</p>'); });
+  loadAll().catch(function(e){ showMsg("Bir sorun oluştu", '<p class="form-msg err">' + esc(netMsg(e)) + '</p>', { icon: I.alert }); });
 }
 
+function logout(){
+  stopAll();
+  releaseAwake();
+  clearSession();
+  K.biz = null; K.ts = null; K.sel = null; K.items = null; K.bills = null; K.ext = null; K.seenCalls = null;
+  if(DEMO){ DEMO = false; Demo.reset(); }
+  if(location.hash) history.replaceState(null, "", location.pathname + location.search);
+  showLogin("");
+}
+
+/* =========================================================
+   Veri
+   ========================================================= */
 async function loadAll(){
   var bs = await api("businesses?select=id,name,paid_until,suspended&order=created_at");
-  if(!bs.length){ simpleCard("İşletme bulunamadı", "<p>Bu hesaba bağlı işletme yok.</p>"); return; }
-  biz = bs[0];
-  if(isInactive(biz)){
-    simpleCard(biz.name, '<p class="err"><b>' + esc(biz.suspended ? "Hesabın durduruldu." : "Hizmet süren " + fmtDay(biz.paid_until) + " tarihinde doldu.") + '</b></p>' +
-      '<p>Kasa ekranı şu an kapalı. Ödeme bilgisi için <a href="/panel.html" style="color:var(--ye)">işletme paneline</a> bak.</p>');
+  if(!bs || !bs.length){ showMsg("İşletme bulunamadı", '<p class="ink2">Bu hesaba bağlı işletme yok.</p>'); return; }
+  K.biz = bs[0];
+  if(isInactive(K.biz)){ showLocked(); return; }
+  var ts;
+  try { ts = await rpc("owner_tables_state", { p_id: bid() }); }
+  catch(e){
+    if(/^404 /.test(e.message)) showMsg("Masa özelliği kapalı", '<p class="ink2">Bu hesapta masa özelliği henüz açılmamış. Damgalio ile iletişime geç.</p>', { icon: I.table });
+    else showMsg("Bir sorun oluştu", '<p class="form-msg err">' + esc(netMsg(e)) + '</p>', { icon: I.alert });
     return;
   }
-  var ts;
-  try { ts = await rpc("owner_tables_state", { p_id: String(biz.id) }); }
-  catch(e){ simpleCard("Masa özelliği kapalı", "<p>Bu hesapta masa özelliği henüz açılmamış. Damgalio ile iletişime geç.</p>"); return; }
-  if(!ts || ts.status !== "ok"){ simpleCard("Masa bilgisi alınamadı", '<p class="err">' + esc(ts && ts.status) + '</p>'); return; }
-  seenCalls = null;
-  setTst(ts);
-  render();
-  stopPoll();
-  poller = setInterval(poll, 4000);
+  if(!ts || ts.status !== "ok"){ showMsg("Masa bilgisi alınamadı", '<p class="form-msg err">' + esc(ts && ts.status) + '</p>'); return; }
+  K.seenCalls = null;
+  setTs(ts);
+  renderShell();
+  route();
+  loadBills();
+  if(K.poller) clearInterval(K.poller);
+  K.tick = 0;
+  K.poller = setInterval(poll, 4000);
+  keepAwake();
+}
+function showLocked(){
+  showMsg(K.biz.name, '<p class="form-msg err">' + esc(K.biz.suspended ? "Hesabın durduruldu." : "Hizmet süren " + fmtDay(K.biz.paid_until) + " tarihinde doldu.") + '</p>' +
+    '<p class="ink2">Kasa ekranı şu an kapalı. Ödeme bilgisi için işletme paneline bak. Hizmet yenilenince Yenile\'ye bas.</p>', { icon: I.alert });
 }
 
-async function poll(){
-  if(document.hidden || !biz) return;
-  try {
-    var ts = await rpc("owner_tables_state", { p_id: String(biz.id) });
-    if(!ts || ts.status !== "ok") return;
-    setTst(ts);
-    renderCalls(); renderGrid();
-    if(selT && selI){
-      var t = findT(selT);
-      if(!t){ selT = null; selI = null; renderEdit(); }
-      else if(Number(t.total) !== Number(selI.total) || t.n !== selI.items.length){
-        var busy = document.activeElement && document.activeElement.closest && document.activeElement.closest("#tedit");
-        var typed = (document.getElementById("te_n") || {}).value || (document.getElementById("te_p") || {}).value;
-        if(!busy && !typed){
-          var r = await rpc("owner_table_items", { p_id: String(biz.id), p_table: selT });
-          if(r && r.status === "ok" && selT === r.table_id){ selI = r; renderEdit(); }
-        }
-      }
-    }
-  } catch(e){}
+function setTs(ts){
+  var ids = {}, fresh = [];
+  (ts.calls || []).forEach(function(c){ ids[c.id] = 1; if(K.seenCalls && !K.seenCalls[c.id]) fresh.push(c); });
+  K.seenCalls = ids;
+  K.ts = ts; K.tsAt = Date.now();
+  if(fresh.length){
+    var c = fresh[fresh.length - 1];
+    beep(c.kind);
+    try { if(navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch(e){}
+    toast("Masa " + c.no + (c.kind === "hesap" ? " hesap istiyor" : " garson çağırıyor"), "good", null, 4000);
+  }
+  updTitle();
 }
-document.addEventListener("visibilitychange", function(){ if(!document.hidden){ keepAwake(); poll(); } });
-
 function updTitle(){
-  var n = tst ? (tst.calls || []).length : 0;
+  var n = K.ts ? (K.ts.calls || []).length : 0;
   document.title = n ? "(" + n + ") Kasa · Damgalio" : "Kasa · Damgalio";
 }
-function copyText(v, okMsg){
+function tables(){ return (K.ts && K.ts.tables) || []; }
+function findT(id){ var a = tables(); for(var i = 0; i < a.length; i++) if(a[i].id === id) return a[i]; return null; }
+function callsOf(id){ return ((K.ts && K.ts.calls) || []).filter(function(c){ return c.table_id === id; }); }
+function quick(){ return (K.ts && K.ts.settings && K.ts.settings.quick) || []; }
+
+async function poll(){
+  if(document.hidden || !K.biz || !$("main") || !online()) return;
+  K.tick++;
   try {
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(v).then(function(){ alert(okMsg); }, function(){ prompt("Kopyala:", v); });
-      return;
+    if(K.tick % 8 === 0){
+      var st = await api("businesses?id=eq." + K.biz.id + "&select=paid_until,suspended");
+      if(st && st.length){ K.biz.paid_until = st[0].paid_until; K.biz.suspended = st[0].suspended; if(isInactive(K.biz)){ showLocked(); return; } }
     }
+    var ts = await rpc("owner_tables_state", { p_id: bid() });
+    if(!ts || ts.status !== "ok") return;
+    setTs(ts);
+    renderCalls();
+    if(K.sel == null) renderTables(true);
+    else {
+      var t = findT(K.sel);
+      if(!t){ toast("Bu masa kapatıldı", "bad"); goTables(); return; }
+      renderSwitch(); renderCallBanner();
+      var typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+      if(K.items && K.pending === 0 && !typing && (Number(t.total) !== Number(K.items.total) || t.n !== K.items.items.length)) reloadItems(K.sel);
+    }
+    if(K.ext && K.tick % 15 === 0) loadBills();
   } catch(e){}
-  prompt("Kopyala:", v);
 }
-function setTst(ts){
-  var ids = {}, fresh = false;
-  (ts.calls || []).forEach(function(c){ ids[c.id] = 1; if(seenCalls && !seenCalls[c.id]) fresh = true; });
-  seenCalls = ids;
-  tst = ts;
-  if(fresh) alertCall();
-}
-function agoS(at){
-  var now = tst && tst.now ? new Date(tst.now).getTime() : Date.now();
-  var s = Math.max(0, Math.round((now - new Date(at).getTime()) / 1000));
-  return s < 60 ? "az önce" : Math.floor(s / 60) + " dk önce";
-}
-function findT(id){
-  var ts = (tst && tst.tables) || [];
-  for(var i = 0; i < ts.length; i++){ if(ts[i].id === id) return ts[i]; }
+document.addEventListener("visibilitychange", function(){ if(!document.hidden && K.biz){ keepAwake(); poll(); } });
+window.addEventListener("online", function(){ netBadge(); toast("Bağlantı geri geldi"); poll(); });
+window.addEventListener("offline", function(){ netBadge(); toast("İnternet bağlantısı yok", "bad"); });
+function netBadge(){ var n = $("netB"); if(n) n.hidden = online(); }
+
+async function loadBills(dayOff){
+  dayOff = dayOff || 0;
+  try {
+    var since = startOfDay(Date.now() - dayOff * 86400000).toISOString();
+    var r = await rpc("owner_bills", { p_id: bid(), p_since: since });
+    if(r && r.status === "ok"){
+      K.ext = true;
+      if(dayOff === 0){ K.bills = r.bills || []; K.billsAt = Date.now(); renderSum(); }
+      return r.bills || [];
+    }
+  } catch(e){
+    if(/^404 /.test(e.message)) K.ext = false;
+  }
+  renderSum();
   return null;
 }
+async function extCall(fn, body, fallback){
+  if(K.ext === false) return fallback();
+  try { return await rpc(fn, body); }
+  catch(e){
+    if(/^404 /.test(e.message)){ K.ext = false; renderSum(); return fallback(); }
+    throw e;
+  }
+}
 
-/* sesli uyarı + ekranı açık tutma */
-function renderSnd(){
-  var b = document.getElementById("snd");
-  if(!b) return;
-  b.textContent = "Sesli uyarı: " + (sndOn ? "Açık" : "Kapalı");
-  b.className = "ghost" + (sndOn ? " on" : "");
-  var h = document.getElementById("sndh");
-  if(h) h.style.display = sndOn && (!actx || actx.state !== "running") ? "block" : "none";
-}
-async function keepAwake(){
-  try {
-    if(sndOn && !wl && navigator.wakeLock && !document.hidden){
-      wl = await navigator.wakeLock.request("screen");
-      wl.addEventListener("release", function(){ wl = null; });
-    }
-  } catch(e){}
-}
-function unlockAudio(){
-  try {
-    if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(!AC) return; actx = new AC(); }
-    if(actx.state !== "running") actx.resume();
-  } catch(e){}
-  keepAwake();
-  setTimeout(renderSnd, 250);
-}
-function beep(){
-  if(!sndOn || !actx || actx.state !== "running") return;
-  var t = actx.currentTime;
-  [0, 0.22, 0.6, 0.82].forEach(function(d, k){
-    var o = actx.createOscillator(), g = actx.createGain();
-    o.type = "sine"; o.frequency.value = k % 2 ? 1175 : 880;
-    g.gain.setValueAtTime(0.0001, t + d);
-    g.gain.exponentialRampToValueAtTime(0.45, t + d + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.32);
-    o.connect(g); g.connect(actx.destination);
-    o.start(t + d); o.stop(t + d + 0.36);
-  });
-}
-function alertCall(){
-  beep();
-  try { if(navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch(e){}
-}
-document.addEventListener("click", function(){ if(sndOn) unlockAudio(); }, true);
-document.addEventListener("touchend", function(){ if(sndOn) unlockAudio(); }, true);
-
-/* ekran */
-function render(){
-  var none = !(tst.tables || []).length;
+/* =========================================================
+   Kabuk
+   ========================================================= */
+function renderShell(){
   app.innerHTML =
-    '<div class="hdr"><div><div class="brand">Damgalio Kasa</div><h1>' + esc(biz.name) + '</h1></div>' +
-    '<div class="acts"><button class="ghost" id="snd"></button><a class="btn" href="/panel.html" target="_blank" rel="noopener">İşletme paneli</a><button class="ghost" id="lo">Çıkış</button></div></div>' +
-    '<div class="card" id="sndh" style="display:none;border-color:var(--ye)"><p style="margin:0;color:#fff"><b>Sesin çalması için ekrana bir kez dokun.</b> Telefonlar sesi ancak bir dokunuştan sonra açıyor.</p></div>' +
-    '<div class="lay"><div>' +
-      '<div class="card"><h2>Çağrılar<span class="cnt" id="ccnt">0</span></h2><div id="tcalls"></div></div>' +
-      '<div class="card"><h2>Masalar</h2><div class="tgrid" id="tgrid"></div>' +
-        '<p class="sub" id="tnone" style="display:none">Başlamak için aşağıdaki <b>Masa ayarlarından</b> masa sayını gir.</p></div>' +
-      '<div class="card"><details' + (none ? ' open' : '') + '><summary>Masa ayarları</summary>' +
-        '<label class="lb">Masa sayısı</label><input type="number" id="t_n" min="0" max="100" inputmode="numeric">' +
-        '<label class="lb">Wi-Fi ağ adı (isteğe bağlı)</label><input type="text" id="t_wn" maxlength="64" autocapitalize="none" autocomplete="off">' +
-        '<label class="lb">Wi-Fi şifresi (isteğe bağlı)</label><input type="text" id="t_wp" maxlength="64" autocapitalize="none" autocomplete="off">' +
-        '<label class="lb">Menü linki (isteğe bağlı)</label><input type="text" id="t_mn" placeholder="https://..." inputmode="url" autocapitalize="none">' +
-        '<label class="lb">Hızlı ürünler (her satıra bir ürün: Ürün = fiyat)</label>' +
-        '<textarea id="t_q" placeholder="Latte = 120&#10;Türk kahvesi = 80&#10;Cheesecake = 150"></textarea>' +
-        '<p class="sub">Hesaba eklerken bu ürünlere tek dokunuşla eklersin.</p>' +
-        '<button class="full" id="t_save">Kaydet</button><p id="t_msg"></p></details></div>' +
-      '<div class="card"><details><summary>Masa linkleri (NFC ve QR için)</summary><div id="tlinks"></div></details></div>' +
-    '</div><div class="side" id="tedit"></div></div>';
-  var s = tst.settings || {};
-  document.getElementById("t_n").value = (tst.tables || []).length;
-  document.getElementById("t_wn").value = s.wifi_name || "";
-  document.getElementById("t_wp").value = s.wifi_pass || "";
-  document.getElementById("t_mn").value = s.menu_url || "";
-  document.getElementById("t_q").value = (s.quick || []).map(function(q){ return q.n + " = " + String(q.p).replace(".", ","); }).join("\n");
-  document.getElementById("t_save").onclick = saveTables;
-  document.getElementById("lo").onclick = logout;
-  document.getElementById("snd").onclick = function(){
-    sndOn = !sndOn;
-    try { localStorage.setItem("dmgk_snd", sndOn ? "1" : "0"); } catch(e){}
-    if(sndOn){ unlockAudio(); setTimeout(beep, 300); }
-    else if(wl){ try { wl.release(); } catch(e){} wl = null; }
-    renderSnd();
+    (DEMO ? '<div class="demo-bar"><span>Demo: örnek veriler, değişiklikler kaydedilmez.</span><a href="#" id="demoOut">Çık</a></div>' : '') +
+    '<header class="top"><div class="top-in">' + brandHtml(K.biz.name) + '<span class="grow"></span>' +
+      '<span class="net" id="netB" hidden>' + I.wifiOff + '<span class="hide-s">Çevrimdışı</span></span>' +
+      '<button class="sum-pill" type="button" id="sumB" hidden></button>' +
+      '<span class="clock hide-s" id="clock"></span>' +
+      '<button class="icon-btn" type="button" id="sndB" aria-label="Sesli uyarı"></button>' +
+      '<button class="icon-btn" type="button" id="setB" aria-label="Ayarlar">' + I.gear + '</button>' +
+    '</div><div id="sndHint"></div><div id="calls"></div></header>' +
+    '<main class="main" id="main"></main><div id="billbar"></div>';
+  var d = $("demoOut"); if(d) d.onclick = function(e){ e.preventDefault(); logout(); };
+  $("sndB").onclick = function(){
+    lsSet("dmgk_snd", sndOn() ? "0" : "1");
+    if(sndOn()){ unlockAudio(); setTimeout(function(){ beep("garson"); }, 250); toast("Sesli uyarı açık"); }
+    else toast("Sesli uyarı kapalı");
+    sndBtn(); sndHint();
   };
-  renderSnd(); renderCalls(); renderGrid(); renderEdit(); renderLinks();
-  if(sndOn) keepAwake();
+  $("setB").onclick = openSettings;
+  $("sumB").onclick = openToday;
+  sndBtn(); sndHint(); netBadge(); renderSum(); renderCalls(); tickClock();
+  if(K.clockT) clearInterval(K.clockT);
+  K.clockT = setInterval(tickClock, 15000);
+}
+function tickClock(){
+  var c = $("clock");
+  if(c) c.textContent = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  if(K.ts) document.querySelectorAll("[data-age]").forEach(function(x){ x.textContent = ago(x.getAttribute("data-age")); });
+}
+function sndBtn(){ var b = $("sndB"); if(b){ b.innerHTML = sndOn() ? I.sound : I.mute; b.classList.toggle("on", !sndOn()); b.title = sndOn() ? "Sesli uyarı açık" : "Sesli uyarı kapalı"; } }
+function sndHint(){
+  var h = $("sndHint");
+  if(!h) return;
+  h.innerHTML = sndOn() && !audioReady() ? '<div class="snd-hint">' + I.sound + '<span>Çağrı sesinin çalması için ekrana bir kez dokun.</span></div>' : '';
+}
+function renderSum(){
+  var b = $("sumB");
+  if(!b) return;
+  if(!K.ext || !K.bills){ b.hidden = K.ext !== false; b.innerHTML = I.receipt + '<span class="hide-s">Bugün</span>'; return; }
+  var paid = K.bills.reduce(function(a, x){ return a + Number(x.paid || 0); }, 0);
+  b.hidden = false;
+  b.innerHTML = I.chart + '<span class="lbl">Bugün</span><b class="num">' + esc(tm(paid)) + '</b>';
 }
 
+/* ---------- çağrı şeridi ---------- */
 function renderCalls(){
-  var box = document.getElementById("tcalls");
+  var box = $("calls");
   if(!box) return;
-  updTitle();
-  var cs = tst.calls || [];
-  document.getElementById("ccnt").textContent = cs.length;
-  if(!cs.length){ box.innerHTML = '<p class="empty">Şu an bekleyen çağrı yok.</p>'; return; }
+  var cs = (K.ts && K.ts.calls) || [];
+  if(!cs.length){ box.innerHTML = ""; box.className = ""; return; }
+  box.className = "calls";
   box.innerHTML = cs.map(function(c){
-    var hs = c.kind === "hesap";
-    return '<div class="callx' + (hs ? ' hs' : '') + '"><div><div class="no">Masa ' + esc(c.no) + '</div>' +
-      '<div class="kd">' + (hs ? "Hesap istiyor" : "Garson çağırıyor") + '</div><div class="sub">' + esc(agoS(c.at)) + '</div></div>' +
-      '<div class="acts">' + (hs ? '<button class="ghost" data-ot="' + esc(String(c.table_id)) + '">Hesabı aç</button>' : '') +
-      '<button data-cd="' + esc(String(c.id)) + '">Tamam</button></div></div>';
+    var hs = c.kind === "hesap", late = ageMin(c.at) >= 3;
+    return '<div class="call' + (hs ? " hesap" : "") + (late ? " late" : "") + '"><button class="call-no" type="button" data-go="' + c.table_id + '" aria-label="Masa ' + c.no + ' aç">' + c.no + '</button>' +
+      '<div class="grow"><b>' + (hs ? "Hesap istiyor" : "Garson çağırıyor") + '</b><span><span data-age="' + attr(c.at) + '">' + esc(ago(c.at)) + '</span> önce · Masa ' + c.no + '</span></div>' +
+      (hs ? '<button class="btn sm" type="button" data-pay="' + c.table_id + '">' + I.receipt + 'Hesap</button>' : '') +
+      '<button class="btn ' + (hs ? "ghost" : "dark") + ' sm" type="button" data-cd="' + c.id + '" aria-label="Tamamlandı">' + I.check + (hs ? '' : 'Tamam') + '</button></div>';
   }).join("");
-  box.querySelectorAll("button[data-cd]").forEach(function(b){
-    b.onclick = async function(){
-      b.disabled = true;
-      try {
-        await rpc("owner_call_done", { p_id: String(biz.id), p_call: Number(b.getAttribute("data-cd")) });
-        await poll();
-      } catch(e){ alert(e.message); b.disabled = false; }
-    };
-  });
-  box.querySelectorAll("button[data-ot]").forEach(function(b){
-    b.onclick = function(){ var id = Number(b.getAttribute("data-ot")); if(selT !== id) openTable(id); else scrollEdit(); };
-  });
+  box.querySelectorAll("[data-cd]").forEach(function(b){ b.onclick = function(){ callDone(Number(b.getAttribute("data-cd")), b); }; });
+  box.querySelectorAll("[data-go]").forEach(function(b){ b.onclick = function(){ goTable(Number(b.getAttribute("data-go"))); }; });
+  box.querySelectorAll("[data-pay]").forEach(function(b){ b.onclick = function(){ goTable(Number(b.getAttribute("data-pay")), true); }; });
 }
-
-function renderGrid(){
-  var g = document.getElementById("tgrid");
-  if(!g) return;
-  var ts = tst.tables || [], calls = {};
-  (tst.calls || []).forEach(function(c){ calls[c.table_id] = 1; });
-  document.getElementById("tnone").style.display = ts.length ? "none" : "block";
-  g.style.display = ts.length ? "grid" : "none";
-  g.innerHTML = ts.map(function(t){
-    var tot = Number(t.total) || 0;
-    var cl = "tb" + (tot > 0 ? " has" : "") + (calls[t.id] ? " call" : "") + (selT === t.id ? " sel" : "");
-    return '<button class="' + cl + '" data-t="' + t.id + '"><b>Masa ' + t.no + '</b><span>' + (tot > 0 ? esc(tm(tot)) : "Boş") + '</span></button>';
-  }).join("");
-  g.querySelectorAll("button[data-t]").forEach(function(b){
-    b.onclick = function(){ openTable(Number(b.getAttribute("data-t"))); };
-  });
-}
-
-function scrollEdit(){
-  var box = document.getElementById("tedit");
-  if(box && box.scrollIntoView && window.innerWidth < 900) box.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-async function openTable(id){
-  if(selT === id){ selT = null; selI = null; renderGrid(); renderEdit(); return; }
-  selT = id; selI = null;
-  renderGrid(); renderEdit(); scrollEdit();
-  try {
-    var r = await rpc("owner_table_items", { p_id: String(biz.id), p_table: id });
-    if(selT !== id) return;
-    if(!r || r.status !== "ok"){ selT = null; renderGrid(); renderEdit(); alert("Masa açılamadı."); return; }
-    selI = r;
-    renderEdit();
-  } catch(e){ alert(e.message); }
-}
-
-function renderEdit(){
-  var box = document.getElementById("tedit");
-  if(!box) return;
-  var t = selT ? findT(selT) : null;
-  if(!t){
-    selT = null; selI = null;
-    box.innerHTML = (tst.tables || []).length ? '<div class="card"><p style="margin:0">Hesabını görmek ya da ürün eklemek için bir masaya dokun.</p></div>' : '';
-    return;
-  }
-  if(!selI){ box.innerHTML = '<div class="card"><p>Masa ' + t.no + ' yükleniyor...</p></div>'; return; }
-  var q = (tst.settings && tst.settings.quick) || [];
-  var h = '<div class="card" style="border-color:var(--or)"><div class="hdr" style="margin-bottom:4px"><h2>Masa ' + t.no + ' hesabı</h2><button class="ghost" id="te_x">Kapat</button></div>';
-  h += selI.items.length ? selI.items.map(function(i){
-    return '<div class="row"><div><div class="nm">' + esc(i.qty) + ' × ' + esc(i.name) + '</div><div class="sub">' + esc(tm(i.price)) + ' / adet</div></div>' +
-      '<div class="acts"><b>' + esc(tm(i.qty * i.price)) + '</b><button class="ghost" data-di="' + i.id + '">Sil</button></div></div>';
-  }).join("") : '<p class="empty">Bu masanın hesabı boş.</p>';
-  h += '<div class="tot"><span class="nm">Toplam</span><b>' + esc(tm(selI.total)) + '</b></div>';
-  if(q.length){
-    h += '<span class="lb">Hızlı ekle</span><div class="qk">' + q.map(function(x, k){
-      return '<button data-qk="' + k + '">' + esc(x.n) + ' &middot; ' + esc(tm(x.p)) + '</button>';
-    }).join("") + '</div>';
-  }
-  h += '<span class="lb">Elle ekle (ürün, adet, birim fiyat)</span><div class="addf"><input type="text" id="te_n" maxlength="60" placeholder="Ürün">' +
-    '<input type="number" id="te_q" min="1" max="99" value="1" inputmode="numeric"><input type="text" id="te_p" placeholder="Fiyat" inputmode="decimal"></div>' +
-    '<button class="full" id="te_add">Hesaba ekle</button>' +
-    '<div class="acts" style="margin-top:12px"><button class="ghost" id="te_clr">Hesabı kapat (sıfırla)</button>' +
-    '<a class="btn" href="/m/' + esc(t.token) + '" target="_blank" rel="noopener">Müşteri ekranı</a></div></div>';
-  box.innerHTML = h;
-  document.getElementById("te_x").onclick = function(){ selT = null; selI = null; renderGrid(); renderEdit(); };
-  box.querySelectorAll("button[data-di]").forEach(function(b){
-    b.onclick = function(){ tItem("owner_item_del", { p_id: String(biz.id), p_item: Number(b.getAttribute("data-di")) }, b); };
-  });
-  box.querySelectorAll("button[data-qk]").forEach(function(b){
-    b.onclick = function(){
-      var x = q[Number(b.getAttribute("data-qk"))];
-      tItem("owner_item_add", { p_id: String(biz.id), p_table: t.id, p_name: x.n, p_qty: 1, p_price: x.p }, b);
-    };
-  });
-  document.getElementById("te_add").onclick = function(){
-    var n = document.getElementById("te_n").value.trim();
-    var qt = parseInt(document.getElementById("te_q").value, 10);
-    var p = parsePrice(document.getElementById("te_p").value);
-    if(!n){ alert("Ürün adını yaz."); return; }
-    if(!(qt >= 1 && qt <= 99)){ alert("Adet 1 ile 99 arasında olmalı."); return; }
-    if(p === null){ alert("Fiyatı yaz. Örnek: 120 ya da 85,50"); return; }
-    tItem("owner_item_add", { p_id: String(biz.id), p_table: t.id, p_name: n, p_qty: qt, p_price: p }, this);
-  };
-  document.getElementById("te_clr").onclick = function(){
-    if(!confirm("Masa " + t.no + " hesabı sıfırlansın mı? Bunu ödeme alındıktan sonra yap.")) return;
-    tItem("owner_table_clear", { p_id: String(biz.id), p_table: t.id }, this, true);
-  };
-}
-
-function parsePrice(v){
-  v = String(v || "").trim().replace(/\s|₺|tl/gi, "").replace(",", ".");
-  if(!/^[0-9]{1,6}(\.[0-9]{1,2})?$/.test(v)) return null;
-  var n = Number(v);
-  return n >= 0 && n <= 100000 ? n : null;
-}
-
-async function tItem(fn, body, btn, refresh){
+async function callDone(id, btn){
   if(btn) btn.disabled = true;
   try {
-    var r = await rpc(fn, body);
-    if(!r || r.status !== "ok"){ alert("İşlem yapılamadı: " + (r && r.status)); if(btn) btn.disabled = false; return; }
-    selI = r;
-    var t = findT(r.table_id);
-    if(t){ t.total = r.total; t.n = r.items.length; }
-    renderGrid(); renderEdit();
-    if(refresh) await poll();
-  } catch(e){ alert(e.message); if(btn) btn.disabled = false; }
+    await rpc("owner_call_done", { p_id: bid(), p_call: id });
+    if(K.ts) K.ts.calls = (K.ts.calls || []).filter(function(c){ return c.id !== id; });
+    if(K.seenCalls) delete K.seenCalls[id];
+    updTitle(); renderCalls();
+    if(K.sel == null) renderTables(true); else { renderSwitch(); renderCallBanner(); }
+  } catch(e){ toast(netMsg(e), "bad"); if(btn) btn.disabled = false; }
 }
 
+/* =========================================================
+   Yönlendirme
+   ========================================================= */
+var payAfterOpen = false;
+function route(){
+  if(!K.biz || !$("main")) return;
+  var m = (location.hash || "").match(/^#m(\d+)$/);
+  closeSheet(true);
+  if(m && findT(Number(m[1]))) openTableView(Number(m[1]));
+  else viewTables();
+}
+window.addEventListener("hashchange", route);
+function goTable(id, pay){
+  payAfterOpen = !!pay;
+  if(location.hash === "#m" + id){ if(pay && K.items && K.sel === id){ payAfterOpen = false; openPay(); } return; }
+  if(/^#m\d+$/.test(location.hash)) location.replace(location.pathname + location.search + "#m" + id);
+  else { K.cameFromTables = K.sel == null; location.hash = "m" + id; }
+}
+function goTables(){
+  if(/^#m\d+$/.test(location.hash)){
+    if(history.length > 1 && K.cameFromTables){ history.back(); return; }
+    location.hash = "";
+    return;
+  }
+  route();
+}
+
+/* =========================================================
+   Masalar
+   ========================================================= */
+var FILTERS = [["all", "Tümü"], ["open", "Açık"], ["free", "Boş"], ["call", "Çağrı"]];
+function tState(t){
+  var cs = callsOf(t.id);
+  if(cs.length) return "call";
+  return Number(t.total) > 0 ? "open" : "free";
+}
+function viewTables(){
+  K.sel = null; K.items = null;
+  var bb = $("billbar"); if(bb) bb.innerHTML = "";
+  $("main").innerHTML =
+    '<div class="tv-head"><div><h1>Masalar</h1><div class="tv-stats" id="tvStats"></div></div>' +
+    '<div class="chips" id="flt" role="group" aria-label="Filtre"></div></div>' +
+    '<div class="tiles" id="tiles"></div>';
+  renderTables();
+}
+function renderTables(soft){
+  var box = $("tiles");
+  if(!box) return;
+  var ts = tables(), cnt = { all: ts.length, open: 0, free: 0, call: 0 }, sum = 0;
+  ts.forEach(function(t){ var s = tState(t); cnt[s]++; if(s === "call" && Number(t.total) > 0) cnt.open++; sum += Number(t.total) || 0; });
+  var f = $("flt");
+  if(f){
+    f.innerHTML = FILTERS.map(function(x){ return '<button class="chip' + (x[0] === "call" && cnt.call ? " hot" : "") + '" type="button" data-f="' + x[0] + '" aria-pressed="' + (K.filter === x[0]) + '">' + x[1] + ' <b>' + cnt[x[0]] + '</b></button>'; }).join("");
+    f.querySelectorAll("[data-f]").forEach(function(b){ b.onclick = function(){ K.filter = b.getAttribute("data-f"); renderTables(); }; });
+  }
+  var st = $("tvStats");
+  if(st) st.innerHTML = ts.length ? '<span>Açık <b>' + cnt.open + '</b>/' + ts.length + '</span><span>Masalarda <b class="num">' + esc(tm(sum)) + '</b></span>' +
+    (K.ext && K.bills ? '<span>Bugün kapanan <b>' + K.bills.length + '</b> hesap</span>' : '') : '';
+  if(!ts.length){
+    box.innerHTML = '<div class="card tiles-empty"><div class="empty">' + I.table + '<b>Henüz masa yok</b><span class="small">Masa sayını, Wi-Fi bilgini ve hızlı ürünlerini ayarlardan gir. Masalara konan NFC/QR ile müşteriler menüyü görür, garson çağırır.</span>' +
+      '<button class="btn" type="button" id="goSet">' + I.gear + 'Masa ayarları</button></div></div>';
+    $("goSet").onclick = openSettings;
+    return;
+  }
+  var list = ts.filter(function(t){
+    var s = tState(t);
+    return K.filter === "all" || K.filter === s || (K.filter === "open" && Number(t.total) > 0);
+  });
+  if(!list.length){ box.innerHTML = '<div class="tiles-empty"><div class="empty">' + I.table + '<b>Bu filtrede masa yok</b></div></div>'; return; }
+  box.innerHTML = list.map(function(t){
+    var s = tState(t), cs = callsOf(t.id), amt = Number(t.total) || 0, hs = cs.some(function(c){ return c.kind === "hesap"; });
+    return '<button class="tile ' + (s === "call" ? "calling" : s) + (hs ? " hesap" : "") + '" type="button" data-t="' + t.id + '" aria-label="Masa ' + t.no + '">' +
+      '<span class="t-no"><small>MASA</small>' + t.no + '</span>' +
+      (cs.length ? '<span class="t-bell">' + I.bell + (hs ? "Hesap" : "Garson") + '</span>' : '') +
+      (amt > 0 ? '<span><span class="t-amt num">' + esc(tm(amt)) + '</span><span class="t-sub" style="display:block">' + t.n + ' kalem</span></span>' : '<span class="t-sub">Boş</span>') +
+      '</button>';
+  }).join("");
+  box.querySelectorAll("[data-t]").forEach(function(b){ b.onclick = function(){ goTable(Number(b.getAttribute("data-t"))); }; });
+  void soft;
+}
+
+/* masa numarası yazarak atla (klavyeli kasa için) */
+document.addEventListener("keydown", function(e){
+  if(!K.biz || !$("main") || sheetEl || document.querySelector(".dialog.on")) return;
+  var tag = (e.target && e.target.tagName) || "";
+  if(/INPUT|TEXTAREA|SELECT/.test(tag) || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(K.sel != null){
+    if(e.key === "/"){ e.preventDefault(); var s = $("pq"); if(s) s.focus(); }
+    else if(e.key === "Escape"){ e.preventDefault(); goTables(); }
+    return;
+  }
+  if(/^[0-9]$/.test(e.key)){
+    K.jump = (K.jump + e.key).slice(-3);
+    var j = $("jumpEl");
+    if(!j){ j = document.createElement("div"); j.id = "jumpEl"; j.className = "jump"; document.body.appendChild(j); }
+    j.textContent = "Masa " + K.jump;
+    clearTimeout(K.jumpT);
+    K.jumpT = setTimeout(function(){
+      var no = Number(K.jump); K.jump = "";
+      var el = $("jumpEl"); if(el) el.remove();
+      var t = tables().filter(function(x){ return x.no === no; })[0];
+      if(t) goTable(t.id); else toast("Masa " + no + " yok", "bad");
+    }, 700);
+  }
+});
+
+/* =========================================================
+   Masa ekranı: ürünler + adisyon
+   ========================================================= */
+function openTableView(id){
+  var t = findT(id);
+  if(!t){ viewTables(); return; }
+  if(K.sel !== id){ K.items = null; K.q = ""; }
+  K.sel = id;
+  $("main").innerHTML =
+    '<div class="tbl-view">' +
+      '<div class="tv-bar"><button class="btn ghost sm back" type="button" id="backB">' + I.chev + 'Masalar</button><div class="tbl-switch" id="tsw" role="tablist" aria-label="Masa değiştir"></div></div>' +
+      '<div id="cb"></div>' +
+      '<div class="pos">' +
+        '<div class="prods">' +
+          '<div class="tv-title"><h1>Masa ' + t.no + '</h1><span class="muted small" id="tvSub"></span></div>' +
+          '<div class="p-search">' + I.search + '<input class="input" id="pq" type="search" placeholder="Ürün ara (kısayol: /)" autocomplete="off" value="' + attr(K.q) + '" aria-label="Ürün ara">' +
+            '<button class="clr" type="button" id="pqx" aria-label="Aramayı temizle"' + (K.q ? "" : " hidden") + '>' + I.x + '</button></div>' +
+          '<div class="p-grid" id="pgrid"></div>' +
+          '<div id="manBox"></div>' +
+        '</div>' +
+        '<aside class="bill-side"><div class="bill" id="billBox"></div></aside>' +
+      '</div>' +
+    '</div>';
+  $("backB").onclick = goTables;
+  var q = $("pq");
+  q.oninput = function(){ K.q = q.value; $("pqx").hidden = !K.q; renderProds(); };
+  q.onkeydown = function(e){
+    if(e.key === "Enter"){ e.preventDefault(); var f = filteredProds()[0]; if(f){ addItem(f.n, f.p, 1); q.select(); } else openManual(K.q); }
+    else if(e.key === "Escape"){ e.preventDefault(); if(q.value){ q.value = ""; K.q = ""; $("pqx").hidden = true; renderProds(); } else { q.blur(); goTables(); } }
+  };
+  $("pqx").onclick = function(){ q.value = ""; K.q = ""; $("pqx").hidden = true; renderProds(); q.focus(); };
+  renderSwitch(); renderCallBanner(); renderProds(); renderManual(); renderBillAll(); renderBillbar();
+  window.scrollTo(0, 0);
+  reloadItems(id).then(function(){
+    if(payAfterOpen && K.sel === id){ payAfterOpen = false; openPay(); }
+  });
+}
+function renderSwitch(){
+  var box = $("tsw");
+  if(!box) return;
+  box.innerHTML = tables().map(function(t){
+    var s = tState(t);
+    return '<button type="button" class="' + (s === "call" ? "calling" : Number(t.total) > 0 ? "open" : "") + '" data-sw="' + t.id + '" aria-current="' + (t.id === K.sel) + '" aria-label="Masa ' + t.no + '">' + t.no + '</button>';
+  }).join("");
+  box.querySelectorAll("[data-sw]").forEach(function(b){ b.onclick = function(){ goTable(Number(b.getAttribute("data-sw"))); }; });
+  var cur = box.querySelector('[aria-current="true"]');
+  if(cur && cur.scrollIntoView) cur.scrollIntoView({ block: "nearest", inline: "center" });
+}
+function renderCallBanner(){
+  var box = $("cb");
+  if(!box) return;
+  var cs = callsOf(K.sel);
+  if(!cs.length){ box.innerHTML = ""; return; }
+  box.innerHTML = cs.map(function(c){
+    var hs = c.kind === "hesap";
+    return '<div class="call-banner' + (hs ? " hesap" : "") + '">' + I.bell + '<span class="grow">' + (hs ? "Bu masa hesap istiyor" : "Bu masa garson çağırıyor") + ' · <span data-age="' + attr(c.at) + '">' + esc(ago(c.at)) + '</span> önce</span>' +
+      (hs ? '<button class="btn sm" type="button" id="cbPay">Ödeme al</button>' : '') +
+      '<button class="btn dark sm" type="button" data-cbd="' + c.id + '">' + I.check + 'Tamam</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-cbd]").forEach(function(b){ b.onclick = function(){ callDone(Number(b.getAttribute("data-cbd")), b); }; });
+  var p = $("cbPay"); if(p) p.onclick = openPay;
+}
+
+/* ---------- ürünler ---------- */
+function trLow(s){ return String(s || "").toLocaleLowerCase("tr-TR"); }
+function filteredProds(){
+  var q = trLow(K.q).trim();
+  return quick().filter(function(x){ return !q || trLow(x.n).indexOf(q) > -1; });
+}
+function qtyInBill(n, p){
+  if(!K.items) return 0;
+  var it = K.items.items.filter(function(x){ return x.name === n && Number(x.price) === Number(p); })[0];
+  return it ? it.qty : 0;
+}
+function renderProds(){
+  var g = $("pgrid");
+  if(!g) return;
+  var list = filteredProds(), q = K.q.trim();
+  var html = list.map(function(x){
+    var i = quick().indexOf(x), n = qtyInBill(x.n, x.p);
+    return '<button class="prod" type="button" data-pi="' + i + '"><span class="pn">' + esc(x.n) + '</span><span class="pp">' + esc(tm(x.p)) + '</span>' +
+      (n ? '<span class="pq">' + n + '</span>' : '') + '</button>';
+  }).join("");
+  if(q && !list.some(function(x){ return trLow(x.n) === trLow(q); })){
+    html += '<button class="prod new" type="button" id="pNew"><span class="pn">"' + esc(q) + '" ekle</span><span class="pp">fiyat yaz</span></button>';
+  }
+  if(!quick().length && !q){
+    html = '<div class="card" style="grid-column:1/-1"><div class="empty">' + I.coffee + '<b>Hızlı ürün listen boş</b><span class="small">Ayarlardan sık sattığın ürünleri ve fiyatlarını ekle; burada tek dokunuşla hesaba eklenir.</span>' +
+      '<button class="btn sm" type="button" id="pSet">' + I.gear + 'Ürünleri ekle</button></div></div>';
+  }
+  g.innerHTML = html;
+  g.querySelectorAll("[data-pi]").forEach(function(b){
+    b.onclick = function(){
+      var x = quick()[Number(b.getAttribute("data-pi"))];
+      addItem(x.n, x.p, 1);
+      b.classList.remove("hit"); void b.offsetWidth; b.classList.add("hit");
+    };
+  });
+  var pn = $("pNew"); if(pn) pn.onclick = function(){ openManual(q); };
+  var ps = $("pSet"); if(ps) ps.onclick = openSettings;
+}
+function renderManual(open, name){
+  var box = $("manBox");
+  if(!box) return;
+  if(!open){
+    box.innerHTML = '<button class="btn ghost block" type="button" id="manOpen">' + I.plus + 'Listede olmayan ürün ekle</button>';
+    $("manOpen").onclick = function(){ openManual(""); };
+    return;
+  }
+  box.innerHTML = '<div class="man"><div class="row between"><h3>Elle ekle</h3><button class="icon-btn sm" type="button" id="manX" aria-label="Kapat">' + I.x + '</button></div>' +
+    '<div class="man-row"><input class="input" id="mn" maxlength="60" placeholder="Ürün adı" value="' + attr(name || "") + '"><input class="input num" id="mp" placeholder="Fiyat" inputmode="decimal"></div>' +
+    '<div class="man-foot"><div class="stepper"><button type="button" id="mqm" aria-label="Azalt">−</button><input id="mq" type="number" min="1" max="99" value="1" inputmode="numeric" aria-label="Adet"><button type="button" id="mqp" aria-label="Artır">+</button></div>' +
+    '<label class="check"><input type="checkbox" id="msv">Hızlı ürünlere de ekle</label><span class="grow"></span>' +
+    '<button class="btn" type="button" id="madd">' + I.plus + 'Hesaba ekle</button></div></div>';
+  $("manX").onclick = function(){ renderManual(false); };
+  $("mqm").onclick = function(){ var i = $("mq"); i.value = Math.max(1, Number(i.value || 1) - 1); };
+  $("mqp").onclick = function(){ var i = $("mq"); i.value = Math.min(99, Number(i.value || 0) + 1); };
+  $("mp").onkeydown = function(e){ if(e.key === "Enter"){ e.preventDefault(); $("madd").click(); } };
+  $("madd").onclick = async function(){
+    var n = $("mn").value.trim(), p = parsePrice($("mp").value), q = parseInt($("mq").value, 10);
+    if(!n){ $("mn").classList.add("bad"); $("mn").focus(); return; }
+    if(p === null){ $("mp").classList.add("bad"); $("mp").focus(); toast("Fiyatı yaz. Örnek: 120 ya da 85,50", "bad"); return; }
+    if(!(q >= 1 && q <= 99)){ toast("Adet 1 ile 99 arasında olmalı", "bad"); return; }
+    if(n.length > 40 && $("msv").checked){ toast("Hızlı ürün adı en fazla 40 karakter olabilir", "bad"); return; }
+    addItem(n, p, q);
+    if($("msv").checked) await addToQuick(n, p);
+    renderManual(false);
+    K.q = ""; var pq = $("pq"); if(pq){ pq.value = ""; $("pqx").hidden = true; } renderProds();
+  };
+}
+function openManual(name){
+  renderManual(true, name);
+  setTimeout(function(){ var el = $(name ? "mp" : "mn"); if(el){ el.focus(); el.scrollIntoView({ block: "center", behavior: "smooth" }); } }, 30);
+}
+async function addToQuick(n, p){
+  var q = quick().slice();
+  if(q.some(function(x){ return trLow(x.n) === trLow(n); })){ toast(n + " zaten hızlı listede"); return; }
+  if(q.length >= 40){ toast("Hızlı listede en fazla 40 ürün olabilir", "bad"); return; }
+  q.push({ n: n, p: p });
+  var s = K.ts.settings || {};
+  try {
+    var r = await rpc("owner_tables_save", { p_id: bid(), p_count: tables().length, p_wifi_name: s.wifi_name || "", p_wifi_pass: s.wifi_pass || "", p_menu_url: s.menu_url || "", p_quick: q });
+    if(!r || r.status !== "ok") throw new Error(r && r.status);
+    setTs(r); renderProds();
+    toast(n + " hızlı ürünlere eklendi");
+  } catch(e){ toast("Hızlı listeye eklenemedi: " + netMsg(e), "bad"); }
+}
+
+/* ---------- hesap işlemleri (sıralı kuyruk + anında görünüm) ---------- */
+var tmpN = 0;
+function recalc(){
+  if(!K.items) return;
+  K.items.total = K.items.items.reduce(function(a, x){ return a + x.qty * Number(x.price); }, 0);
+  var t = findT(K.sel);
+  if(t){ t.total = K.items.total; t.n = K.items.items.length; }
+}
+function op(tid, fn){
+  K.pending++;
+  var p = K.chain.then(fn).then(function(r){
+    K.pending--;
+    if(r && r.status === "ok" && r.table_id != null) applyItems(r);
+    else if(r && r.status && r.status !== "ok"){ toast(opErr(r.status), "bad"); if(K.pending === 0) reloadItems(tid); }
+    return r;
+  }, function(e){
+    K.pending--;
+    toast(netMsg(e), "bad");
+    if(K.pending === 0) reloadItems(tid);
+    return null;
+  });
+  K.chain = p;
+  return p;
+}
+function opErr(s){
+  return { bad_name: "Ürün adı geçersiz", bad_qty: "Adet 1 ile 99 arasında olmalı", bad_price: "Fiyat geçersiz", too_many: "Bu masada çok fazla kalem var", not_found: "Masa ya da ürün bulunamadı", empty: "Hesap boş", bad_discount: "İndirim tutarı geçersiz", bad_method: "Ödeme türü geçersiz", same: "Aynı masa seçildi" }[s] || ("İşlem yapılamadı: " + s);
+}
+function applyItems(r){
+  var t = findT(r.table_id);
+  if(t){ t.total = r.total; t.n = (r.items || []).length; }
+  if(K.sel === r.table_id && K.pending === 0){ K.items = r; renderBillAll(); renderProds(); renderBillbar(); }
+  renderSwitch();
+}
+async function reloadItems(tid){
+  try {
+    var r = await rpc("owner_table_items", { p_id: bid(), p_table: tid });
+    if(r && r.status === "ok" && K.pending === 0){ applyItems(r); if(K.sel === tid && !K.items) K.items = r; }
+    else if(r && r.status !== "ok" && K.sel === tid){ toast("Masa açılamadı", "bad"); goTables(); }
+  } catch(e){ toast(netMsg(e), "bad"); }
+}
+function addItem(name, price, qty){
+  if(K.sel == null) return;
+  if(!K.items){ toast("Masa yükleniyor, bir saniye", "bad"); return; }
+  var tid = K.sel, it = K.items.items.filter(function(x){ return x.name === name && Number(x.price) === Number(price); })[0];
+  if(it) it.qty = Math.min(99, it.qty + qty);
+  else { it = { id: "tmp" + (++tmpN), name: name, qty: qty, price: Number(price), tmp: true }; K.items.items.push(it); }
+  K.flash = name + "|" + Number(price);
+  recalc(); renderBillAll(); renderProds(); renderBillbar(true);
+  try { if(navigator.vibrate) navigator.vibrate(12); } catch(e){}
+  op(tid, function(){ return rpc("owner_item_add", { p_id: bid(), p_table: tid, p_name: name, p_qty: qty, p_price: Number(price) }); });
+}
+function setQty(itemId, n){
+  if(!K.items) return;
+  var tid = K.sel, it = K.items.items.filter(function(x){ return String(x.id) === String(itemId); })[0];
+  if(!it || it.tmp) return;
+  var old = it.qty, snap = { name: it.name, price: Number(it.price) };
+  n = clamp(n, 0, 99);
+  if(n === old) return;
+  if(n === 0) K.items.items = K.items.items.filter(function(x){ return x !== it; });
+  else it.qty = n;
+  recalc(); renderBillAll(); renderProds(); renderBillbar();
+  if(n > old){
+    op(tid, function(){ return rpc("owner_item_add", { p_id: bid(), p_table: tid, p_name: snap.name, p_qty: n - old, p_price: snap.price }); });
+  } else {
+    op(tid, function(){
+      return extCall("owner_item_qty", { p_id: bid(), p_item: it.id, p_qty: n }, async function(){
+        var r = await rpc("owner_item_del", { p_id: bid(), p_item: it.id });
+        if(n > 0 && r && r.status === "ok") r = await rpc("owner_item_add", { p_id: bid(), p_table: tid, p_name: snap.name, p_qty: n, p_price: snap.price });
+        return r;
+      });
+    });
+  }
+  if(n === 0) toast(snap.name + " silindi", "good", { label: "Geri al", fn: function(){ if(K.sel === tid) addItem(snap.name, snap.price, old); } });
+}
+
+/* ---------- adisyon ---------- */
+function billHtml(){
+  var t = findT(K.sel);
+  if(!t) return "";
+  if(!K.items) return '<div class="bill-h"><div><div class="eyebrow">Adisyon</div><h2>Masa ' + t.no + '</h2></div></div><div class="bill-empty"><div class="empty"><div class="spin"></div></div></div>';
+  var its = K.items.items, units = its.reduce(function(a, x){ return a + x.qty; }, 0);
+  var list = its.length ? its.map(function(x){
+    var key = x.name + "|" + Number(x.price);
+    return '<div class="li' + (x.tmp ? " tmp" : "") + (K.flash === key ? " flash" : "") + '">' +
+      '<div class="ln ell">' + esc(x.name) + '<span>' + esc(tm(x.price)) + '</span></div>' +
+      '<div class="lt num">' + esc(tm(x.qty * Number(x.price))) + '</div>' +
+      '<div class="lq">' +
+        (x.qty <= 1 ? '<button class="qbtn del" type="button" data-q="' + attr(x.id) + '" data-n="0" aria-label="' + attr(x.name) + ' sil"' + (x.tmp ? " disabled" : "") + '>' + I.trash + '</button>'
+          : '<button class="qbtn" type="button" data-q="' + attr(x.id) + '" data-n="' + (x.qty - 1) + '" aria-label="Azalt"' + (x.tmp ? " disabled" : "") + '>−</button>') +
+        '<span class="qv num">' + x.qty + '</span>' +
+        '<button class="qbtn" type="button" data-q="' + attr(x.id) + '" data-n="' + (x.qty + 1) + '" aria-label="Artır"' + (x.tmp || x.qty >= 99 ? " disabled" : "") + '>+</button>' +
+      '</div></div>';
+  }).join("") : '<div class="empty">' + I.receipt + '<b>Hesap boş</b><span class="small">Soldaki ürünlere dokunarak ekle.</span></div>';
+  var hasCall = callsOf(K.sel).length;
+  return '<div class="bill-h"><div><div class="eyebrow">Adisyon</div><h2>Masa ' + t.no + '</h2></div><span class="muted small">' + its.length + ' kalem · ' + units + ' adet</span></div>' +
+    '<div class="bill-list">' + list + '</div>' +
+    '<div class="bill-tot"><div class="row between"><span class="ink2" style="font-weight:700">Toplam</span><span class="big num">' + esc(tm(K.items.total)) + '</span></div></div>' +
+    '<div class="bill-acts">' +
+      '<button class="btn soft" type="button" data-ba="split"' + (its.length ? "" : " disabled") + '>' + I.split + 'Böl</button>' +
+      '<button class="btn soft" type="button" data-ba="move"' + (its.length ? "" : " disabled") + '>' + I.move + 'Taşı</button>' +
+      '<button class="btn soft" type="button" data-ba="print"' + (its.length ? "" : " disabled") + '>' + I.print + 'Yazdır</button>' +
+      '<a class="btn soft" href="' + attr(tableBase() + t.token) + '" target="_blank" rel="noopener">' + I.ext + 'Masa sayfası</a>' +
+    '</div>' +
+    '<div class="bill-pay"><button class="btn xl block" type="button" data-ba="pay"' + (its.length ? "" : " disabled") + '>' + I.cash + 'Ödeme al' + (hasCall ? '' : '') + '</button></div>';
+}
+function bindBill(root){
+  root.querySelectorAll("[data-q]").forEach(function(b){ b.onclick = function(){ setQty(b.getAttribute("data-q"), Number(b.getAttribute("data-n"))); }; });
+  root.querySelectorAll("[data-ba]").forEach(function(b){
+    b.onclick = function(){
+      var a = b.getAttribute("data-ba");
+      if(a === "pay") openPay(); else if(a === "split") openSplit(); else if(a === "move") openMove(); else if(a === "print") printBill();
+    };
+  });
+}
+function renderBillAll(){
+  var box = $("billBox");
+  if(box){ box.innerHTML = billHtml(); bindBill(box); }
+  if(sheetIs("bill")){ var sb = $("sheetB"); sb.innerHTML = '<div class="bill">' + billHtml() + '</div>'; bindBill(sb); }
+  var sub = $("tvSub");
+  if(sub && K.items) sub.textContent = K.items.items.length ? K.items.items.length + " kalem · " + tm(K.items.total) : "hesap boş";
+  setTimeout(function(){ K.flash = null; }, 50);
+}
+function renderBillbar(bump){
+  var host = $("billbar");
+  if(!host) return;
+  if(K.sel == null){ host.innerHTML = ""; return; }
+  var t = findT(K.sel), n = K.items ? K.items.items.reduce(function(a, x){ return a + x.qty; }, 0) : 0, tot = K.items ? K.items.total : (t ? t.total : 0);
+  host.innerHTML = '<div class="billbar' + (bump ? " bump" : "") + '"><div class="billbar-in">' +
+    '<button class="bb-sum" type="button" id="bbOpen"><span class="bb-n">' + n + '</span><span class="grow"><span>Masa ' + (t ? t.no : "") + ' hesabı</span><b class="num">' + esc(tm(tot)) + '</b></span>' + I.chev + '</button>' +
+    '<button class="btn xl" type="button" id="bbPay"' + (n ? "" : " disabled") + '>Öde</button></div></div>';
+  $("bbOpen").onclick = openBillSheet;
+  $("bbPay").onclick = openPay;
+}
+function openBillSheet(){
+  openSheet('<div class="grow"><div class="eyebrow">Adisyon</div><h2>Masa ' + findT(K.sel).no + '</h2></div>', '<div class="bill">' + billHtml() + '</div>', { k: "bill", tall: true });
+  bindBill($("sheetB"));
+  var h = sheetEl.querySelector(".bill .bill-h"); if(h) h.remove();
+}
+
+/* =========================================================
+   Ödeme
+   ========================================================= */
+function openPay(){
+  if(!K.items || !K.items.items.length){ toast("Hesap boş", "bad"); return; }
+  var tid = K.sel, t = findT(tid), total = K.items.total;
+  var st = { m: lsGet("dmgk_lastm") || "nakit", dType: "none", dVal: 0, got: null };
+  var el = openSheet('<div class="grow"><div class="eyebrow">Ödeme al</div><h2>Masa ' + t.no + '</h2></div>',
+    '<div class="pay-total"><span class="muted small" id="pyOld"></span><span class="big num" id="pyTot"></span><span class="muted small">' + K.items.items.length + ' kalem</span></div>' +
+    '<div class="methods" role="group" aria-label="Ödeme türü">' +
+      '<button class="method" type="button" data-m="nakit">' + I.cash + 'Nakit</button>' +
+      '<button class="method" type="button" data-m="kart">' + I.card + 'Kart</button>' +
+      '<button class="method" type="button" data-m="diger">' + I.other + 'Diğer</button></div>' +
+    '<div class="cash" id="pyCash"><div class="lbl">Alınan para</div><div class="cash-btns" id="pyGot"></div>' +
+      '<input class="input num" id="pyIn" inputmode="decimal" placeholder="Farklı bir tutar yaz">' +
+      '<div class="change" id="pyCh"></div></div>' +
+    '<details class="more-opt" id="pyDisc"><summary>İndirim uygula</summary><div>' +
+      '<div class="chips" id="pyDc">' + [["none", "Yok"], ["p5", "%5"], ["p10", "%10"], ["p20", "%20"], ["amt", "Tutar"]].map(function(x){ return '<button class="chip" type="button" data-d="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div>' +
+      '<input class="input num" id="pyDa" inputmode="decimal" placeholder="İndirim tutarı (₺)" hidden>' +
+      (K.ext === false ? '<p class="hint">İndirim sadece hesaplamada ve fişte görünür.</p>' : '') + '</div></details>',
+    { k: "pay", foot: '<div class="row"><button class="btn ghost" type="button" id="pyPr">' + I.print + '<span class="hide-s">Fiş</span></button><button class="btn xl grow" type="button" id="pyGo"></button></div>' });
+  function disc(){
+    if(st.dType === "p5") return Math.round(total * 5) / 100;
+    if(st.dType === "p10") return Math.round(total * 10) / 100;
+    if(st.dType === "p20") return Math.round(total * 20) / 100;
+    if(st.dType === "amt") return clamp(st.dVal || 0, 0, total);
+    return 0;
+  }
+  function pay(){ return Math.round((total - disc()) * 100) / 100; }
+  function suggestions(p){
+    var s = [p], steps = [50, 100, 200, 500, 1000];
+    steps.forEach(function(x){ var v = Math.ceil(p / x) * x; if(v > p && s.indexOf(v) < 0) s.push(v); });
+    return s.slice(0, 5);
+  }
+  function upd(){
+    var p = pay(), d = disc();
+    $("pyTot").textContent = tm(p);
+    $("pyOld").innerHTML = d ? '<s>' + esc(tm(total)) + '</s> · ' + esc(tm(d)) + ' indirim' : '';
+    el.querySelectorAll("[data-m]").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-m") === st.m)); });
+    el.querySelectorAll("[data-d]").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-d") === st.dType)); });
+    $("pyDa").hidden = st.dType !== "amt";
+    $("pyCash").hidden = st.m !== "nakit";
+    $("pyGot").innerHTML = suggestions(p).map(function(v, i){ return '<button class="chip" type="button" data-g="' + v + '" aria-pressed="' + (st.got === v) + '">' + (i === 0 ? "Tam " : "") + esc(tm(v)) + '</button>'; }).join("");
+    $("pyGot").querySelectorAll("[data-g]").forEach(function(b){ b.onclick = function(){ st.got = Number(b.getAttribute("data-g")); $("pyIn").value = ""; upd(); }; });
+    var ch = $("pyCh");
+    if(st.m === "nakit" && st.got != null){
+      var c = Math.round((st.got - p) * 100) / 100;
+      ch.className = "change" + (c < 0 ? " neg" : "");
+      ch.innerHTML = '<span>' + (c < 0 ? "Eksik" : "Para üstü") + '</span><b class="num">' + esc(tm(Math.abs(c))) + '</b>';
+    } else ch.innerHTML = "";
+    var go = $("pyGo");
+    go.innerHTML = I.check + esc(tm(p)) + ' ' + ({ nakit: "nakit", kart: "kart", diger: "diğer" }[st.m]) + ' · Kapat';
+    go.disabled = st.m === "nakit" && st.got != null && st.got < p;
+  }
+  el.querySelectorAll("[data-m]").forEach(function(b){ b.onclick = function(){ st.m = b.getAttribute("data-m"); upd(); }; });
+  el.querySelectorAll("[data-d]").forEach(function(b){ b.onclick = function(){ st.dType = b.getAttribute("data-d"); if(st.dType === "amt") setTimeout(function(){ $("pyDa").focus(); }, 30); upd(); }; });
+  $("pyDa").oninput = function(){ var v = parsePrice(this.value); st.dVal = v == null ? 0 : v; this.classList.toggle("bad", !!this.value && (v == null || v > total)); upd(); };
+  $("pyIn").oninput = function(){ var v = parsePrice(this.value); st.got = v; upd(); };
+  $("pyPr").onclick = function(){ printBill({ discount: disc(), method: st.m, got: st.got }); };
+  $("pyGo").onclick = function(){ closeTable(tid, st.m, disc(), this); };
+  upd();
+}
+
+async function closeTable(tid, method, discount, btn){
+  if(btn){ btn.disabled = true; btn.innerHTML = '<span class="spin sm"></span>Kapatılıyor...'; }
+  await K.chain;
+  var t = findT(tid), snap = K.items ? JSON.parse(JSON.stringify(K.items.items)) : [], paid = Math.round(((K.items ? K.items.total : 0) - discount) * 100) / 100;
+  try {
+    var r = await extCall("owner_table_close", { p_id: bid(), p_table: tid, p_method: method, p_discount: discount }, function(){
+      return rpc("owner_table_clear", { p_id: bid(), p_table: tid });
+    });
+    if(!r || r.status !== "ok"){ toast(opErr(r && r.status), "bad"); if(btn){ btn.disabled = false; btn.textContent = "Tekrar dene"; } return; }
+    lsSet("dmgk_lastm", method);
+    applyItems(r);
+    if(K.ts) K.ts.calls = (K.ts.calls || []).filter(function(c){ return c.table_id !== tid; });
+    closeSheet(true);
+    var no = t ? t.no : "";
+    toast("Masa " + no + " kapatıldı · " + tm(paid) + " " + ({ nakit: "nakit", kart: "kart", diger: "diğer" }[method]), "good",
+      { label: "Geri al", fn: function(){ r.bill_id ? reopenBill(r.bill_id) : restoreItems(tid, snap); } }, 8000);
+    if(K.ext) loadBills();
+    updTitle(); renderCalls();
+    goTables();
+  } catch(e){
+    toast(netMsg(e), "bad");
+    if(btn){ btn.disabled = false; btn.textContent = "Tekrar dene"; }
+  }
+}
+async function reopenBill(billId){
+  try {
+    var r = await rpc("owner_bill_reopen", { p_id: bid(), p_bill: billId });
+    if(!r || r.status !== "ok") throw new Error(opErr(r && r.status));
+    applyItems(r);
+    toast("Hesap geri açıldı · Masa " + r.no);
+    loadBills();
+    if(sheetIs("today")) openToday();
+    else goTable(r.table_id);
+  } catch(e){ toast(e.message === "too_old" ? "6 saatten eski hesap geri alınamaz" : netMsg(e), "bad"); }
+}
+async function restoreItems(tid, snap){
+  for(var i = 0; i < snap.length; i++){
+    var x = snap[i];
+    await op(tid, function(){ return rpc("owner_item_add", { p_id: bid(), p_table: tid, p_name: x.name, p_qty: x.qty, p_price: Number(x.price) }); });
+  }
+  toast("Hesap geri yüklendi");
+  goTable(tid);
+}
+
+/* =========================================================
+   Böl, taşı, yazdır
+   ========================================================= */
+function openSplit(){
+  if(!K.items || !K.items.items.length) return;
+  var total = K.items.total, st = { n: 2, pick: {} };
+  var el = openSheet('<div class="grow"><div class="eyebrow">Hesabı böl</div><h2>Masa ' + findT(K.sel).no + ' · ' + esc(tm(total)) + '</h2></div>',
+    '<div class="seg" role="group" aria-label="Bölme türü"><button type="button" data-sm="p" aria-pressed="true">Kişi başı</button><button type="button" data-sm="i" aria-pressed="false">Ürüne göre</button></div>' +
+    '<div id="spBody"></div>', { k: "split" });
+  var mode = "p";
+  function draw(){
+    var b = $("spBody");
+    el.querySelectorAll("[data-sm]").forEach(function(x){ x.setAttribute("aria-pressed", String(x.getAttribute("data-sm") === mode)); });
+    if(mode === "p"){
+      var each = total / st.n, up = Math.ceil(each);
+      b.innerHTML = '<div class="stack"><div class="row between"><span class="lbl">Kişi sayısı</span><div class="stepper"><button type="button" id="spm">−</button><input id="spn" type="number" min="2" max="30" value="' + st.n + '" inputmode="numeric"><button type="button" id="spp">+</button></div></div>' +
+        '<div class="split-big"><span class="muted small">Kişi başı</span><b class="num">' + esc(tm(Math.round(each * 100) / 100)) + '</b>' +
+        (up !== Math.round(each * 100) / 100 ? '<span class="small ink2">Yuvarlarsan ' + esc(tm(up)) + ' · fazlası ' + esc(tm(up * st.n - total)) + '</span>' : '') + '</div></div>';
+      $("spm").onclick = function(){ st.n = Math.max(2, st.n - 1); draw(); };
+      $("spp").onclick = function(){ st.n = Math.min(30, st.n + 1); draw(); };
+      $("spn").onchange = function(){ st.n = clamp(parseInt(this.value, 10) || 2, 2, 30); draw(); };
+    } else {
+      var sel = 0;
+      K.items.items.forEach(function(x){ sel += (st.pick[x.id] || 0) * Number(x.price); });
+      b.innerHTML = '<div>' + K.items.items.map(function(x){
+        var v = st.pick[x.id] || 0;
+        return '<div class="sp-item"><div class="grow"><b class="ell">' + esc(x.name) + '</b><span class="small muted">' + x.qty + ' × ' + esc(tm(x.price)) + '</span></div>' +
+          '<div class="stepper"><button type="button" data-sd="' + attr(x.id) + '" data-v="-1">−</button><input value="' + v + '" readonly aria-label="Seçilen adet"><button type="button" data-sd="' + attr(x.id) + '" data-v="1">+</button></div></div>';
+      }).join("") + '</div>' +
+        '<div class="split-big"><span class="muted small">Seçilenler</span><b class="num">' + esc(tm(sel)) + '</b><span class="small ink2">Kalan ' + esc(tm(total - sel)) + '</span></div>';
+      b.querySelectorAll("[data-sd]").forEach(function(btn){
+        btn.onclick = function(){
+          var id = btn.getAttribute("data-sd"), it = K.items.items.filter(function(x){ return String(x.id) === id; })[0];
+          st.pick[id] = clamp((st.pick[id] || 0) + Number(btn.getAttribute("data-v")), 0, it.qty);
+          draw();
+        };
+      });
+    }
+  }
+  el.querySelectorAll("[data-sm]").forEach(function(x){ x.onclick = function(){ mode = x.getAttribute("data-sm"); draw(); }; });
+  draw();
+}
+
+function openMove(){
+  if(!K.items || !K.items.items.length) return;
+  var from = findT(K.sel);
+  var el = openSheet('<div class="grow"><div class="eyebrow">Masa taşı</div><h2>Masa ' + from.no + ' hesabı nereye?</h2></div>',
+    '<p class="small ink2">Hedef masada hesap varsa ikisi birleştirilir. Bu masanın çağrıları kapanır.</p>' +
+    '<div class="mv-grid">' + tables().filter(function(t){ return t.id !== from.id; }).map(function(t){
+      var amt = Number(t.total) || 0;
+      return '<button type="button" class="' + (amt > 0 ? "open" : "") + '" data-mv="' + t.id + '"><b>' + t.no + '</b><span>' + (amt > 0 ? esc(tm(amt)) : "Boş") + '</span></button>';
+    }).join("") + '</div>', { k: "move" });
+  el.querySelectorAll("[data-mv]").forEach(function(b){
+    b.onclick = async function(){
+      var to = findT(Number(b.getAttribute("data-mv")));
+      var ok = await confirmBox({ title: "Masa " + from.no + " → Masa " + to.no, text: Number(to.total) > 0 ? "Masa " + to.no + " hesabıyla birleştirilecek." : "Bütün hesap Masa " + to.no + "'e taşınacak.", ok: "Taşı" });
+      if(!ok) return;
+      await moveTable(from.id, to.id);
+    };
+  });
+}
+async function moveTable(fromId, toId){
+  await K.chain;
+  var from = findT(fromId), to = findT(toId), snap = K.items ? K.items.items.slice() : [];
+  try {
+    var r = await extCall("owner_table_move", { p_id: bid(), p_from: fromId, p_to: toId }, async function(){
+      var last = null;
+      for(var i = 0; i < snap.length; i++){
+        last = await rpc("owner_item_add", { p_id: bid(), p_table: toId, p_name: snap[i].name, p_qty: snap[i].qty, p_price: Number(snap[i].price) });
+        if(!last || last.status !== "ok") return last;
+      }
+      var c = await rpc("owner_table_clear", { p_id: bid(), p_table: fromId });
+      if(!c || c.status !== "ok") return c;
+      return last;
+    });
+    if(!r || r.status !== "ok"){ toast(opErr(r && r.status), "bad"); return; }
+    if(from){ from.total = 0; from.n = 0; }
+    if(to){ to.total = r.total; to.n = r.items.length; }
+    if(K.ts) K.ts.calls = (K.ts.calls || []).filter(function(c){ return c.table_id !== fromId; });
+    closeSheet(true);
+    toast("Masa " + from.no + " → Masa " + to.no + " taşındı");
+    K.items = null;
+    goTable(toId);
+  } catch(e){ toast(netMsg(e), "bad"); }
+}
+
+function printHtml(html){
+  var area = $("printArea");
+  if(area) area.remove();
+  area = document.createElement("div");
+  area.id = "printArea";
+  area.innerHTML = '<style>@page{size:80mm auto;margin:4mm}</style>' + html;
+  document.body.appendChild(area);
+  document.body.classList.add("printing");
+  function done(){ document.body.classList.remove("printing"); area.remove(); window.removeEventListener("afterprint", done); }
+  window.addEventListener("afterprint", done);
+  setTimeout(function(){ window.print(); setTimeout(function(){ if(document.body.contains(area)) done(); }, 2000); }, 60);
+}
+function printBill(o){
+  o = o || {};
+  if(!K.items) return;
+  var t = findT(K.sel), d = o.discount || 0, total = K.items.total;
+  printHtml('<div class="rc"><h2>' + esc(K.biz.name) + '</h2><div class="c">Masa ' + t.no + ' · ' + esc(new Date().toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })) + '</div><hr>' +
+    K.items.items.map(function(x){ return '<div class="l"><span>' + x.qty + ' x ' + esc(x.name) + '</span><span>' + esc(tm(x.qty * Number(x.price))) + '</span></div>'; }).join("") + '<hr>' +
+    (d ? '<div class="l"><span>Ara toplam</span><span>' + esc(tm(total)) + '</span></div><div class="l"><span>İndirim</span><span>-' + esc(tm(d)) + '</span></div>' : '') +
+    '<div class="l t"><span>TOPLAM</span><span>' + esc(tm(total - d)) + '</span></div>' +
+    (o.method ? '<div class="l"><span>Ödeme</span><span>' + ({ nakit: "Nakit", kart: "Kart", diger: "Diğer" }[o.method]) + '</span></div>' : '') +
+    (o.method === "nakit" && o.got ? '<div class="l"><span>Alınan</span><span>' + esc(tm(o.got)) + '</span></div><div class="l"><span>Para üstü</span><span>' + esc(tm(o.got - (total - d))) + '</span></div>' : '') +
+    '<hr><div class="c">Bilgi fişidir · Mali değeri yoktur</div><div class="c">Teşekkür ederiz</div></div>');
+}
+
+/* =========================================================
+   Bugün: kapanan hesaplar ve ciro
+   ========================================================= */
+var TD = { off: 0 };
+async function openToday(){
+  var el = openSheet('<div class="grow"><div class="eyebrow">Gün özeti</div><h2>Kasa</h2></div>', '<div id="tdBody"><div class="empty"><div class="spin"></div></div></div>', { k: "today", tall: true });
+  void el;
+  if(K.ext === false){ renderTodayNoExt(); return; }
+  await renderToday();
+}
+function renderTodayNoExt(){
+  var b = $("tdBody");
+  if(!b) return;
+  var open = tables().filter(function(t){ return Number(t.total) > 0; }), sum = open.reduce(function(a, t){ return a + Number(t.total); }, 0);
+  b.innerHTML = '<div class="kpis"><div class="kpi hero"><span>Şu an masalarda</span><b class="num">' + esc(tm(sum)) + '</b></div><div class="kpi"><span>Açık masa</span><b>' + open.length + '</b></div><div class="kpi"><span>Toplam masa</span><b>' + tables().length + '</b></div></div>' +
+    '<div class="card stack"><h3>Günlük ciro özeti kapalı</h3><p class="small ink2">Kapatılan hesapların tutarını ve ödeme türünü (nakit, kart) kaydetmek için kasa ek kurulumu gerekiyor. ' +
+    'Kurulunca burada günün cirosunu, nakit ve kart toplamlarını, en çok satanları görürsün; yanlışlıkla kapatılan hesabı geri alabilirsin.</p>' +
+    '<p class="small muted">Kurulum için Damgalio ile iletişime geç.</p></div>';
+}
+async function renderToday(){
+  var b = $("tdBody");
+  if(!b) return;
+  var bills = TD.off === 0 ? await loadBills(0) : await loadBills(1);
+  if(!sheetIs("today")) return;
+  b = $("tdBody");
+  if(bills === null){ if(K.ext === false) renderTodayNoExt(); else b.innerHTML = '<div class="empty">' + I.alert + '<b>Özet alınamadı</b></div>'; return; }
+  if(TD.off === 1){ var t0 = startOfDay(Date.now()).toISOString(); bills = bills.filter(function(x){ return x.at < t0; }); }
+  var paid = 0, disc = 0, by = { nakit: 0, kart: 0, diger: 0 }, prod = {};
+  bills.forEach(function(x){
+    paid += Number(x.paid); disc += Number(x.discount || 0); by[x.method] = (by[x.method] || 0) + Number(x.paid);
+    (x.items || []).forEach(function(i){ var k = i.n; prod[k] = prod[k] || { q: 0, s: 0 }; prod[k].q += i.q; prod[k].s += i.q * Number(i.p); });
+  });
+  var top = Object.keys(prod).sort(function(a, c){ return prod[c].q - prod[a].q; }).slice(0, 6);
+  var open = tables().filter(function(t){ return Number(t.total) > 0; }), openSum = open.reduce(function(a, t){ return a + Number(t.total); }, 0);
+  function pc(v){ return paid ? (v / paid * 100).toFixed(1) : 0; }
+  var day = TD.off === 0 ? "Bugün" : "Dün";
+  var txt = summaryText(day, bills, paid, by, disc, top, prod);
+  b.innerHTML =
+    '<div class="seg" role="group" aria-label="Gün"><button type="button" data-td="0" aria-pressed="' + (TD.off === 0) + '">Bugün</button><button type="button" data-td="1" aria-pressed="' + (TD.off === 1) + '">Dün</button></div>' +
+    '<div class="kpis"><div class="kpi hero"><span>' + day + ' ciro</span><b class="num">' + esc(tm(paid)) + '</b></div>' +
+      '<div class="kpi"><span>Hesap</span><b>' + bills.length + '</b></div><div class="kpi"><span>Ortalama</span><b class="num">' + esc(tm(bills.length ? paid / bills.length : 0)) + '</b></div>' +
+      '<div class="kpi"><span>Nakit</span><b class="num">' + esc(tm(by.nakit)) + '</b></div><div class="kpi"><span>Kart</span><b class="num">' + esc(tm(by.kart)) + '</b></div>' +
+      (by.diger ? '<div class="kpi"><span>Diğer</span><b class="num">' + esc(tm(by.diger)) + '</b></div>' : '') +
+      (disc ? '<div class="kpi"><span>İndirim</span><b class="num">' + esc(tm(disc)) + '</b></div>' : '') +
+      (TD.off === 0 ? '<div class="kpi"><span>Açık masalarda</span><b class="num">' + esc(tm(openSum)) + '</b></div>' : '') +
+    '</div>' +
+    (paid ? '<div class="stack"><div class="mbar">' + ["nakit", "kart", "diger"].filter(function(m){ return by[m]; }).map(function(m){ return '<i class="' + m + '" style="width:' + pc(by[m]) + '%"></i>'; }).join("") + '</div>' +
+      '<div class="mleg"><span><i class="nakit"></i>Nakit %' + Math.round(pc(by.nakit)) + '</span><span><i class="kart"></i>Kart %' + Math.round(pc(by.kart)) + '</span>' + (by.diger ? '<span><i class="diger"></i>Diğer %' + Math.round(pc(by.diger)) + '</span>' : '') + '</div></div>' : '') +
+    (top.length ? '<div class="card stack"><h3>En çok satanlar</h3><div class="top-p">' + top.map(function(k){ return '<div><span>' + esc(k) + '</span><b>' + prod[k].q + ' adet · ' + esc(tm(prod[k].s)) + '</b></div>'; }).join("") + '</div></div>' : '') +
+    '<div><h3 style="margin-bottom:6px">Kapanan hesaplar</h3>' + (bills.length ? bills.map(function(x){
+      var canUndo = TD.off === 0 && Date.now() - new Date(x.at).getTime() < 6 * 3600000;
+      return '<div class="bl-i"><span class="bno">' + x.no + '</span><div class="grow"><span class="small"><b>' + esc(fmtHM(x.at)) + '</b> · ' + (x.items || []).reduce(function(a, i){ return a + i.q; }, 0) + ' ürün' + (Number(x.discount) ? ' · ' + esc(tm(x.discount)) + ' indirim' : '') + '</span>' +
+        '<span><span class="mtag ' + esc(x.method) + '">' + ({ nakit: "Nakit", kart: "Kart", diger: "Diğer" }[x.method] || x.method) + '</span></span></div>' +
+        '<span class="amt num">' + esc(tm(x.paid)) + '</span>' + (canUndo ? '<button class="icon-btn sm" type="button" data-ro="' + x.id + '" aria-label="Hesabı geri aç" title="Masaya geri aç">' + I.undo + '</button>' : '') + '</div>';
+    }).join("") : '<div class="empty">' + I.receipt + '<b>' + day + ' kapanan hesap yok</b></div>') + '</div>' +
+    '<pre class="pre">' + esc(txt) + '</pre>' +
+    '<div class="row"><button class="btn ghost grow" type="button" id="tdCp">' + I.copy + 'Kopyala</button><button class="btn ghost grow" type="button" id="tdPr">' + I.print + 'Yazdır</button>' +
+    (navigator.share ? '<button class="btn ghost grow" type="button" id="tdSh">' + I.share + 'Paylaş</button>' : '') + '</div>';
+  b.querySelectorAll("[data-td]").forEach(function(x){ x.onclick = function(){ TD.off = Number(x.getAttribute("data-td")); b.innerHTML = '<div class="empty"><div class="spin"></div></div>'; renderToday(); }; });
+  b.querySelectorAll("[data-ro]").forEach(function(x){
+    x.onclick = async function(){
+      var bl = bills.filter(function(y){ return String(y.id) === x.getAttribute("data-ro"); })[0];
+      var ok = await confirmBox({ title: "Hesap geri açılsın mı?", text: "Masa " + bl.no + " için " + tm(bl.paid) + " tutarındaki kayıt silinir, ürünler masaya geri eklenir.", ok: "Geri aç" });
+      if(ok) reopenBill(bl.id);
+    };
+  });
+  $("tdCp").onclick = function(){ copyText(txt, "Özet kopyalandı"); };
+  $("tdPr").onclick = function(){ printHtml('<div class="rc"><h2>' + esc(K.biz.name) + '</h2><div class="c">' + esc(day + " · " + fmtLong(Date.now() - TD.off * 86400000)) + '</div><hr>' + txt.split("\n").slice(2).map(function(l){ return '<div>' + esc(l) + '</div>'; }).join("") + '</div>'); };
+  var sh = $("tdSh"); if(sh) sh.onclick = function(){ navigator.share({ title: "Kasa özeti", text: txt }).catch(function(){}); };
+}
+function summaryText(day, bills, paid, by, disc, top, prod){
+  var l = [K.biz.name + " · " + day + " kasa özeti", fmtLong(Date.now() - TD.off * 86400000), ""];
+  l.push("Ciro: " + tm(paid) + " (" + bills.length + " hesap)");
+  l.push("Nakit: " + tm(by.nakit) + " · Kart: " + tm(by.kart) + (by.diger ? " · Diğer: " + tm(by.diger) : ""));
+  if(disc) l.push("İndirim: " + tm(disc));
+  if(bills.length) l.push("Hesap ortalaması: " + tm(paid / bills.length));
+  if(top.length) l.push("En çok satan: " + top.slice(0, 3).map(function(k){ return k + " (" + prod[k].q + ")"; }).join(", "));
+  return l.join("\n");
+}
+
+/* =========================================================
+   Ayarlar
+   ========================================================= */
+function openSettings(){
+  var s = (K.ts && K.ts.settings) || {}, ts = tables();
+  var st = { n: ts.length, bulk: false, qp: quick().map(function(x){ return { n: x.n, p: String(x.p).replace(".", ",") }; }) };
+  var el = openSheet('<div class="grow"><div class="eyebrow">' + esc(K.biz.name) + '</div><h2>Kasa ayarları</h2></div>',
+    '<section class="set-sec"><h3>' + I.table + 'Masalar</h3>' +
+      '<div class="row between"><span class="lbl">Masa sayısı</span><div class="stepper"><button type="button" id="snm">−</button><input id="sn" type="number" min="0" max="100" value="' + st.n + '" inputmode="numeric" aria-label="Masa sayısı"><button type="button" id="snp">+</button></div></div>' +
+      '<div class="field"><label for="swn">Wi-Fi ağ adı</label><input class="input" id="swn" maxlength="64" autocapitalize="none" autocomplete="off" value="' + attr(s.wifi_name || "") + '" placeholder="İsteğe bağlı"></div>' +
+      '<div class="field"><label for="swp">Wi-Fi şifresi</label><input class="input" id="swp" maxlength="64" autocapitalize="none" autocomplete="off" value="' + attr(s.wifi_pass || "") + '" placeholder="İsteğe bağlı"></div>' +
+      '<div class="field"><label for="smn">Menü linki</label><input class="input" id="smn" inputmode="url" autocapitalize="none" value="' + attr(s.menu_url || "") + '" placeholder="https://..."></div>' +
+      '<p class="hint">Wi-Fi ve menü, masadaki NFC/QR ile açılan müşteri sayfasında görünür.</p></section>' +
+    '<section class="set-sec"><div class="row between"><h3>' + I.coffee + 'Hızlı ürünler</h3><button class="link-btn small" type="button" id="sqb">Toplu düzenle</button></div>' +
+      '<div id="sqBox"></div><p class="hint">En fazla 40 ürün. Sık sattıklarını üste al; masa ekranında bu sırayla görünür.</p></section>' +
+    '<section class="set-sec"><h3>' + I.link + 'Masa linkleri</h3><div id="slBox"></div></section>' +
+    '<section class="set-sec"><h3>' + I.sun + 'Ekran</h3>' +
+      '<div class="seg" role="group" aria-label="Tema">' + [["system", "Otomatik"], ["light", "Açık"], ["dark", "Koyu"]].map(function(x){ return '<button type="button" data-th="' + x[0] + '" aria-pressed="' + (themeGet() === x[0]) + '">' + x[1] + '</button>'; }).join("") + '</div>' +
+      '<div class="opt"><label class="switch"><input type="checkbox" id="ssd"' + (sndOn() ? " checked" : "") + '><span></span></label><div class="grow"><b>Sesli uyarı</b><span class="small muted">Garson çağrısı ve hesap isteğinde ses çalar.</span></div><button class="btn ghost xs" type="button" id="sst">Dene</button></div>' +
+      '<div class="opt"><label class="switch"><input type="checkbox" id="saw"' + (awakeOn() ? " checked" : "") + '><span></span></label><div class="grow"><b>Ekran açık kalsın</b><span class="small muted">Kasa ekranı açıkken telefon ya da tablet uyumaz.</span></div></div></section>' +
+    '<section class="set-sec"><h3>' + I.panel + 'Hesap</h3><div class="row wrap"><a class="btn ghost sm" href="' + (DEMO ? SITE : "") + '/panel.html" target="_blank" rel="noopener">' + I.ext + 'İşletme paneli</a>' +
+      '<button class="btn danger sm" type="button" id="slo">' + I.out + 'Çıkış yap</button></div>' +
+      '<p class="hint">Kasa ' + (K.ext ? "ek kurulumu açık: ödemeler ve ciro kaydediliyor." : "ek kurulumu kapalı: hesaplar kapatılınca kayıt tutulmaz.") + '</p></section>',
+    { k: "settings", tall: true, foot: '<div class="row"><p class="form-msg grow" id="smsg"></p><button class="btn" type="button" id="ssave">' + I.check + 'Kaydet</button></div>' });
+  void el;
+  $("snm").onclick = function(){ var i = $("sn"); i.value = Math.max(0, Number(i.value || 0) - 1); };
+  $("snp").onclick = function(){ var i = $("sn"); i.value = Math.min(100, Number(i.value || 0) + 1); };
+  document.querySelectorAll("[data-th]").forEach(function(b){ b.onclick = function(){ themeSet(b.getAttribute("data-th")); document.querySelectorAll("[data-th]").forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); }); }; });
+  $("ssd").onchange = function(){ lsSet("dmgk_snd", this.checked ? "1" : "0"); if(this.checked) unlockAudio(); sndBtn(); sndHint(); };
+  $("sst").onclick = function(){ unlockAudio(); setTimeout(function(){ beep("garson"); }, 200); };
+  $("saw").onchange = function(){ lsSet("dmgk_awake", this.checked ? "1" : "0"); if(this.checked) keepAwake(); else releaseAwake(); };
+  $("slo").onclick = async function(){ if(await confirmBox({ title: "Çıkış yapılsın mı?", ok: "Çıkış yap", danger: true })) logout(); };
+  $("sqb").onclick = function(){ syncQp(st); st.bulk = !st.bulk; this.textContent = st.bulk ? "Liste görünümü" : "Toplu düzenle"; drawQp(st); };
+  $("ssave").onclick = function(){ saveSettings(st, this); };
+  drawQp(st); drawLinks();
+}
+function syncQp(st){
+  if(st.bulk){
+    var t = $("sqT");
+    if(t){ var q = parseQuick(t.value); if(q !== false) st.qp = q.map(function(x){ return { n: x.n, p: String(x.p).replace(".", ",") }; }); }
+  } else {
+    document.querySelectorAll("#sqBox .qp-row").forEach(function(r, i){ if(st.qp[i]){ st.qp[i].n = r.querySelector(".qn").value; st.qp[i].p = r.querySelector(".qpz").value; } });
+  }
+}
+function drawQp(st){
+  var box = $("sqBox");
+  if(!box) return;
+  if(st.bulk){
+    box.innerHTML = '<textarea class="textarea" id="sqT" rows="8" placeholder="Latte = 110&#10;Türk kahvesi = 80">' + esc(st.qp.map(function(x){ return x.n + " = " + x.p; }).join("\n")) + '</textarea><p class="hint">Her satıra bir ürün: Ürün = fiyat</p>';
+    return;
+  }
+  box.innerHTML = '<div class="qp-list">' + st.qp.map(function(x, i){
+    return '<div class="qp-row"><input class="input qn" maxlength="40" value="' + attr(x.n) + '" placeholder="Ürün" aria-label="Ürün adı"><input class="input qpz num" inputmode="decimal" value="' + attr(x.p) + '" placeholder="Fiyat" aria-label="Fiyat">' +
+      '<div class="acts"><button class="icon-btn sm" type="button" data-qu="' + i + '" aria-label="Yukarı"' + (i ? "" : " disabled") + '>' + I.up + '</button><button class="icon-btn sm" type="button" data-qx="' + i + '" aria-label="Sil">' + I.trash + '</button></div></div>';
+  }).join("") + '</div><button class="btn ghost sm" type="button" id="sqAdd"' + (st.qp.length >= 40 ? " disabled" : "") + '>' + I.plus + 'Ürün ekle</button>';
+  box.querySelectorAll("[data-qu]").forEach(function(b){ b.onclick = function(){ syncQp(st); var i = Number(b.getAttribute("data-qu")); var x = st.qp.splice(i, 1)[0]; st.qp.splice(i - 1, 0, x); drawQp(st); }; });
+  box.querySelectorAll("[data-qx]").forEach(function(b){ b.onclick = function(){ syncQp(st); st.qp.splice(Number(b.getAttribute("data-qx")), 1); drawQp(st); }; });
+  $("sqAdd").onclick = function(){ syncQp(st); st.qp.push({ n: "", p: "" }); drawQp(st); var rows = box.querySelectorAll(".qn"); rows[rows.length - 1].focus(); };
+}
 function parseQuick(text){
   var out = [], lines = String(text || "").split("\n");
   for(var i = 0; i < lines.length; i++){
     var l = lines[i].trim();
     if(!l) continue;
     var m = l.match(/^(.+?)\s*[=:]?\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s*(?:₺|tl)?$/i);
-    if(!m){ alert((i + 1) + ". satır anlaşılmadı: \"" + l + "\"\nÖrnek: Latte = 120"); return false; }
+    if(!m){ toast((i + 1) + ". satır anlaşılmadı. Örnek: Latte = 120", "bad"); return false; }
     var n = m[1].replace(/[=:]\s*$/, "").trim(), p = Number(m[2].replace(",", "."));
-    if(!n || n.length > 40){ alert((i + 1) + ". satırdaki ürün adı 1 ile 40 karakter arasında olmalı."); return false; }
-    if(!(p >= 0 && p <= 100000)){ alert((i + 1) + ". satırdaki fiyat geçersiz."); return false; }
+    if(!n || n.length > 40){ toast((i + 1) + ". satırdaki ürün adı 1–40 karakter olmalı", "bad"); return false; }
     out.push({ n: n, p: p });
   }
-  if(out.length > 40){ alert("En fazla 40 hızlı ürün ekleyebilirsin."); return false; }
   return out;
 }
-
-async function saveTables(){
-  var n = parseInt(document.getElementById("t_n").value, 10);
-  var wn = document.getElementById("t_wn").value.trim();
-  var wp = document.getElementById("t_wp").value.trim();
-  var mn = normUrl(document.getElementById("t_mn").value);
-  var msg = document.getElementById("t_msg");
-  if(!(n >= 0 && n <= 100)){ alert("Masa sayısı 0 ile 100 arasında olmalı."); return; }
-  if(mn === false){ alert("Menü linki geçersiz. Örnek: https://ornek.com/menu"); return; }
-  var q = parseQuick(document.getElementById("t_q").value);
-  if(q === false) return;
-  var before = (tst.tables || []).length;
-  if(n < before && !confirm((before - n) + " masa kapatılacak. Kapanan masaların linkleri çalışmaz. Devam edilsin mi?")) return;
-  var btn = document.getElementById("t_save");
-  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+function drawLinks(){
+  var box = $("slBox");
+  if(!box) return;
+  var ts = tables(), base = tableBase();
+  if(!ts.length){ box.innerHTML = '<p class="hint">Önce masa sayısını gir ve kaydet.</p>'; return; }
+  box.innerHTML = '<p class="hint">Her masanın NFC etiketine ve QR koduna kendi linki yazılır. Linkler değişmez. Basılı QR kartları için işletme panelindeki Masalar bölümünü kullan.</p>' +
+    ts.map(function(t){ return '<div class="lk-i"><b style="width:56px">Masa ' + t.no + '</b><div class="grow"><code>' + esc(base + t.token) + '</code></div><button class="icon-btn sm" type="button" data-cl="' + attr(base + t.token) + '" aria-label="Kopyala">' + I.copy + '</button></div>'; }).join("") +
+    '<button class="btn ghost sm" type="button" id="slAll">' + I.copy + 'Tüm linkleri kopyala</button>';
+  box.querySelectorAll("[data-cl]").forEach(function(b){ b.onclick = function(){ copyText(b.getAttribute("data-cl"), "Link kopyalandı"); }; });
+  $("slAll").onclick = function(){ copyText(K.biz.name + " masa linkleri\n" + ts.map(function(t){ return "Masa " + t.no + ": " + base + t.token; }).join("\n"), "Tüm linkler kopyalandı"); };
+}
+async function saveSettings(st, btn){
+  var msg = $("smsg");
+  function err(m, id){ msg.className = "form-msg err grow"; msg.textContent = m; if(id){ var e = $(id); if(e){ e.classList.add("bad"); e.focus(); setTimeout(function(){ e.classList.remove("bad"); }, 2500); } } }
+  var n = parseInt($("sn").value, 10), wn = $("swn").value.trim(), wp = $("swp").value.trim(), mn = normUrl($("smn").value);
+  if(!(n >= 0 && n <= 100)) return err("Masa sayısı 0 ile 100 arasında olmalı.", "sn");
+  if(mn === false) return err("Menü linki geçersiz. Örnek: https://ornek.com/menu", "smn");
+  var q;
+  if(st.bulk){ q = parseQuick($("sqT").value); if(q === false) return err("Hızlı ürün listesini kontrol et."); }
+  else {
+    syncQp(st); q = [];
+    for(var i = 0; i < st.qp.length; i++){
+      var x = st.qp[i], nm = String(x.n || "").trim(), pr = parsePrice(x.p);
+      if(!nm && !String(x.p || "").trim()) continue;
+      if(!nm || nm.length > 40) return err((i + 1) + ". ürünün adı 1–40 karakter olmalı.");
+      if(pr === null) return err(nm + " için fiyat geçersiz. Örnek: 120 ya da 85,50");
+      q.push({ n: nm, p: pr });
+    }
+  }
+  if(q.length > 40) return err("En fazla 40 hızlı ürün ekleyebilirsin.");
+  var before = tables().length;
+  if(n < before){
+    var openGone = tables().filter(function(t){ return t.no > n && Number(t.total) > 0; });
+    var ok = await confirmBox({ title: (before - n) + " masa kapatılacak", text: "Kapanan masaların linkleri çalışmaz." + (openGone.length ? " Dikkat: " + openGone.map(function(t){ return "Masa " + t.no; }).join(", ") + " hesabı açık." : ""), ok: "Devam et", danger: true });
+    if(!ok) return;
+  }
+  btn.disabled = true; btn.innerHTML = '<span class="spin sm"></span>Kaydediliyor';
   try {
-    var r = await rpc("owner_tables_save", { p_id: String(biz.id), p_count: n, p_wifi_name: wn, p_wifi_pass: wp, p_menu_url: mn || "", p_quick: q });
+    var r = await rpc("owner_tables_save", { p_id: bid(), p_count: n, p_wifi_name: wn, p_wifi_pass: wp, p_menu_url: mn || "", p_quick: q });
     var errs = { bad_count: "Masa sayısı geçersiz.", bad_wifi: "Wi-Fi bilgisi çok uzun.", bad_url: "Menü linki geçersiz.", bad_quick: "Hızlı ürün listesi geçersiz." };
     if(!r || r.status !== "ok") throw new Error(errs[r && r.status] || ("Kaydedilemedi: " + (r && r.status)));
-    setTst(r);
-    renderCalls(); renderGrid(); renderEdit(); renderLinks();
-    msg.className = "ok"; msg.textContent = "Kaydedildi.";
-  } catch(e){ msg.className = "err"; msg.textContent = e.message; }
-  btn.disabled = false; btn.textContent = "Kaydet";
+    setTs(r);
+    closeSheet();
+    toast("Ayarlar kaydedildi");
+    route();
+  } catch(e){
+    err(netMsg(e));
+    btn.disabled = false; btn.innerHTML = I.check + "Kaydet";
+  }
 }
 
-function renderLinks(){
-  var box = document.getElementById("tlinks");
-  if(!box) return;
-  var ts = tst.tables || [];
-  if(!ts.length){ box.innerHTML = '<p class="sub">Önce masa sayısını gir.</p>'; return; }
-  var base = location.origin + "/m/";
-  box.innerHTML = '<p class="sub">Her masanın NFC etiketine ve QR koduna kendi linki yazılır. Linkler değişmez.</p>' +
-    ts.map(function(t){
-      return '<div class="row"><div><div class="nm">Masa ' + t.no + '</div><div class="link">' + esc(base + t.token) + '</div></div>' +
-        '<button class="ghost" data-cl="' + esc(base + t.token) + '">Kopyala</button></div>';
-    }).join("") + '<button class="full" id="t_all">Tüm linkleri kopyala</button>';
-  box.querySelectorAll("button[data-cl]").forEach(function(b){
-    b.onclick = function(){ copyText(b.getAttribute("data-cl"), "Link kopyalandı."); };
-  });
-  document.getElementById("t_all").onclick = function(){
-    copyText(biz.name + " masa linkleri\n" + ts.map(function(t){ return "Masa " + t.no + ": " + base + t.token; }).join("\n"), "Tüm linkler kopyalandı.");
-  };
-}
-
+/* =========================================================
+   Başlat
+   ========================================================= */
 async function start(){
-  var rt = savedRefresh();
+  app.innerHTML = '<div class="boot" role="status" aria-label="Yükleniyor"><div class="spin"></div></div>';
+  if(DEMO){
+    try { saveSession(await authCall()); await loadAll(); } catch(e){ showMsg("Bir sorun oluştu", '<p class="form-msg err">' + esc(netMsg(e)) + '</p>'); }
+    return;
+  }
+  var rt = lsGet(SK);
   if(!rt){ showLogin(""); return; }
-  app.innerHTML = '<p>Yükleniyor...</p>';
   try { saveSession(await authCall("refresh_token", { refresh_token: rt })); }
-  catch(e){ clearSession(); showLogin("Oturum süresi doldu, tekrar giriş yap."); return; }
+  catch(e){
+    if(/Failed to fetch|NetworkError|Load failed/i.test(e.message)){ showMsg("Bağlantı yok", '<p class="ink2">İnternet bağlantısını kontrol edip Yenile\'ye bas.</p>', { icon: I.wifiOff }); return; }
+    clearSession(); showLogin("Oturum süresi doldu, tekrar giriş yap."); return;
+  }
   afterAuth();
 }
 start();
