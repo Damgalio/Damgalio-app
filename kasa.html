@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Kasa">
 <meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C1715" media="(prefers-color-scheme: dark)">
-<title>Damgalio Kasa</title>
+<title>Masalio Kasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -2104,7 +2104,7 @@ details.more-opt > div {
 <div id="app"></div>
 <script>
 /* =========================================================
-   Damgalio Kasa: ayarlar, yardımcılar, sunucu bağlantısı
+   Masalio Kasa: ayarlar, yardımcılar, sunucu bağlantısı
    ========================================================= */
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
@@ -2518,7 +2518,7 @@ var Demo = (function(){
    Giriş ve bilgi ekranları
    ========================================================= */
 function brandHtml(name){
-  return '<span class="brand"><span class="logo">' + I.logo + '</span>' + (name ? '<span class="ttl"><b class="ell">' + esc(name) + '</b><span>Kasa ekranı</span></span>' : 'Damgalio <small>KASA</small>') + '</span>';
+  return '<span class="brand"><span class="logo">' + I.bell + '</span>' + (name ? '<span class="ttl"><b class="ell">' + esc(name) + '</b><span>Masalio Kasa</span></span>' : 'Masalio <small>KASA</small>') + '</span>';
 }
 function gate(inner){ app.innerHTML = '<div class="gate"><div class="gate-box">' + inner + '</div></div>'; }
 function stopAll(){
@@ -2529,7 +2529,7 @@ function stopAll(){
 
 function showLogin(msg){
   stopAll();
-  document.title = "Damgalio Kasa";
+  document.title = "Masalio Kasa";
   gate(brandHtml() +
     '<form class="gate-card" id="lf" novalidate><div><div class="eyebrow">Kasa ekranı</div><h1 style="margin-top:4px">Giriş yap</h1>' +
     '<p class="ink2" style="margin-top:6px">Garson çağrıları ve masa hesapları burada. İşletme paneline girdiğin e-posta ve şifreyi kullan.</p></div>' +
@@ -2599,7 +2599,7 @@ async function loadAll(){
   var ts;
   try { ts = await rpc("owner_tables_state", { p_id: bid() }); }
   catch(e){
-    if(/^404 /.test(e.message)) showMsg("Masa özelliği kapalı", '<p class="ink2">Bu hesapta masa özelliği henüz açılmamış. Damgalio ile iletişime geç.</p>', { icon: I.table });
+    if(/^404 /.test(e.message)) showMsg("Masa özelliği kapalı", '<p class="ink2">Bu hesapta Masalio henüz açılmamış. Açtırmak için Damgalio ile iletişime geç.</p>', { icon: I.table });
     else showMsg("Bir sorun oluştu", '<p class="form-msg err">' + esc(netMsg(e)) + '</p>', { icon: I.alert });
     return;
   }
@@ -2634,7 +2634,7 @@ function setTs(ts){
 }
 function updTitle(){
   var n = K.ts ? (K.ts.calls || []).length : 0;
-  document.title = n ? "(" + n + ") Kasa · Damgalio" : "Kasa · Damgalio";
+  document.title = n ? "(" + n + ") Kasa · Masalio" : "Kasa · Masalio";
 }
 function tables(){ return (K.ts && K.ts.tables) || []; }
 function findT(id){ var a = tables(); for(var i = 0; i < a.length; i++) if(a[i].id === id) return a[i]; return null; }
