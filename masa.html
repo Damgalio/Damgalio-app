@@ -7,7 +7,7 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C1715" media="(prefers-color-scheme: dark)">
-<title>Damgalio</title>
+<title>Masalio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1413,7 +1413,7 @@ svg {
 <div id="app"><div class="page" aria-busy="true"><div class="bar"><div class="skel" style="width:42px;height:42px;border-radius:14px"></div><div class="skel" style="width:150px;height:18px;border-radius:8px"></div></div><div class="skel" style="height:196px;border-radius:30px"></div><div class="acts"><div class="skel" style="height:144px;border-radius:26px"></div><div class="skel" style="height:144px;border-radius:26px"></div></div><div class="skel" style="height:72px;border-radius:22px;margin-top:14px"></div><p class="sr">Yükleniyor…</p></div></div>
 <script>
 "use strict";
-/* Damgalio Masa · müşterinin masadaki NFC/QR ile açtığı sayfa (/m/<token>).
+/* Masalio Masa · müşterinin masadaki NFC/QR ile açtığı sayfa (/m/<token>).
    Sunucuyla konuşan yalnızca iki çağrı var: public_table ve public_table_call. */
 var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
 var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
@@ -1488,7 +1488,7 @@ var STR = {
     coin_p: "Kararsız mı kaldınız? Parayı atın, gerisini şansa bırakın.",
     heads: "Yazı", tails: "Tura", flip: "Parayı at", flip2: "Tekrar at",
     remove: "{n} adını sil",
-    foot: "Damgalio ile çalışır", privacy: "Gizlilik",
+    foot: "Masalio ile çalışır", privacy: "Gizlilik",
     e_nf_t: "Masa bulunamadı",
     e_nf_p: "Bu masa bağlantısı geçerli değil. Masadaki kodu tekrar okut ya da garsona haber ver.",
     e_nf2_p: "Bu masa bağlantısı geçerli değil. Masadaki kodu tekrar okut.",
@@ -1547,7 +1547,7 @@ var STR = {
     coin_p: "Can't decide? Toss the coin and let luck choose.",
     heads: "Heads", tails: "Tails", flip: "Toss the coin", flip2: "Toss again",
     remove: "Remove {n}",
-    foot: "Powered by Damgalio", privacy: "Privacy",
+    foot: "Powered by Masalio", privacy: "Privacy",
     e_nf_t: "Table not found",
     e_nf_p: "This table link isn't valid. Scan the code on the table again or let the staff know.",
     e_nf2_p: "This table link isn't valid. Scan the code on the table again.",
@@ -1768,7 +1768,7 @@ function callBtn(k){
 }
 
 function build(){
-  var b = S.brand || {}, D = S.D, nm = b.name || "Damgalio", h = "";
+  var b = S.brand || {}, D = S.D, nm = b.name || "Masalio", h = "";
   var tbl = t("table") + " " + D.no;
   document.documentElement.lang = LANG;
   h += '<div class="page">';
@@ -1953,7 +1953,7 @@ function renderDockTotal(){
   if(!l || !S.D) return;
   var has = (S.D.items || []).length > 0;
   l.textContent = has ? t("bill") : t("table") + " " + S.D.no;
-  v.textContent = has ? money(S.D.total) : ((S.brand && S.brand.name) || "Damgalio");
+  v.textContent = has ? money(S.D.total) : ((S.brand && S.brand.name) || "Masalio");
 }
 
 /* ---------------- çağrılar ---------------- */
@@ -2194,7 +2194,7 @@ function drawWheel(){
   x.fillStyle = ink;
   x.font = '800 28px "Bricolage Grotesque", "Instrument Sans", -apple-system, sans-serif';
   x.textAlign = "center"; x.textBaseline = "middle";
-  x.fillText(initials((S.brand && S.brand.name) || "Damgalio"), W / 2, W / 2 + 1);
+  x.fillText(initials((S.brand && S.brand.name) || "Masalio"), W / 2, W / 2 + 1);
 }
 function spin(){
   if(S.spinning) return;
