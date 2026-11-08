@@ -2,421 +2,785 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Damgalio | Kafeler için NFC damga kartı</title>
-<meta name="description" content="Kâğıt kart kaybolur, bu damga kaybolmaz. Müşterin telefonunu NFC damgaya yaklaştırır, damgası eklenir. Uygulama yok, kart yok. İlk ay ücretsiz.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Damgalio | NFC damga kartı ve masadan garson çağırma</title>
+<meta name="description" content="Kafen için iki dokunuş: NFC damga kartıyla müşterin geri gelir, masadaki NFC standla garsonu çağırır ve hesabını canlı görür. Uygulama yok, kurulum bizden, damga 14 gün ücretsiz.">
 <meta name="theme-color" content="#EE6A37">
-<meta property="og:title" content="Damgalio | Kafeler için NFC damga kartı">
-<meta property="og:description" content="Müşterin telefonunu damgaya yaklaştırır, damgası eklenir. Uygulama yok, kart yok. İlk ay ücretsiz.">
+<meta property="og:title" content="Damgalio | NFC damga kartı ve masadan garson çağırma">
+<meta property="og:description" content="Kafen için iki dokunuş: NFC damga kartıyla müşterin geri gelir, masadaki NFC standla garsonu çağırır ve hesabını canlı görür. Uygulama yok, kurulum bizden, damga 14 gün ücretsiz.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.damgalio.com/">
+<meta property="og:locale" content="tr_TR">
+<link rel="canonical" href="https://www.damgalio.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23EE6A37'/%3E%3Ccircle cx='16' cy='9' r='3.5' fill='none' stroke='%2310221F' stroke-width='2.4'/%3E%3Cpath d='M14 12.5h4v4h-4z' fill='%2310221F'/%3E%3Crect x='7' y='16.5' width='18' height='6' rx='2' fill='%2310221F'/%3E%3Cpath d='M8 26h16' stroke='%2310221F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Instrument+Sans:wght@400;500;600;700&amp;display=swap">
 <style>
-:root{
-  --orange:#EE6A37;
-  --ink:#10221F;
-  --paper:#FFFBF3;
-  --yellow:#F7D44C;
-  --muted:#4D5F5C;
-  --line:#E7DFCF;
-  --night-muted:#B9C6C2;
-  --night-line:#2C4A44;
+:root {
+  --o: #EE6A37;
+  --o-d: #B94C22;
+  --o-h: #F27D50;
+  --y: #F7D44C;
+  --k: #10221F;
+  --cream: #FFFBF3;
+  --bg: #FFFBF3;
+  --bg2: #F5EDDD;
+  --card: #FFFFFF;
+  --fg: #10221F;
+  --mut: #4D5F5C;
+  --line: #E7DFCF;
+  --line2: #CFC5B0;
+  --night: #10221F;
+  --night2: #183330;
+  --nfg: #FFFBF3;
+  --nmut: #B9C6C2;
+  --nline: #2C4A44;
+  --btn: #10221F;
+  --btn-fg: #FFFBF3;
+  --btn-h: #1D3A35;
+  --teal: #24504C;
+  --good: #1E7F55;
+  --good-soft: #DCF1E6;
+  --sh: rgba(16, 34, 31, .22);
+  --o-soft: rgba(238, 106, 55, .13);
+  --ring: #10221F;
+  --f-d: "Bricolage Grotesque", "Avenir Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-b: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
-img,svg{display:block}
-a{color:inherit}
-button{font:inherit}
-:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
-.night :focus-visible,.dpanel :focus-visible,.result :focus-visible{outline-color:var(--yellow)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-section[id]{scroll-margin-top:12px}
-
-/* nav */
-.nav{background:var(--orange)}
-.nav-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding-top:16px;padding-bottom:12px}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-.01em}
-.logo svg{width:34px;height:34px}
-.nav-link{font-weight:700;font-size:16px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
-.nav-links{order:3;width:100%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-.nav-links::-webkit-scrollbar{display:none}
-.nav-links a{flex:none;text-decoration:none;font-weight:700;font-size:15px;padding:9px 14px;border-radius:999px;background:rgba(16,34,31,.1)}
-.nav-links a:hover{background:rgba(16,34,31,.18)}
-
-/* hero */
-.hero{background:var(--orange);padding:22px 0 72px;overflow:hidden}
-.hero-in{display:grid;gap:44px;align-items:center}
-h1{margin:0;font-size:clamp(2.7rem,10.5vw,5.4rem);line-height:.94;font-weight:800;font-stretch:82%;letter-spacing:-.025em;max-width:11ch}
-h1 span{display:block}
-.lead{margin:22px 0 0;font-size:clamp(1.08rem,2.6vw,1.25rem);line-height:1.5;max-width:34em}
-.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:14px 22px;border-radius:14px;font-weight:700;font-size:17px;text-decoration:none;line-height:1.2}
-.btn svg{width:22px;height:22px;flex:none}
-.btn-ink{background:var(--ink);color:var(--paper)}
-.btn-line{border:2px solid var(--ink);color:var(--ink)}
-.btn-orange{background:var(--orange);color:var(--ink)}
-.btn-ink:hover{background:#1d3a35}
-.btn-line:hover{background:rgba(16,34,31,.08)}
-.btn-orange:hover{background:#f27d50}
-.facts{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 30px}
-.facts li{font-weight:600;font-size:16px;line-height:1.2}
-.facts b{display:block;font-size:36px;font-weight:800;font-stretch:80%;line-height:1;letter-spacing:-.02em}
-
-/* hero card */
-.demo{margin:0;justify-self:center;width:100%;max-width:400px}
-.card{background:var(--paper);border-radius:22px;padding:22px 22px 18px;transform:rotate(-2.5deg);box-shadow:8px 10px 0 rgba(16,34,31,.22)}
-.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:2px dashed var(--line);padding-bottom:14px}
-.card-top b{font-size:22px;font-weight:800;font-stretch:88%}
-.card-top span{color:var(--muted);font-size:15px}
-.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0 18px}
-.slot{aspect-ratio:1;border-radius:50%;border:2px dashed #CFC5B0;display:grid;place-items:center;position:relative}
-.ink{position:absolute;inset:6%;border-radius:50%;border:3.5px solid var(--orange);display:grid;place-items:center;transform:rotate(var(--r));opacity:.92;animation:press .42s cubic-bezier(.2,.9,.3,1.25) both;animation-delay:var(--d)}
-.ink::before{content:"";width:42%;height:42%;border-radius:50%;background:var(--orange)}
-.ink::after{content:"";position:absolute;inset:16%;border-radius:50%;border:1.5px dashed var(--orange);opacity:.75}
-.gift{border-style:solid;border-color:var(--ink);background:var(--yellow);animation:gift .4s ease-out 2.35s both}
-.gift svg{width:52%;height:52%}
-.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.card-bottom span{font-size:15px;color:var(--muted)}
-.ready{background:var(--ink);color:var(--paper);font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;animation:ready .35s ease-out 2.7s both}
-.demo figcaption{margin-top:22px;text-align:center;font-size:15px;font-weight:600}
-@keyframes press{from{opacity:0;transform:scale(1.7) rotate(var(--r))}to{opacity:.92;transform:scale(1) rotate(var(--r))}}
-@keyframes gift{from{background:transparent;border-color:#CFC5B0;border-style:dashed}to{background:var(--yellow);border-color:var(--ink)}}
-@keyframes ready{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
-/* bands */
-.band{padding:84px 0}
-.band h2{margin:0;font-size:clamp(2rem,6.2vw,3.2rem);line-height:1;font-weight:800;font-stretch:85%;letter-spacing:-.02em;max-width:16ch}
-.band-intro{margin:16px 0 0;color:var(--muted);font-size:1.12rem;max-width:36em}
-.kicker{display:inline-block;margin-bottom:14px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-
-/* why */
-.why{display:grid;gap:34px;margin-top:44px}
-.why h3,.steps h3,.feat h3{margin:0 0 8px;font-size:1.35rem;line-height:1.2;font-weight:750}
-.why p,.steps p,.feat p{margin:0;max-width:34em}
-.why p{color:var(--muted)}
-.why-item{border-top:3px solid var(--ink);padding-top:16px}
-
-/* steps */
-.steps{list-style:none;margin:44px 0 0;padding:0;display:grid;gap:30px;counter-reset:s}
-.steps li{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;counter-increment:s}
-.steps li::before{content:counter(s);width:64px;height:64px;border-radius:50%;border:3.5px solid var(--orange);color:var(--ink);display:grid;place-items:center;font-size:28px;font-weight:800;transform:rotate(-6deg)}
-.steps li:nth-child(2)::before{transform:rotate(5deg)}
-.steps li:nth-child(3)::before{transform:rotate(-2deg);background:var(--yellow);border-color:var(--ink)}
-.steps p{color:var(--muted)}
-
-/* live demo */
-.flow{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.flow li{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
-.flow b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:4px;border-radius:50%;background:var(--orange);font-size:14px;vertical-align:-1px}
-.stage{margin-top:30px;display:grid;gap:16px;grid-template-areas:"tap" "panel" "phone"}
-.tap{grid-area:tap}.dpanel{grid-area:panel}.dphone{grid-area:phone}
-.tap{background:#fff;border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;align-items:center;gap:16px}
-.tap-txt{min-width:0}
-.tap-label{display:block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.tap-txt p{margin:4px 0 0;font-size:15px;line-height:1.4;color:var(--muted)}
-.stamp-btn{flex:none;width:112px;height:112px;border-radius:50%;border:0;background:var(--orange);color:var(--ink);font-weight:800;font-size:15px;line-height:1.15;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px;box-shadow:0 7px 0 #B94C22;transition:transform .08s ease,box-shadow .08s ease;touch-action:manipulation}
-.stamp-btn svg{width:30px;height:30px}
-.stamp-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #B94C22}
-.stamp-btn[disabled]{background:#EDE4D3;color:var(--muted);box-shadow:0 7px 0 #CFC5B0;cursor:default;transform:none}
-.reset{background:none;border:0;margin-top:6px;padding:8px 0;font-size:15px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.dpanel{background:var(--ink);color:var(--paper);border-radius:22px;padding:18px}
-.dp-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:800;font-size:17px}
-.dp-head small{font-weight:600;color:var(--night-muted);font-size:13px}
-.dp-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}
-.dp-stats div{border:1.5px solid var(--night-line);border-radius:12px;padding:8px 12px}
-.dp-stats b{display:block;font-size:26px;line-height:1.1}
-.dp-stats small{color:var(--night-muted);font-size:13px}
-.dp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 6px;margin:0 -6px;border-top:1.5px solid var(--night-line);border-radius:8px;animation:flash .7s ease-out}
-.dp-row b{display:block;font-size:16px;line-height:1.25}
-.dp-row small{color:var(--night-muted);font-size:13px}
-.dp-acts{display:flex;gap:6px;flex:none}
-.dp-btn{border:0;border-radius:10px;min-height:44px;padding:10px 14px;font-weight:800;font-size:15px;cursor:pointer;background:var(--orange);color:var(--ink);touch-action:manipulation}
-.dp-btn.alt{background:transparent;color:var(--paper);border:1.5px solid var(--night-line)}
-.dp-empty{margin:0;padding:14px 0 4px;border-top:1.5px solid var(--night-line);color:var(--night-muted);font-size:15px}
-@keyframes flash{from{background:rgba(247,212,76,.28)}to{background:transparent}}
-.dphone{justify-self:center;width:100%;max-width:340px;background:var(--ink);border-radius:42px;padding:12px}
-.screen{position:relative;background:var(--paper);border-radius:31px;padding:44px 18px 20px;min-height:400px;display:flex;flex-direction:column;gap:14px}
-.notch{position:absolute;top:12px;left:50%;width:92px;height:24px;margin-left:-46px;border-radius:14px;background:var(--ink)}
-.url{background:#F1EBDD;border-radius:10px;padding:6px 10px;font-size:13px;color:var(--muted);text-align:center}
-.biz{display:flex;align-items:center;gap:10px}
-.biz i{flex:none;width:42px;height:42px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px}
-.biz b{display:block;font-size:18px;line-height:1.15}
-.biz small{color:var(--muted);font-size:13px}
-.dslots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.dslot{aspect-ratio:1;border-radius:50%;border:2px dashed #CFC5B0;position:relative}
-.dslot .ink{animation:none}
-.dslot .ink.new{animation:press .42s cubic-bezier(.2,.9,.3,1.25) both}
-.dprog{height:10px;border-radius:10px;background:#E9E2D2;overflow:hidden}
-.dprog i{display:block;height:100%;background:var(--orange);border-radius:10px;transition:width .4s ease}
-.dcount{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:15px}
-.dcount span:last-child{color:var(--muted);font-weight:600}
-.dmsg{margin-top:auto;border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;line-height:1.35;background:rgba(238,106,55,.16)}
-.dmsg.wait{background:var(--yellow)}
-.dmsg.no{background:#F4D8D1}
-.ticket{background:var(--orange);border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:ready .35s ease-out}
-.ticket small{display:block;font-size:12px;font-weight:800;letter-spacing:.08em}
-.ticket b{display:block;font-size:19px;font-weight:800;font-stretch:88%;line-height:1.1}
-.ticket span{flex:none;background:var(--ink);color:var(--paper);border-radius:999px;padding:5px 10px;font-size:13px;font-weight:700}
-.demo-note{margin:18px 0 0;color:var(--muted);font-size:15px}
-
-/* owner side */
-.night{background:var(--ink);color:var(--paper)}
-.night .band-intro{color:var(--night-muted)}
-.feat{display:grid;gap:30px;margin-top:44px}
-.feat p{color:var(--night-muted)}
-.feat h3{color:var(--paper)}
-.feat h3::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--orange);margin-right:10px;vertical-align:2px}
-
-/* compare */
-.cmp-wrap{margin-top:36px;max-width:900px}
-.cmp{width:100%;border-collapse:collapse;font-size:16px;line-height:1.4}
-.cmp th,.cmp td{text-align:left;vertical-align:top;padding:14px 12px;border-top:2px solid var(--line)}
-.cmp thead th{border-top:0;padding-bottom:12px;font-size:15px;vertical-align:middle}
-.cmp thead th span{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:800}
-.cmp thead th:nth-child(2) span{border:2px solid var(--ink)}
-.cmp thead th:nth-child(3) span{background:var(--orange)}
-.cmp tbody th{font-weight:750;width:28%}
-.cmp td{color:var(--muted);width:36%}
-.cmp td:last-child{color:var(--ink);font-weight:650;background:rgba(238,106,55,.09)}
-.cmp tbody tr:last-child th,.cmp tbody tr:last-child td{border-bottom:2px solid var(--line)}
-
-/* calculator */
-.calc-band{background:var(--yellow)}
-.calc-band .band-intro{color:var(--ink)}
-.calc{margin-top:36px;display:grid;gap:28px}
-.field{margin-bottom:20px}
-.field label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-weight:700;line-height:1.3}
-.field output{flex:none;font-weight:800;background:var(--paper);border-radius:8px;padding:2px 10px;min-width:4.6em;text-align:right}
-.field input[type=range]{width:100%;margin:10px 0 0;accent-color:var(--ink);height:30px;cursor:pointer}
-.field small{display:block;color:var(--ink);opacity:.82;font-size:14px;margin-top:2px}
-.result{background:var(--ink);color:var(--paper);border-radius:22px;padding:24px}
-.result h3{margin:0 0 6px;font-size:1.2rem}
-.res-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 0;border-top:1.5px solid var(--night-line)}
-.res-row span{color:var(--night-muted)}
-.res-row b{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:800;font-stretch:85%;line-height:1.1;text-align:right}
-.res-row.big b{color:var(--yellow)}
-.result p{color:var(--night-muted);font-size:14px;margin:12px 0 0;line-height:1.5}
-
-/* sectors */
-.chips{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
-.chips li{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:700}
-
-/* places map */
-.places{margin-top:32px;display:grid;gap:16px}
-.map-box{border:3px solid var(--ink);border-radius:22px;overflow:hidden;background:#E9E2D2;height:300px}
-.map-box iframe{display:block;width:100%;height:100%;border:0}
-.plist{list-style:none;margin:0;padding:0;display:grid;gap:10px;align-content:start}
-.pitem{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:6px 8px 6px 6px}
-.pitem.on{border-color:var(--ink);box-shadow:4px 4px 0 var(--orange)}
-.pbtn{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px;cursor:pointer;color:var(--ink);display:grid;gap:2px}
-.pbtn b{font-size:18px;line-height:1.2}
-.pbtn small{color:var(--muted);font-size:14px}
-.pbtn span{font-size:14px;font-weight:600}
-.plink{flex:none;text-decoration:none;font-weight:700;font-size:14px;background:var(--orange);color:var(--ink);border-radius:12px;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center}
-.plink:hover{background:#f27d50}
-
-/* price */
-.price{margin-top:44px;display:grid;gap:30px;align-items:start}
-.price-main{border:3px solid var(--ink);border-radius:22px;padding:26px;background:#fff}
-.price-num{font-size:clamp(3.4rem,13vw,5rem);font-weight:800;font-stretch:80%;line-height:.9;letter-spacing:-.03em}
-.price-unit{margin:6px 0 0;font-weight:600}
-.price-free{display:inline-block;margin-top:18px;background:var(--yellow);padding:6px 14px;border-radius:999px;font-weight:700}
-.price-main ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
-.price-main li{display:flex;gap:10px;align-items:flex-start}
-.price-main li svg{width:22px;height:22px;flex:none;margin-top:2px;color:var(--orange)}
-.price-main .btn{margin-top:24px}
-.price-note p{margin:0 0 14px;color:var(--muted);max-width:30em}
-.price-note p b{color:var(--ink)}
-
-/* faq */
-.faq{margin-top:36px;max-width:780px}
-.faq details{border-top:2px solid var(--ink)}
-.faq details:last-child{border-bottom:2px solid var(--ink)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 2px;font-weight:700;font-size:1.12rem}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-size:28px;font-weight:500;line-height:1;transition:transform .2s ease}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{margin:0;padding:0 2px 22px;color:var(--muted);max-width:40em}
-
-/* final */
-.final{background:var(--orange);padding:76px 0}
-.final h2{margin:0;font-size:clamp(2.3rem,8vw,4.2rem);line-height:.95;font-weight:800;font-stretch:82%;letter-spacing:-.025em;max-width:13ch}
-.final p{margin:16px 0 0;font-size:1.15rem;font-weight:600}
-.final .ctas{margin-top:26px}
-
-/* footer */
-footer{background:var(--ink);color:var(--paper);padding:34px 0}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:18px}
-.foot nav{display:flex;flex-wrap:wrap;gap:12px 20px}
-.foot a{color:var(--paper);text-underline-offset:4px}
-.foot small{color:var(--night-muted);font-size:14px}
-footer .logo{font-size:20px}
-
-@media (max-width:420px){
-  .cmp{font-size:14.5px}
-  .cmp th,.cmp td{padding:12px 7px}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A18;
+    --bg2: #13241F;
+    --card: #172925;
+    --fg: #F6EFE3;
+    --mut: #A9B8B3;
+    --line: #263B36;
+    --line2: #3A534D;
+    --night: #08120F;
+    --night2: #10201C;
+    --nline: #24403A;
+    --btn: #F6EFE3;
+    --btn-fg: #10221F;
+    --btn-h: #FFFFFF;
+    --teal: #8FC3B8;
+    --good: #5BCB95;
+    --good-soft: #15352A;
+    --sh: rgba(0, 0, 0, .55);
+    --o-soft: rgba(238, 106, 55, .2);
+    --ring: #F7D44C;
+    color-scheme: dark;
+  }
 }
-@media (min-width:860px){
-  .nav-in{flex-wrap:nowrap;padding-top:18px;padding-bottom:18px}
-  .nav-links{order:0;width:auto;justify-content:center;padding-bottom:0}
-  .hero{padding:40px 0 96px}
-  .hero-in{grid-template-columns:1.15fr .85fr;gap:56px}
-  .why{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
-  .steps li{grid-template-columns:1fr;gap:16px}
-  .feat{grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 48px}
-  .calc{grid-template-columns:1.1fr .9fr;gap:52px;align-items:start}
-  .places{grid-template-columns:1.35fr 1fr;align-items:start;gap:22px}
-  .map-box{height:440px}
-  .plist{max-height:440px;overflow:auto;padding:2px 6px 6px 2px}
-  .price{grid-template-columns:minmax(0,440px) 1fr;gap:56px}
-  .band{padding:110px 0}
+:root[data-theme="dark"] {
+  --bg: #0E1A18;
+  --bg2: #13241F;
+  --card: #172925;
+  --fg: #F6EFE3;
+  --mut: #A9B8B3;
+  --line: #263B36;
+  --line2: #3A534D;
+  --night: #08120F;
+  --night2: #10201C;
+  --nline: #24403A;
+  --btn: #F6EFE3;
+  --btn-fg: #10221F;
+  --btn-h: #FFFFFF;
+  --teal: #8FC3B8;
+  --good: #5BCB95;
+  --good-soft: #15352A;
+  --sh: rgba(0, 0, 0, .55);
+  --o-soft: rgba(238, 106, 55, .2);
+  --ring: #F7D44C;
+  color-scheme: dark;
 }
-@media (min-width:980px){
-  .stage{grid-template-columns:.85fr 1fr 1.05fr;grid-template-areas:"tap phone panel";align-items:start;gap:26px}
-  .tap{flex-direction:column;text-align:center;padding:26px 20px}
-  .stamp-btn{width:150px;height:150px;font-size:17px}
-  .stamp-btn svg{width:38px;height:38px}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-b);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .ink,.gift,.ready,.ticket,.dp-row,.dslot .ink.new{animation:none}
-  .dprog i,.faq summary::after{transition:none}
+img, svg { display: block; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; border-radius: 6px; }
+.on-o :focus-visible, .on-y :focus-visible { outline-color: var(--k); }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+section[id] { scroll-margin-top: 10px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2, h3 { font-family: var(--f-d); margin: 0; }
+
+/* ---------- sabit renkli zeminler ---------- */
+.on-o { background: var(--o); color: var(--k); }
+.on-y { background: var(--y); color: var(--k); }
+.on-n { background: var(--night); color: var(--nfg); }
+
+/* ---------- üst menü ---------- */
+.nav { position: relative; z-index: 20; }
+.nav-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 14px; padding-bottom: 10px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--f-d); font-weight: 800; font-size: 23px; letter-spacing: -.01em; }
+.logo svg { width: 36px; height: 36px; }
+.nav-links { order: 3; width: 100%; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px 0 4px; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a { flex: none; text-decoration: none; font-weight: 700; font-size: 15px; padding: 9px 14px; border-radius: 999px; background: rgba(16, 34, 31, .1); }
+.nav-links a:hover { background: rgba(16, 34, 31, .18); }
+.nav-links a .new { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 99px; background: var(--k); color: var(--y); font-size: 11px; font-weight: 800; letter-spacing: .04em; vertical-align: 1px; }
+.login { position: relative; }
+.login summary { list-style: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 9px 16px; border-radius: 12px; border: 2px solid var(--k); font-weight: 800; font-size: 15px; cursor: pointer; user-select: none; }
+.login summary::-webkit-details-marker { display: none; }
+.login summary svg { width: 16px; height: 16px; transition: transform .2s ease; }
+.login[open] summary svg { transform: rotate(180deg); }
+.login-menu { position: absolute; right: 0; top: calc(100% + 8px); width: 250px; padding: 8px; border-radius: 18px; background: var(--card); color: var(--fg); border: 2px solid var(--k); box-shadow: 6px 8px 0 var(--sh); display: grid; gap: 4px; }
+.login-menu a { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; text-decoration: none; }
+.login-menu a:hover { background: var(--bg2); }
+.login-menu a i { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: var(--o); color: var(--k); }
+.login-menu a i.t { background: var(--k); color: var(--y); }
+.login-menu a i svg { width: 20px; height: 20px; }
+.login-menu b { display: block; font-size: 15.5px; line-height: 1.2; }
+.login-menu small { color: var(--mut); font-size: 13px; }
+
+/* ---------- butonlar ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; padding: 14px 22px; border-radius: 15px; border: 0; font-weight: 700; font-size: 17px; line-height: 1.2; text-decoration: none; transition: transform .12s ease, background-color .15s ease; }
+.btn:active { transform: translateY(2px); }
+.btn svg { width: 22px; height: 22px; flex: none; }
+.btn-ink { background: var(--k); color: var(--cream); }
+.btn-ink:hover { background: #1D3A35; }
+.btn-line { border: 2px solid var(--k); color: var(--k); background: transparent; }
+.btn-line:hover { background: rgba(16, 34, 31, .08); }
+.btn-o { background: var(--o); color: var(--k); }
+.btn-o:hover { background: var(--o-h); }
+.btn-fg { background: var(--btn); color: var(--btn-fg); }
+.btn-fg:hover { background: var(--btn-h); }
+.btn-ghost { border: 2px solid var(--line2); color: var(--fg); background: transparent; }
+.btn-ghost:hover { border-color: var(--fg); }
+.btn.block { width: 100%; }
+
+/* ---------- hero ---------- */
+.hero { padding: 18px 0 70px; overflow: hidden; }
+.hero-in { display: grid; gap: 40px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 99px; background: var(--k); color: var(--cream); font-weight: 700; font-size: 14.5px; text-decoration: none; }
+.pill i { display: inline-grid; place-items: center; padding: 2px 8px; border-radius: 99px; background: var(--y); color: var(--k); font-style: normal; font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+.pill svg { width: 15px; height: 15px; }
+.hero h1 { margin-top: 18px; font-size: clamp(2.7rem, 10.6vw, 5.1rem); line-height: .93; font-weight: 800; font-stretch: 80%; letter-spacing: -.028em; max-width: 11ch; }
+.hero h1 span { display: block; }
+.hero h1 em { font-style: normal; position: relative; white-space: nowrap; }
+.hero h1 em::after { content: ""; position: absolute; left: -2%; right: -2%; bottom: -.02em; height: .15em; background: var(--y); border-radius: 99px; z-index: -1; transform: rotate(-1.5deg); }
+.hero h1 span:last-child { position: relative; z-index: 0; }
+.lead { margin: 22px 0 0; font-size: clamp(1.08rem, 2.6vw, 1.26rem); line-height: 1.5; max-width: 33em; font-weight: 500; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.facts { list-style: none; margin: 30px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px 30px; }
+.facts li { font-weight: 600; font-size: 15.5px; line-height: 1.2; }
+.facts b { display: block; font-family: var(--f-d); font-size: 38px; font-weight: 800; font-stretch: 80%; line-height: 1; letter-spacing: -.02em; }
+
+/* sahne */
+.scene { position: relative; width: 100%; max-width: 480px; justify-self: center; aspect-ratio: 1 / 1.34; }
+.sc-a { position: absolute; left: 0; top: 13%; width: 70%; }
+.sc-b { position: absolute; right: 0; top: 46%; width: 60%; }
+.stamp-obj { position: absolute; left: 73%; top: 1%; width: 24%; z-index: 3; filter: drop-shadow(6px 10px 0 rgba(16, 34, 31, .25)); animation: bob 3.6s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(8deg); } 45% { transform: translateY(14px) rotate(4deg); } 55% { transform: translateY(14px) rotate(4deg); } }
+.scard { background: var(--cream); color: var(--k); border-radius: 22px; padding: 18px 18px 14px; transform: rotate(-3.5deg); box-shadow: 8px 10px 0 rgba(16, 34, 31, .22); }
+.scard-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 2px dashed #E7DFCF; padding-bottom: 12px; }
+.scard-top b { font-family: var(--f-d); font-size: 20px; font-weight: 800; font-stretch: 88%; }
+.scard-top span { color: #4D5F5C; font-size: 13.5px; }
+.slots { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 18px 0 14px; }
+.slot { aspect-ratio: 1; border-radius: 50%; border: 2px dashed #CFC5B0; display: grid; place-items: center; position: relative; }
+.ink { position: absolute; inset: 6%; border-radius: 50%; border: 3.5px solid var(--o); display: grid; place-items: center; transform: rotate(var(--r)); opacity: .92; animation: press .42s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: var(--d); }
+.ink::before { content: ""; width: 42%; height: 42%; border-radius: 50%; background: var(--o); }
+.ink::after { content: ""; position: absolute; inset: 16%; border-radius: 50%; border: 1.5px dashed var(--o); opacity: .75; }
+.gift { border-style: solid; border-color: var(--k); background: var(--y); animation: gift .4s ease-out 2.35s both; }
+.gift svg { width: 52%; height: 52%; }
+.scard-bot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; color: #4D5F5C; }
+.ready { background: var(--k); color: var(--cream); font-weight: 700; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; animation: rise .35s ease-out 2.7s both; }
+@keyframes press { from { opacity: 0; transform: scale(1.7) rotate(var(--r)); } to { opacity: .92; transform: scale(1) rotate(var(--r)); } }
+@keyframes gift { from { background: transparent; border-color: #CFC5B0; border-style: dashed; } to { background: var(--y); border-color: var(--k); } }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.tcard { position: relative; background: var(--k); color: var(--cream); border-radius: 24px; padding: 14px; transform: rotate(3deg); box-shadow: 8px 10px 0 rgba(16, 34, 31, .22); }
+.tc-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tc-head small { color: #B9C6C2; font-size: 12px; font-weight: 600; }
+.tc-head b { font-family: var(--f-d); font-size: 24px; font-weight: 800; line-height: 1; }
+.tc-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.tc-b { position: relative; display: grid; gap: 6px; padding: 10px; border-radius: 14px; background: #FFFBF3; color: var(--k); font-weight: 800; font-size: 13px; line-height: 1.15; }
+.tc-b i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9px; background: rgba(238, 106, 55, .16); color: #B94C22; }
+.tc-b i svg { width: 16px; height: 16px; }
+.tc-b small { font-size: 11px; font-weight: 700; color: #4D5F5C; }
+.tc-b { transition: box-shadow .25s ease, background-color .25s ease; }
+.tc-b.pend { box-shadow: 0 0 0 3px var(--o); background: #FCE9DF; }
+.tc-b.pend i { background: var(--o); color: #fff; }
+.tc-b.seen { box-shadow: 0 0 0 3px #3BB27A; }
+.tc-b.seen i { background: #DCF1E6; color: #1E7F55; }
+.tc-b.seen small { color: #1E7F55; }
+.tc-bill { margin-top: 10px; padding: 10px 12px; border-radius: 14px; background: #183330; font-size: 12.5px; }
+.tc-bill div { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; }
+.tc-bill div span { color: #B9C6C2; }
+.tc-bill .tt { margin-top: 4px; padding-top: 7px; border-top: 1px dashed #2C4A44; font-size: 14px; }
+.tc-bill .tt b { font-family: var(--f-d); font-size: 18px; }
+.tc-tag { position: absolute; right: 16px; top: -14px; padding: 5px 11px; border-radius: 99px; background: var(--y); color: var(--k); font-size: 12px; font-weight: 800; transform: rotate(-6deg); box-shadow: 3px 3px 0 rgba(16, 34, 31, .25); }
+
+/* ---------- bantlar ---------- */
+.band { padding: 84px 0; }
+.band.tight { padding-top: 0; }
+.band h2 { font-size: clamp(2.05rem, 6.4vw, 3.35rem); line-height: 1; font-weight: 800; font-stretch: 84%; letter-spacing: -.022em; max-width: 17ch; }
+.intro { margin: 16px 0 0; color: var(--mut); font-size: 1.12rem; max-width: 37em; }
+.on-n .intro { color: var(--nmut); }
+.on-y .intro, .on-o .intro { color: var(--k); }
+.kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 13.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.kicker::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--o); }
+.kicker .new { padding: 2px 8px; border-radius: 99px; background: var(--y); color: var(--k); letter-spacing: .04em; }
+
+/* ürünler */
+.prods { display: grid; gap: 18px; margin-top: 40px; }
+.prod { position: relative; display: grid; gap: 14px; align-content: start; padding: 26px; border-radius: 26px; border: 3px solid var(--fg); background: var(--card); }
+.prod.dark { background: var(--night); color: var(--nfg); border-color: var(--night); }
+.prod .tag { justify-self: start; padding: 5px 12px; border-radius: 99px; background: var(--o); color: var(--k); font-weight: 800; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+.prod.dark .tag { background: var(--y); }
+.prod h3 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.02; font-weight: 800; font-stretch: 86%; letter-spacing: -.02em; }
+.prod p { margin: 0; color: var(--mut); }
+.prod.dark p { color: var(--nmut); }
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.ticks li { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; line-height: 1.35; }
+.ticks li svg { width: 22px; height: 22px; flex: none; color: var(--o); }
+.prod-f { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 6px; padding-top: 16px; border-top: 2px dashed var(--line); }
+.prod.dark .prod-f { border-color: var(--nline); }
+.prod-f small { font-weight: 700; font-size: 15px; }
+.prod-f small b { font-family: var(--f-d); font-size: 22px; }
+.arrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; text-decoration: none; }
+.arrow svg { width: 18px; height: 18px; transition: transform .15s ease; }
+.arrow:hover svg { transform: translateY(3px); }
+.combo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px; margin-top: 18px; padding: 18px 22px; border-radius: 22px; }
+.combo p { margin: 0; font-weight: 700; font-size: 1.08rem; max-width: 38em; }
+.combo p b { font-family: var(--f-d); font-size: 1.3em; }
+
+/* neden */
+.why { display: grid; gap: 30px; margin-top: 44px; }
+.why h3, .feat h3, .steps h3 { margin: 0 0 8px; font-size: 1.35rem; line-height: 1.2; font-weight: 750; }
+.why p, .feat p, .steps p { margin: 0; max-width: 34em; color: var(--mut); }
+.why > div { border-top: 3px solid var(--fg); padding-top: 16px; }
+.steps { list-style: none; margin: 44px 0 0; padding: 0; display: grid; gap: 28px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 64px 1fr; gap: 18px; align-items: start; counter-increment: s; }
+.steps li::before { content: counter(s); width: 64px; height: 64px; border-radius: 50%; border: 3.5px solid var(--o); display: grid; place-items: center; font-family: var(--f-d); font-size: 28px; font-weight: 800; transform: rotate(-6deg); }
+.steps li:nth-child(2)::before { transform: rotate(5deg); }
+.steps li:nth-child(3)::before { transform: rotate(-2deg); background: var(--y); border-color: var(--k); color: var(--k); }
+
+/* demo ortak */
+.flow { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.flow li { background: var(--card); border: 2px solid var(--fg); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 15px; }
+.flow b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 4px; border-radius: 50%; background: var(--o); color: var(--k); font-size: 14px; vertical-align: -1px; }
+.demo-note { margin: 18px 0 0; color: var(--mut); font-size: 15px; }
+.reset { background: none; border: 0; padding: 8px 0; font-size: 15px; font-weight: 600; color: var(--mut); text-decoration: underline; text-underline-offset: 3px; }
+
+/* damga demosu */
+.stage { margin-top: 30px; display: grid; gap: 16px; grid-template-areas: "tap" "panel" "phone"; }
+.tap { grid-area: tap; } .dpanel { grid-area: panel; } .dphone { grid-area: phone; }
+.tap { background: var(--card); border: 3px solid var(--fg); border-radius: 22px; padding: 16px; display: flex; align-items: center; gap: 16px; }
+.tap-txt { min-width: 0; }
+.tap-label { display: block; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); }
+.tap-txt p { margin: 4px 0 0; font-size: 15px; line-height: 1.4; color: var(--mut); }
+.stamp-btn { flex: none; width: 112px; height: 112px; border-radius: 50%; border: 0; background: var(--o); color: var(--k); font-weight: 800; font-size: 15px; line-height: 1.15; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 12px; box-shadow: 0 7px 0 var(--o-d); transition: transform .08s ease, box-shadow .08s ease; }
+.stamp-btn svg { width: 30px; height: 30px; }
+.stamp-btn:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--o-d); }
+.stamp-btn[disabled] { background: var(--bg2); color: var(--mut); box-shadow: 0 7px 0 var(--line2); cursor: default; transform: none; }
+.dpanel { background: var(--night); color: var(--nfg); border-radius: 22px; padding: 18px; }
+.dp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-weight: 800; font-size: 17px; }
+.dp-head small { font-weight: 600; color: var(--nmut); font-size: 13px; }
+.dp-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 4px; }
+.dp-stats div { border: 1.5px solid var(--nline); border-radius: 12px; padding: 8px 12px; }
+.dp-stats b { display: block; font-family: var(--f-d); font-size: 26px; line-height: 1.1; }
+.dp-stats small { color: var(--nmut); font-size: 13px; }
+.dp-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 6px; margin: 0 -6px; border-top: 1.5px solid var(--nline); border-radius: 8px; animation: flash .7s ease-out; }
+.dp-row b { display: block; font-size: 16px; line-height: 1.25; }
+.dp-row small { color: var(--nmut); font-size: 13px; }
+.dp-acts { display: flex; gap: 6px; flex: none; }
+.dp-btn { border: 0; border-radius: 10px; min-height: 44px; padding: 10px 14px; font-weight: 800; font-size: 15px; background: var(--o); color: var(--k); }
+.dp-btn.alt { background: transparent; color: var(--nfg); border: 1.5px solid var(--nline); }
+.dp-empty { margin: 0; padding: 14px 0 4px; border-top: 1.5px solid var(--nline); color: var(--nmut); font-size: 15px; }
+@keyframes flash { from { background: rgba(247, 212, 76, .28); } to { background: transparent; } }
+.dphone { justify-self: center; width: 100%; max-width: 340px; background: var(--k); border-radius: 42px; padding: 12px; box-shadow: 0 0 0 1.5px var(--line2); }
+.screen { position: relative; background: var(--cream); color: var(--k); border-radius: 31px; padding: 44px 18px 20px; min-height: 400px; display: flex; flex-direction: column; gap: 14px; }
+.notch { position: absolute; top: 12px; left: 50%; width: 92px; height: 24px; margin-left: -46px; border-radius: 14px; background: var(--k); }
+.url { background: #F1EBDD; border-radius: 10px; padding: 6px 10px; font-size: 13px; color: #4D5F5C; text-align: center; }
+.biz { display: flex; align-items: center; gap: 10px; }
+.biz i { flex: none; width: 42px; height: 42px; border-radius: 50%; background: var(--o); display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 15px; }
+.biz b { display: block; font-size: 18px; line-height: 1.15; }
+.biz small { color: #4D5F5C; font-size: 13px; }
+.dslots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.dslot { aspect-ratio: 1; border-radius: 50%; border: 2px dashed #CFC5B0; position: relative; }
+.dslot .ink { animation: none; }
+.dslot .ink.new { animation: press .42s cubic-bezier(.2, .9, .3, 1.25) both; }
+.dprog { height: 10px; border-radius: 10px; background: #E9E2D2; overflow: hidden; }
+.dprog i { display: block; height: 100%; background: var(--o); border-radius: 10px; transition: width .4s ease; }
+.dcount { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; font-size: 15px; }
+.dcount span:last-child { color: #4D5F5C; font-weight: 600; }
+.dmsg { margin-top: auto; border-radius: 14px; padding: 12px 14px; font-weight: 700; font-size: 15px; line-height: 1.35; background: rgba(238, 106, 55, .16); }
+.dmsg.wait { background: var(--y); }
+.dmsg.no { background: #F4D8D1; }
+.ticket { background: var(--o); border-radius: 16px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; animation: rise .35s ease-out; }
+.ticket small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+.ticket b { display: block; font-family: var(--f-d); font-size: 19px; font-weight: 800; line-height: 1.1; }
+.ticket span { flex: none; background: var(--k); color: var(--cream); border-radius: 999px; padding: 5px 10px; font-size: 13px; font-weight: 700; }
+
+/* özellik ızgarası */
+.feat { display: grid; gap: 28px; margin-top: 44px; }
+.on-n .feat p { color: var(--nmut); }
+.feat h3 { display: flex; align-items: center; gap: 12px; }
+.feat h3 i { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--o); color: var(--k); }
+.feat h3 i svg { width: 21px; height: 21px; }
+.on-n .feat h3 i { background: var(--night2); color: var(--y); border: 1.5px solid var(--nline); }
+.feat.cards > div { padding: 20px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+
+/* karşılaştırma */
+.cmp-wrap { margin-top: 36px; max-width: 920px; overflow-x: auto; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 1.4; }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 14px 12px; border-top: 2px solid var(--line); }
+.cmp thead th { border-top: 0; padding-bottom: 12px; font-size: 15px; vertical-align: middle; }
+.cmp thead th span { display: inline-block; border-radius: 999px; padding: 4px 12px; font-weight: 800; }
+.cmp thead th:nth-child(2) span { border: 2px solid var(--fg); }
+.cmp thead th:nth-child(3) span { background: var(--o); color: var(--k); }
+.cmp tbody th { font-weight: 750; width: 28%; }
+.cmp td { color: var(--mut); width: 36%; }
+.cmp td:last-child { color: var(--fg); font-weight: 650; background: var(--o-soft); }
+.cmp tbody tr:last-child th, .cmp tbody tr:last-child td { border-bottom: 2px solid var(--line); }
+
+/* masa demosu */
+.mstage { margin-top: 30px; display: grid; gap: 18px; align-items: start; }
+.mphone { justify-self: center; width: 100%; max-width: 340px; background: var(--k); border-radius: 42px; padding: 12px; box-shadow: 0 0 0 1.5px var(--line2); }
+.mscreen { position: relative; background: #F6F1E7; color: var(--k); border-radius: 31px; padding: 44px 14px 16px; min-height: 520px; display: flex; flex-direction: column; gap: 10px; }
+.m-bar { display: flex; align-items: center; gap: 9px; }
+.m-bar i { flex: none; width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: var(--o); font-style: normal; font-weight: 800; font-size: 13px; }
+.m-bar b { font-family: var(--f-d); font-size: 16px; }
+.m-hero { padding: 14px 16px 52px; border-radius: 22px; background: var(--o); }
+.m-hero small { font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.m-hero b { display: block; font-family: var(--f-d); font-size: 40px; font-weight: 800; line-height: .95; letter-spacing: -.03em; }
+.m-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: -46px 8px 0; }
+.m-cb { display: grid; gap: 10px; justify-items: start; padding: 12px; min-height: 104px; border: 1.5px solid #E4DACA; border-radius: 18px; background: #FFFDF8; color: var(--k); text-align: left; box-shadow: 0 14px 30px -18px rgba(18, 35, 31, .5); transition: transform .1s ease; }
+.m-cb:active:not(:disabled) { transform: scale(.97); }
+.m-cb i { position: relative; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; background: rgba(238, 106, 55, .14); color: #B94C22; }
+.m-cb.alt i { background: rgba(36, 80, 76, .12); color: #24504C; }
+.m-cb i svg { width: 20px; height: 20px; }
+.m-cb b { display: block; font-family: var(--f-d); font-size: 15px; line-height: 1.1; }
+.m-cb small { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 600; color: #6F7F7B; }
+.m-cb.pend { border: 2px solid var(--o); background: #FCE9DF; }
+.m-cb.alt.pend { border-color: #24504C; background: #E3ECE9; }
+.m-cb.pend i { background: var(--o); color: #fff; }
+.m-cb.alt.pend i { background: #24504C; }
+.m-cb.pend i::after { content: ""; position: absolute; inset: 0; border-radius: 12px; border: 2px solid var(--o); animation: ring 1.6s ease-out infinite; }
+.m-cb.alt.pend i::after { border-color: #24504C; }
+.m-cb.seen { border-color: #1E7F55; }
+.m-cb.seen i { background: #DCF1E6; color: #1E7F55; }
+.m-cb.seen small { color: #1E7F55; font-weight: 700; }
+.m-cb:disabled { cursor: default; }
+@keyframes ring { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.55); opacity: 0; } }
+.m-bn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: #FCE9DF; font-weight: 700; font-size: 13px; line-height: 1.3; animation: rise .3s ease both; }
+.m-bn.ok { background: #DCF1E6; color: #1E7F55; }
+.m-bn svg { width: 17px; height: 17px; flex: none; }
+.m-bill { padding: 12px 14px; border-radius: 18px; background: #FFFDF8; border: 1.5px solid #E4DACA; }
+.m-bill h4 { margin: 0 0 4px; display: flex; justify-content: space-between; align-items: center; font-family: var(--f-d); font-size: 16px; }
+.m-bill h4 span { display: inline-flex; align-items: center; gap: 5px; color: #6F7F7B; font-family: var(--f-b); font-size: 11px; font-weight: 600; }
+.m-bill h4 span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #1E7F55; }
+.m-it { display: flex; gap: 8px; padding: 7px 0; border-bottom: 1px dashed #D6CAB6; font-size: 13.5px; }
+.m-it.new { animation: flash .9s ease-out; }
+.m-it .q { min-width: 22px; color: #6F7F7B; font-weight: 700; }
+.m-it .n { flex: 1; font-weight: 600; }
+.m-it .p { font-weight: 800; }
+.m-tot { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; }
+.m-tot small { font-size: 10.5px; font-weight: 800; letter-spacing: .14em; color: #6F7F7B; }
+.m-tot b { font-family: var(--f-d); font-size: 26px; font-weight: 800; }
+.m-tot.bump b { animation: bump .6s ease; }
+@keyframes bump { 40% { color: var(--o-d); transform: scale(1.06); } }
+.m-empty { margin: 6px 0 2px; color: #6F7F7B; font-size: 13px; }
+.kasa { background: var(--night); color: var(--nfg); border-radius: 26px; padding: 16px; display: grid; gap: 12px; border: 1.5px solid var(--nline); }
+.k-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.k-head b { font-family: var(--f-d); font-size: 18px; }
+.k-head small { color: var(--nmut); font-size: 13px; font-weight: 600; }
+.k-head small b { font-size: 15px; color: var(--y); }
+.k-calls { display: grid; gap: 8px; }
+.k-call { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 12px; border-radius: 14px; background: var(--o); color: var(--k); animation: rise .3s ease both; }
+.k-call.h { background: var(--y); }
+.k-call .grow { flex: 1; min-width: 0; line-height: 1.25; }
+.k-call b { display: block; font-size: 15px; }
+.k-call small { font-size: 12.5px; font-weight: 600; }
+.k-call button { flex: none; min-height: 40px; padding: 8px 14px; border: 0; border-radius: 11px; background: var(--k); color: var(--cream); font-weight: 800; font-size: 14px; }
+.k-none { margin: 0; padding: 10px 12px; border-radius: 14px; border: 1.5px dashed var(--nline); color: var(--nmut); font-size: 14px; }
+.k-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.k-t { position: relative; display: grid; gap: 2px; padding: 10px; border-radius: 14px; background: var(--night2); border: 1.5px solid var(--nline); font-size: 12.5px; color: var(--nmut); }
+.k-t b { font-family: var(--f-d); font-size: 17px; color: var(--nfg); }
+.k-t.busy { border-color: #3A6B62; }
+.k-t.busy span { color: var(--y); font-weight: 700; }
+.k-t.me { border: 2px solid var(--o); background: rgba(238, 106, 55, .12); }
+.k-t.ring::after { content: ""; position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--o); box-shadow: 0 0 0 4px rgba(238, 106, 55, .3); animation: blink 1s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+.k-sub { font-size: 12.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--nmut); }
+.k-prods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.k-p { display: grid; gap: 2px; text-align: left; min-height: 56px; padding: 9px 11px; border: 1.5px solid var(--nline); border-radius: 13px; background: var(--night2); color: var(--nfg); font-weight: 700; font-size: 14px; line-height: 1.2; transition: transform .1s ease; }
+.k-p:active { transform: scale(.97); }
+.k-p span { color: var(--y); font-size: 13px; }
+.k-pay { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.k-pay button { min-height: 48px; border: 0; border-radius: 13px; font-weight: 800; font-size: 15px; background: var(--o); color: var(--k); }
+.k-pay button.alt { background: var(--cream); color: var(--k); }
+.k-pay button:disabled { opacity: .4; cursor: default; }
+.ktot { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 12px; border-radius: 13px; background: var(--night2); }
+.ktot span { color: var(--nmut); font-size: 13.5px; font-weight: 600; }
+.ktot b { font-family: var(--f-d); font-size: 22px; }
+.honest { display: flex; gap: 14px; align-items: flex-start; margin-top: 36px; padding: 18px 20px; border-radius: 20px; border: 1.5px solid var(--nline); background: var(--night2); max-width: 820px; }
+.honest svg { width: 26px; height: 26px; flex: none; color: var(--y); margin-top: 2px; }
+.honest p { margin: 0; color: var(--nmut); font-size: 15.5px; }
+.honest b { color: var(--nfg); }
+
+/* hesaplayıcı */
+.calc { margin-top: 36px; display: grid; gap: 28px; }
+.field { margin-bottom: 20px; }
+.field label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-weight: 700; line-height: 1.3; }
+.field output { flex: none; font-weight: 800; background: var(--cream); border-radius: 8px; padding: 2px 10px; min-width: 4.6em; text-align: right; }
+.field input[type=range] { width: 100%; margin: 10px 0 0; accent-color: var(--k); height: 30px; cursor: pointer; }
+.field small { display: block; opacity: .82; font-size: 14px; margin-top: 2px; }
+.result { background: var(--k); color: var(--cream); border-radius: 22px; padding: 24px; }
+.result h3 { margin: 0 0 6px; font-size: 1.2rem; }
+.res-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 14px 0; border-top: 1.5px solid #2C4A44; }
+.res-row span { color: #B9C6C2; }
+.res-row b { font-family: var(--f-d); font-size: clamp(1.6rem, 6vw, 2.2rem); font-weight: 800; font-stretch: 85%; line-height: 1.1; text-align: right; }
+.res-row.big b { color: var(--y); }
+.be { margin-top: 6px; padding: 14px 16px; border-radius: 16px; background: #183330; font-weight: 600; line-height: 1.45; }
+.be b { color: var(--y); }
+.result p { color: #B9C6C2; font-size: 14px; margin: 12px 0 0; line-height: 1.5; }
+
+/* sektörler */
+.chips { list-style: none; margin: 30px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.chips li { background: var(--card); border: 2px solid var(--fg); border-radius: 999px; padding: 8px 16px; font-weight: 700; }
+
+/* harita */
+.places { margin-top: 32px; display: grid; gap: 16px; }
+.map-box { border: 3px solid var(--fg); border-radius: 22px; overflow: hidden; background: var(--bg2); height: 300px; }
+.map-box iframe { display: block; width: 100%; height: 100%; border: 0; }
+.plist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; align-content: start; }
+.pitem { display: flex; align-items: center; gap: 8px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 6px 8px 6px 6px; }
+.pitem.on { border-color: var(--fg); box-shadow: 4px 4px 0 var(--o); }
+.pbtn { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 8px 10px; display: grid; gap: 2px; }
+.pbtn b { font-size: 18px; line-height: 1.2; }
+.pbtn small { color: var(--mut); font-size: 14px; }
+.pbtn span { font-size: 14px; font-weight: 600; }
+.plink { flex: none; text-decoration: none; font-weight: 700; font-size: 14px; background: var(--o); color: var(--k); border-radius: 12px; padding: 10px 12px; min-height: 44px; display: inline-flex; align-items: center; }
+
+/* fiyatlar */
+.bill-tg { display: inline-grid; grid-auto-flow: column; gap: 4px; margin-top: 28px; padding: 5px; border-radius: 16px; background: var(--bg2); border: 2px solid var(--line); }
+.bill-tg button { min-height: 46px; padding: 8px 18px; border: 0; border-radius: 12px; background: transparent; color: var(--mut); font-weight: 800; font-size: 15.5px; }
+.bill-tg button[aria-pressed="true"] { background: var(--btn); color: var(--btn-fg); }
+.bill-tg button i { font-style: normal; display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 99px; background: var(--y); color: var(--k); font-size: 12px; }
+.plans { display: grid; gap: 18px; margin-top: 26px; align-items: stretch; }
+.plan { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 26px 24px; border-radius: 26px; border: 2px solid var(--line2); background: var(--card); }
+.plan h3 { font-size: 1.65rem; font-weight: 800; font-stretch: 88%; letter-spacing: -.015em; line-height: 1; }
+.plan .for { margin: 6px 0 0; color: var(--mut); font-size: 15px; line-height: 1.4; }
+.price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.price b { font-family: var(--f-d); font-size: clamp(3rem, 11vw, 3.7rem); font-weight: 800; font-stretch: 80%; line-height: .9; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.price span { font-weight: 700; color: var(--mut); }
+.price s { color: var(--mut); font-weight: 700; font-size: 1.05rem; text-decoration-thickness: 2px; }
+.price-sub { margin: -8px 0 0; color: var(--mut); font-size: 14px; min-height: 1.4em; }
+.setup { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 14px; background: var(--bg2); font-size: 15px; font-weight: 600; }
+.setup b { font-weight: 800; }
+.setup > span:last-child { white-space: nowrap; }
+.setup s { color: var(--mut); margin-right: 6px; }
+.plan .ticks { flex: 1; align-content: start; }
+.plan .ticks li { font-weight: 600; font-size: 15.5px; }
+.plan .ticks li.plus { color: var(--fg); }
+.plan .ticks li.plus svg { color: var(--good); }
+.plan.best { border: 3px solid var(--k); background: var(--night); color: var(--nfg); box-shadow: 10px 12px 0 var(--o); }
+.plan.best .for, .plan.best .price span, .plan.best .price s, .plan.best .price-sub { color: var(--nmut); }
+.plan.best .setup { background: var(--night2); border: 1.5px solid var(--nline); }
+.plan.best .setup b { color: var(--y); }
+.plan.best .setup s { color: var(--nmut); }
+.plan.best .ticks li svg { color: var(--y); }
+.plan.best .ticks li.plus { color: var(--nfg); }
+.badge { position: absolute; top: -16px; left: 22px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 99px; background: var(--y); color: var(--k); font-weight: 800; font-size: 14px; transform: rotate(-3deg); box-shadow: 3px 3px 0 rgba(16, 34, 31, .3); }
+.badge svg { width: 16px; height: 16px; }
+.save { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--o); color: var(--k); font-weight: 800; font-size: 15px; line-height: 1.3; }
+.save svg { width: 22px; height: 22px; flex: none; }
+.promise { list-style: none; margin: 30px 0 0; padding: 0; display: grid; gap: 12px; }
+.promise li { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+.promise li i { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--o-soft); color: var(--o); }
+.promise li i svg { width: 21px; height: 21px; }
+.promise li small { display: block; color: var(--mut); font-weight: 500; font-size: 14px; }
+.matrix { margin-top: 30px; border-top: 2px solid var(--fg); border-bottom: 2px solid var(--fg); }
+.matrix summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 2px; font-family: var(--f-d); font-weight: 800; font-size: 1.25rem; }
+.matrix summary::-webkit-details-marker { display: none; }
+.matrix summary::after { content: "+"; font-size: 28px; font-weight: 500; line-height: 1; transition: transform .2s ease; }
+.matrix[open] summary::after { transform: rotate(45deg); }
+.matrix { overflow: hidden; max-width: 100%; }
+.mx-wrap { position: relative; width: 100%; overflow-x: auto; padding-bottom: 18px; }
+.mx { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px; }
+.mx th, .mx td { padding: 11px 10px; border-top: 1.5px solid var(--line); text-align: center; }
+.mx th[scope=row] { text-align: left; font-weight: 600; }
+.mx thead th { border-top: 0; font-family: var(--f-d); font-size: 1.05rem; }
+.mx thead th.b { color: var(--o); }
+.mx td.b { background: var(--o-soft); font-weight: 700; }
+.mx svg { width: 20px; height: 20px; margin: 0 auto; color: var(--good); }
+.mx .no { color: var(--line2); font-weight: 800; }
+.notes { margin: 18px 0 0; color: var(--mut); font-size: 14.5px; max-width: 52em; }
+
+/* sss */
+.faq { margin-top: 36px; max-width: 820px; }
+.faq details { border-top: 2px solid var(--fg); }
+.faq details:last-child { border-bottom: 2px solid var(--fg); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 2px; font-weight: 700; font-size: 1.1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; font-size: 28px; font-weight: 500; line-height: 1; transition: transform .2s ease; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { margin: 0; padding: 0 2px 22px; color: var(--mut); max-width: 42em; }
+
+/* son çağrı */
+.final { padding: 80px 0; }
+.final h2 { font-size: clamp(2.3rem, 8vw, 4.3rem); line-height: .95; font-weight: 800; font-stretch: 82%; letter-spacing: -.025em; max-width: 13ch; }
+.final p { margin: 16px 0 0; font-size: 1.15rem; font-weight: 600; }
+
+/* alt bilgi */
+footer { padding: 36px 0 40px; }
+.foot { display: grid; gap: 22px; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.foot a { color: var(--nfg); text-underline-offset: 4px; }
+.foot small { color: var(--nmut); font-size: 14px; }
+footer .logo { font-size: 21px; }
+
+/* yapışkan çağrı */
+.sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--night); color: var(--nfg); border-top: 2px solid var(--o); transform: translateY(110%); transition: transform .25s ease; }
+.sticky.on { transform: none; }
+.sticky b { display: block; font-family: var(--f-d); font-size: 17px; line-height: 1.1; }
+.sticky small { color: var(--nmut); font-size: 13px; }
+.sticky .btn { min-height: 48px; padding: 10px 16px; font-size: 15.5px; }
+
+/* masa sayısı + paket ekleri */
+.tables-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 28px; padding: 14px 16px; border-radius: 18px; background: var(--bg2); border: 2px solid var(--line); max-width: 640px; }
+.tables-pick label { font-weight: 800; font-size: 1.05rem; }
+.tables-pick small { flex-basis: 100%; color: var(--mut); font-size: 14px; }
+.stepper { display: inline-flex; align-items: center; border-radius: 14px; background: var(--card); border: 2px solid var(--fg); }
+.stepper button { width: 46px; height: 46px; border: 0; background: transparent; color: var(--fg); font-size: 24px; font-weight: 800; line-height: 1; }
+.stepper button:disabled { opacity: .3; cursor: default; }
+.stepper output { min-width: 44px; text-align: center; font-family: var(--f-d); font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.qn { display: flex; gap: 6px; }
+.qn button { min-height: 44px; min-width: 48px; padding: 6px 12px; border-radius: 99px; border: 1.5px solid var(--line2); background: transparent; color: var(--fg); font-weight: 700; font-size: 14.5px; }
+.qn button[aria-pressed="true"] { background: var(--btn); color: var(--btn-fg); border-color: var(--btn); }
+.trial { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 14px; background: var(--good-soft); color: var(--good); font-weight: 800; font-size: 15px; }
+.trial svg { width: 20px; height: 20px; flex: none; }
+.tier { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; border: 2px dashed var(--line2); font-size: 15px; font-weight: 600; transition: background-color .2s ease, border-color .2s ease; }
+.tier b { white-space: nowrap; }
+.tier.on { border-style: solid; border-color: var(--good); background: var(--good-soft); color: var(--good); }
+
+@media (max-width: 420px) {
+  .cmp { font-size: 14.5px; }
+  .cmp th, .cmp td { padding: 12px 7px; }
+  .tc-b { font-size: 12px; padding: 8px; }
+  .tc-head b { font-size: 20px; }
+}
+@media (min-width: 720px) {
+  .prods { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .promise { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 860px) {
+  .nav-in { flex-wrap: nowrap; padding-top: 18px; padding-bottom: 18px; }
+  .nav-links { order: 0; width: auto; justify-content: center; padding-bottom: 0; }
+  .hero { padding: 36px 0 100px; }
+  .hero-in { grid-template-columns: 1.1fr .9fr; gap: 48px; }
+  .scene { aspect-ratio: 1 / 1.04; }
+  .why { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .steps li { grid-template-columns: 1fr; gap: 16px; }
+  .feat { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 44px; }
+  .feat.cards { gap: 16px; }
+  .feat.four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .calc { grid-template-columns: 1.1fr .9fr; gap: 52px; align-items: start; }
+  .places { grid-template-columns: 1.35fr 1fr; align-items: start; gap: 22px; }
+  .map-box { height: 440px; }
+  .plist { max-height: 440px; overflow: auto; padding: 2px 6px 6px 2px; }
+  .band { padding: 112px 0; }
+  .band.tight { padding-top: 0; }
+  .mstage { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 28px; }
+  .promise { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .foot { grid-template-columns: auto 1fr auto; align-items: center; }
+  .foot nav { justify-content: center; }
+  .sticky { display: none; }
+}
+@media (min-width: 980px) {
+  .stage { grid-template-columns: .85fr 1fr 1.05fr; grid-template-areas: "tap phone panel"; align-items: start; gap: 26px; }
+  .tap { flex-direction: column; text-align: center; padding: 26px 20px; }
+  .stamp-btn { width: 150px; height: 150px; font-size: 17px; }
+  .stamp-btn svg { width: 38px; height: 38px; }
+  .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  .plan.best { transform: translateY(-14px); }
+}
+@media (max-width: 979px) {
+  .plan.best { order: -1; }
+  .plans { margin-top: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .stamp-obj { animation: none; }
 }
 </style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Damgalio", "url": "https://www.damgalio.com/", "description": "Kafe ve restoranlar için NFC damga kartı, masadan garson çağırma ve kasa ekranı."}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Müşterinin uygulama indirmesi gerekir mi?", "acceptedAnswer": {"@type": "Answer", "text": "Hayır. Telefonunu damgaya ya da masadaki standa yaklaştırınca sayfa tarayıcıda açılır. Hiçbir şey yüklenmez."}}, {"@type": "Question", "name": "Hangi telefonlarda çalışır?", "acceptedAnswer": {"@type": "Answer", "text": "Yeni iPhone'lar ve NFC'si açık Android telefonlar damgaya ya da standa dokunarak sayfayı açar. iPhone'da telefonun üst kısmını, Android'de arka yüzün ortasını yaklaştırmak yeterli. NFC'si olmayan ya da kapalı olan telefonlar QR kodu kamerayla okutur."}}, {"@type": "Question", "name": "Biri hile yapıp fazladan damga alabilir mi?", "acceptedAnswer": {"@type": "Answer", "text": "Damga linki tahmin edilemeyen gizli bir koddur. Damgalar arasında bekleme süresi var ve istersen her damga senin onayınla eklenir."}}, {"@type": "Question", "name": "Müşteri telefonunu değiştirirse damgaları ne olur?", "acceptedAnswer": {"@type": "Answer", "text": "Damgalar telefon numarasına kayıtlı. Yeni telefondan aynı numarayla girince kart kaldığı yerden devam eder."}}, {"@type": "Question", "name": "Masadaki müşteri telefondan sipariş verebiliyor mu?", "acceptedAnswer": {"@type": "Answer", "text": "Siparişi her zamanki gibi garson alır ve kasa ekranından girer. Müşteri telefonunda hesabını canlı görür, garsonu çağırır, hesabı ister. Böylece mutfağa yanlış sipariş düşmez, servis senin kontrolünde kalır."}}, {"@type": "Question", "name": "Kasa ekranı yazar kasamın yerine geçer mi?", "acceptedAnswer": {"@type": "Answer", "text": "Hayır. Damgalio Kasa bir adisyon ve masa takip ekranıdır, mali fiş kesmez. Resmî fişi mevcut yazar kasa ya da POS cihazından kesmeye devam edersin."}}, {"@type": "Question", "name": "Kasa ekranı için ne gerekiyor?", "acceptedAnswer": {"@type": "Answer", "text": "Elindeki tablet, telefon ya da bilgisayar yeterli; tarayıcıdan açılır. Aynı anda birden fazla cihazda açabilirsin, garsonlar çağrıları kendi telefonundan görebilir. Bilgi fişi basmak istersen 80 mm termal yazıcı kullanabilirsin."}}, {"@type": "Question", "name": "Müşterinin internete ihtiyacı var mı?", "acceptedAnswer": {"@type": "Answer", "text": "Evet, sayfa açılırken telefonun internete bağlı olması gerekir. Mobil veri ya da senin Wi-Fi'ın yeterli."}}, {"@type": "Question", "name": "Kaç damgada ödül verileceğine kim karar veriyor?", "acceptedAnswer": {"@type": "Answer", "text": "Sen. Kurulumda birlikte ayarlarız. Ödülü ve kartın rengini sonra panelden kendin değiştirirsin."}}, {"@type": "Question", "name": "Kurulumu kim yapıyor?", "acceptedAnswer": {"@type": "Answer", "text": "Biz. Kayseri'de işletmene gelip damgayı, tezgah afişini ve masa standlarını yerleştiriyor, paneli ve kasayı birlikte açıyoruz. Başka bir şehirdeysen WhatsApp'tan yaz, birlikte bakalım."}}, {"@type": "Question", "name": "Masa & Kasa'da aylık ücret var mı?", "acceptedAnswer": {"@type": "Answer", "text": "Hayır. Masa başı bir kez ödersin: 20'den az masada masa başı 300 ₺, 20 ve üzeri masada masa başı 250 ₺. Stand, kurulum ve kasa ekranı bu fiyata dahil. Örneğin 10 masa 3.000 ₺, 20 masa 5.000 ₺ tutar."}}, {"@type": "Question", "name": "Paketler arasında geçiş yapabilir miyim?", "acceptedAnswer": {"@type": "Answer", "text": "Evet. Damga kullanırken Masa & Kasa eklersen masalarını Tam fiyatından, masa başı 250 ₺'den alırsın. Masa & Kasa'n varken Damga'yı eklersen damga kurulum ücreti ödemezsin."}}, {"@type": "Question", "name": "Ödeme nasıl yapılıyor?", "acceptedAnswer": {"@type": "Answer", "text": "Damga aylık ya da yıllık ödenir; yıllık ödemede 2 ay bizden ve fiyat 12 ay sabit kalır. Masa & Kasa masa başı tek seferlik ödenir. Ödemeler havale veya EFT ile."}}, {"@type": "Question", "name": "14 günlük deneme bitince ne olur?", "acceptedAnswer": {"@type": "Answer", "text": "Damga'yı beğenirsen aylık 490 ₺ ile devam eder. İstemezsen hizmet kapanır, ek ücret çıkmaz. Ücretsiz deneme yalnızca Damga için geçerlidir; Masa & Kasa tek seferlik satın alınır."}}, {"@type": "Question", "name": "Müşteri bilgileri güvende mi?", "acceptedAnswer": {"@type": "Answer", "text": "Damga kartı için müşteriden yalnızca telefon numarası ve isterse adı alınır. Masa sayfası hiçbir kişisel bilgi istemez. Ayrıntılar gizlilik metninde."}}]}</script>
 </head>
 <body>
-
-<header class="nav">
+<header class="nav on-o">
   <div class="wrap nav-in">
-    <a class="logo" href="/" aria-label="Damgalio ana sayfa">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"></circle><path d="M14 12.5h4v4h-4z" fill="#10221F"></path><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"></rect><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"></path></svg>
-      Damgalio
-    </a>
+    <a class="logo" href="/" aria-label="Damgalio ana sayfa"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"/><path d="M14 12.5h4v4h-4z" fill="#10221F"/><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"/><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"/></svg>Damgalio</a>
     <nav class="nav-links" aria-label="Sayfa menüsü">
-      <a href="#dene">Dene</a>
+      <a href="#damga">Damga</a>
+      <a href="#masa">Masa &amp; Kasa<span class="new">YENİ</span></a>
       <a href="#isletmeler" id="navPlaces" hidden>İşletmeler</a>
-      <a href="#karsilastir">Kâğıt kartla farkı</a>
       <a href="#hesapla">Hesapla</a>
-      <a href="#fiyat">Fiyat</a>
+      <a href="#fiyat">Fiyatlar</a>
       <a href="#sss">Sorular</a>
     </nav>
-    <a class="nav-link" href="/panel.html">İşletme girişi</a>
+    <details class="login">
+      <summary>Giriş <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="login-menu">
+        <a href="/panel.html"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6.5" r="3"/><path d="M10.5 9.5v3.5h3V9.5"/><rect x="4.5" y="13" width="15" height="5" rx="1.6"/><path d="M5.5 21h13"/></svg></i><span><b>Damga paneli</b><small>Müşteriler, damgalar, ödüller</small></span></a>
+        <a href="/kasa"><i class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg></i><span><b>Kasa</b><small>Masalar, çağrılar, hesaplar</small></span></a>
+      </div>
+    </details>
   </div>
 </header>
 
 <main>
-<section class="hero">
+<section class="hero on-o">
   <div class="wrap hero-in">
     <div>
-      <h1><span>Kâğıt kart kaybolur.</span> <span>Bu damga kaybolmaz.</span></h1>
-      <p class="lead">Kasana koyduğumuz NFC damgaya müşterin telefonunu yaklaştırır, damgası kartına eklenir. Uygulama indirmek yok, kart taşımak yok. Ödüle yaklaştıkça müşterin tekrar gelir.</p>
+      <a class="pill" href="#masa"><i>YENİ</i> Masa &amp; Kasa geldi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <h1><span>Bir dokunuşla damga.</span> <span>Bir dokunuşla <em>garson.</em></span></h1>
+      <p class="lead">Damgalio kafene iki şey getirir: müşterini geri getiren NFC damga kartı ve garsonu, hesabı, Wi-Fi şifresini tek dokunuşa indiren masa sistemi. Müşterin uygulama indirmez, sen cihaz almazsın. Kurulumu biz yaparız.</p>
       <div class="ctas">
-        <a class="btn btn-ink js-wa" href="#iletisim">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
-          WhatsApp'tan bilgi al
-        </a>
-        <a class="btn btn-line" href="#dene">Kendin dene</a>
+        <a class="btn btn-ink js-wa" href="#iletisim"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Damga'yı 14 gün ücretsiz dene</a>
+        <a class="btn btn-line" href="#fiyat">Paketleri gör</a>
       </div>
       <ul class="facts">
         <li><b>0</b>uygulama</li>
         <li><b>1</b>dokunuş</li>
-        <li><b>1 ay</b>ücretsiz</li>
+        <li><b>14 gün</b>ücretsiz damga</li>
       </ul>
     </div>
 
-    <figure class="demo">
-      <div class="card" role="img" aria-label="Örnek damga kartı: dört damga doluyor ve ödül hazır oluyor">
-        <div class="card-top"><b>Senin Kafen</b><span>Damga kartı</span></div>
-        <div class="slots">
-          <span class="slot"><i class="ink" style="--d:.5s;--r:-9deg"></i></span>
-          <span class="slot"><i class="ink" style="--d:.95s;--r:6deg"></i></span>
-          <span class="slot"><i class="ink" style="--d:1.4s;--r:-3deg"></i></span>
-          <span class="slot"><i class="ink" style="--d:1.85s;--r:11deg"></i></span>
-          <span class="slot gift"><svg viewBox="0 0 24 24" fill="none" stroke="#10221F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></span>
+    <div class="scene" role="img" aria-label="Damgalio damgası, telefondaki damga kartı ve masadaki garson çağırma ekranı">
+      <div class="sc-a">
+        <div class="scard">
+          <div class="scard-top"><b>Senin Kafen</b><span>Damga kartı</span></div>
+          <div class="slots">
+            <span class="slot"><i class="ink" style="--d:.5s;--r:-9deg"></i></span>
+            <span class="slot"><i class="ink" style="--d:.95s;--r:6deg"></i></span>
+            <span class="slot"><i class="ink" style="--d:1.4s;--r:-3deg"></i></span>
+            <span class="slot"><i class="ink" style="--d:1.85s;--r:11deg"></i></span>
+            <span class="slot gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5.5 12v8.5h13V12"/><path d="M12 8v12.5"/><path d="M12 8C10.5 4.5 6.5 4.5 7 7c.3 1.2 2.6 1 5 1zm0 0c1.5-3.5 5.5-3.5 5-1-.3 1.2-2.6 1-5 1z"/></svg></span>
+          </div>
+          <div class="scard-bot"><span>4 damgada 1 kahve bizden</span><span class="ready">Ödülün hazır</span></div>
         </div>
-        <div class="card-bottom"><span>4 damgada 1 kahve bizden</span><span class="ready">Ödülün hazır</span></div>
       </div>
-      <figcaption>Müşterinin telefonunda gördüğü kart</figcaption>
-    </figure>
+      <div class="sc-b">
+        <div class="tcard">
+          <span class="tc-tag">Masada</span>
+          <div class="tc-head"><div><small>Senin Kafen</small><br><b>Masa 7</b></div></div>
+          <div class="tc-btns">
+            <span class="tc-b" id="hcall"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15V11a6 6 0 0 1 12 0v4l1.5 2.5h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="M12 3v2"/></svg></i>Garson çağır<small id="hcallS">Masana gelsin</small></span>
+            <span class="tc-b"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></i>Hesabı iste<small>Hesap gelsin</small></span>
+          </div>
+          <div class="tc-bill">
+            <div><span>2× Türk kahvesi</span><b>180 ₺</b></div>
+            <div><span>1× Cheesecake</span><b>160 ₺</b></div>
+            <div class="tt"><span>Toplam</span><b>340 ₺</b></div>
+          </div>
+        </div>
+      </div>
+      <svg class="stamp-obj" viewBox="0 0 120 160" aria-hidden="true"><defs><linearGradient id="sgB" x1="0" x2="1"><stop offset="0" stop-color="#343B39"/><stop offset=".45" stop-color="#0E1211"/><stop offset="1" stop-color="#232A28"/></linearGradient><linearGradient id="sgC" x1="0" x2="1"><stop offset="0" stop-color="#F7D44C"/><stop offset="1" stop-color="#EE6A37"/></linearGradient></defs><ellipse cx="60" cy="27" rx="25" ry="23" fill="url(#sgB)"/><ellipse cx="51" cy="18" rx="8" ry="5" fill="#fff" opacity=".2"/><path d="M47 44c4 4 22 4 26 0l5 42H42z" fill="url(#sgB)"/><rect x="14" y="84" width="92" height="46" rx="11" fill="url(#sgB)"/><path d="M22 90h76" stroke="#fff" stroke-opacity=".14" stroke-width="3" stroke-linecap="round"/><g fill="none" stroke="#F7B23B" stroke-width="3.4" stroke-linecap="round"><path d="M57 101a8 8 0 0 1 0 12"/><path d="M63 97a14 14 0 0 1 0 20"/><path d="M69 93a20 20 0 0 1 0 28"/></g><circle cx="51" cy="107" r="2.8" fill="#F7B23B"/><rect x="10" y="126" width="100" height="24" rx="8" fill="url(#sgC)"/><path d="M19 131.5h66" stroke="#fff" stroke-opacity=".4" stroke-width="3" stroke-linecap="round"/></svg>
+    </div>
   </div>
 </section>
 
-<section class="band">
+<section class="band" id="urunler">
   <div class="wrap">
+    <span class="kicker">İki ürün, tek dokunuş</span>
+    <h2>İhtiyacın hangisi?</h2>
+    <p class="intro">İkisi ayrı ayrı da çalışır. Birlikte kullanınca masadaki müşteri damga kartını da tanır, kasadaki ekran hepsini tek yerde toplar.</p>
+    <div class="prods">
+      <article class="prod">
+        <span class="tag">Damga</span>
+        <h3>Müşterin geri gelsin.</h3>
+        <p>Kasadaki NFC damgaya telefonunu dokunduran müşterinin kartına damga eklenir. Kart doldukça ödüle yaklaşır, ödüle yaklaştıkça sana gelir.</p>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Uygulama yok, kâğıt kart yok</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Onaylı damga ve bekleme süresiyle hilesiz</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Müdavimlerini panelden tanırsın</li>
+        </ul>
+        <div class="prod-f"><small><b>490 ₺</b> / ay · 14 gün ücretsiz</small><a class="arrow" href="#damga">Damgayı tanı <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a></div>
+      </article>
+      <article class="prod dark">
+        <span class="tag">Masa &amp; Kasa · Yeni</span>
+        <h3>Masan seni çağırsın.</h3>
+        <p>Masadaki standa dokunan müşteri garsonu çağırır, hesabı ister, siparişlerini canlı görür. Çağrılar ve hesaplar kasandaki ekrana düşer.</p>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Garson çağır, hesabı iste</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Canlı hesap ve hesap bölüştürme</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Kasa ekranı: masa planı, adisyon, gün sonu</li>
+        </ul>
+        <div class="prod-f"><small><b>300 ₺</b> / masa · tek sefer</small><a class="arrow" href="#masa">Masa &amp; Kasa'yı tanı <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a></div>
+      </article>
+    </div>
+    <div class="combo on-y">
+      <p>İkisi birlikte: <b>Damgalio Tam</b>. Masa başı 250 ₺ ve damga kurulumu ücretsiz. 10 masalı bir kafe 950 ₺ daha az öder.</p>
+      <a class="btn btn-ink" href="#fiyat">Tam paketi incele</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAMGA ================= -->
+<section class="band tight" id="damga">
+  <div class="wrap">
+    <span class="kicker">Damga</span>
     <h2>Müşteri neden geri gelir?</h2>
-    <p class="band-intro">Çünkü insan başladığı işi bitirmek ister. Damga kartı bu isteği işletmene bağlar.</p>
+    <p class="intro">Çünkü insan başladığı işi bitirmek ister. Damga kartı bu isteği işletmene bağlar.</p>
     <div class="why">
-      <div class="why-item">
+      <div>
         <h3>Yarım kart rahat bırakmaz</h3>
         <p>İki damgası olan müşteri ödüle ne kadar yaklaştığını her seferinde görür. Kartı tamamlamak için tekrar sana gelir.</p>
       </div>
-      <div class="why-item">
+      <div>
         <h3>Kart cüzdanda değil, telefonda</h3>
         <p>Kâğıt kart unutulur, ıslanır, çöpe gider. Damgalar müşterinin numarasına kayıtlı. Telefonu yanındaysa kartı da yanında.</p>
       </div>
-      <div class="why-item">
+      <div>
         <h3>Ödül senin kararın</h3>
         <p>Bir kahve, bir tatlı, bir indirim. Ödülü ve kartın rengini panelden istediğin zaman değiştirirsin.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="band" id="nasil" style="padding-top:0">
-  <div class="wrap">
-    <h2>Müşterin için üç adım</h2>
     <ol class="steps">
-      <li>
-        <div>
-          <h3>Telefonunu damgaya yaklaştırır</h3>
-          <p>Kart sayfası tarayıcıda açılır. NFC'si olmayan telefonlar tezgahtaki afişin QR kodunu okutur.</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <h3>Numarasını yazar</h3>
-          <p>Damgası kartına eklenir. Hesap açmak, şifre belirlemek yok.</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <h3>Ödülünü alır</h3>
-          <p>Kart dolunca ödül bileti çıkar. Kasada gösterir, sen tek dokunuşla kullandırırsın.</p>
-        </div>
-      </li>
+      <li><div><h3>Telefonunu damgaya yaklaştırır</h3><p>Kart sayfası tarayıcıda açılır. NFC'si olmayan telefonlar tezgahtaki afişin QR kodunu okutur.</p></div></li>
+      <li><div><h3>Numarasını yazar</h3><p>Damgası kartına eklenir. Hesap açmak, şifre belirlemek yok.</p></div></li>
+      <li><div><h3>Ödülünü alır</h3><p>Kart dolunca ödül bileti çıkar. Kasada gösterir, sen tek dokunuşla kullandırırsın.</p></div></li>
     </ol>
   </div>
 </section>
 
-<section class="band" id="dene" style="padding-top:0">
+<section class="band tight" id="dene">
   <div class="wrap">
-    <span class="kicker">Canlı deneme</span>
+    <span class="kicker">Canlı deneme · Damga</span>
     <h2>Kendin dene</h2>
-    <p class="band-intro">Kasadaki bir anı canlandır. Müşteri olarak damgaya dokun, işletme sahibi olarak panelden onayla, kartın dolmasını izle.</p>
+    <p class="intro">Kasadaki bir anı canlandır. Müşteri olarak damgaya dokun, işletme sahibi olarak panelden onayla, kartın dolmasını izle.</p>
     <ol class="flow">
       <li><b>1</b> Damgaya dokun</li>
       <li><b>2</b> Panelden onayla</li>
       <li><b>3</b> Kartı doldur</li>
     </ol>
-
     <div class="stage">
       <div class="tap">
-        <button class="stamp-btn" id="dStamp" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7"></path><path d="M12 6a8.5 8.5 0 0 1 0 12"></path><path d="M16 3.5a12 12 0 0 1 0 17"></path><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg>
-          <span id="dStampTxt">Damgaya dokun</span>
-        </button>
+        <button class="stamp-btn" id="dStamp" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7"/><path d="M12 6a8.5 8.5 0 0 1 0 12"/><path d="M16 3.5a12 12 0 0 1 0 17"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg><span id="dStampTxt">Damgaya dokun</span></button>
         <div class="tap-txt">
           <span class="tap-label">Kasadaki damga</span>
           <p>Gerçekte müşteri telefonunu bu damgaya yaklaştırır.</p>
           <button class="reset" id="dReset" type="button">Baştan başla</button>
         </div>
       </div>
-
       <div class="dpanel">
         <div class="dp-head">Senin panelin <small>Senin Kafen</small></div>
         <div class="dp-stats">
@@ -425,44 +789,24 @@ footer .logo{font-size:20px}
         </div>
         <div id="dList"></div>
       </div>
-
-      <div class="dphone">
-        <div class="screen" id="dScreen"></div>
-      </div>
+      <div class="dphone"><div class="screen" id="dScreen"></div></div>
     </div>
     <p class="demo-note">Bu bir canlandırmadır, gerçek bir kart açılmaz.</p>
   </div>
 </section>
 
-<section class="band night">
+<section class="band on-n">
   <div class="wrap">
+    <span class="kicker">Damga paneli</span>
     <h2>Senin tarafında</h2>
-    <p class="band-intro">Telefonundan açtığın bir panel. Kurulumu biz yapıyoruz, sen sadece kullanıyorsun.</p>
+    <p class="intro">Telefonundan açtığın bir panel. Kurulumu biz yapıyoruz, sen sadece kullanıyorsun.</p>
     <div class="feat">
-      <div>
-        <h3>Onaylamadan damga eklenmez</h3>
-        <p>İstersen her damga önce senin onayına düşer. Kasada olmayan biri damga toplayamaz.</p>
-      </div>
-      <div>
-        <h3>Damgalar arasında bekleme</h3>
-        <p>Aynı müşteri kısa sürede üst üste damga alamaz. Bekleme süresini sen belirlersin.</p>
-      </div>
-      <div>
-        <h3>Ödül bileti tek dokunuşla</h3>
-        <p>Kart dolunca müşteriye bilet çıkar. Kasada gösterir, sen panelden kullandırırsın.</p>
-      </div>
-      <div>
-        <h3>Müdavimlerini tanırsın</h3>
-        <p>Kim kaç damga aldı, en son ne zaman geldi, bugün kaç damga verildi. Hepsi tek ekranda.</p>
-      </div>
-      <div>
-        <h3>Kart senin markanla görünür</h3>
-        <p>Müşterinin kartında senin rengin, ödülün, Instagram ve WhatsApp linklerin yer alır.</p>
-      </div>
-      <div>
-        <h3>Kurulacak bir şey yok</h3>
-        <p>Panel telefonunun tarayıcısında açılır. Kasaya bilgisayar ya da cihaz gerekmez.</p>
-      </div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-3 8.3-7 10-4-1.7-7-5.4-7-10V6z"/><path d="M8.8 12.2l2.2 2.2 4.2-4.4"/></svg></i>Onaylamadan damga eklenmez</h3><p>İstersen her damga önce senin onayına düşer. Kasada olmayan biri damga toplayamaz.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i>Damgalar arasında bekleme</h3><p>Aynı müşteri kısa sürede üst üste damga alamaz. Bekleme süresini sen belirlersin.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2.5"/></svg></i>Ödül bileti tek dokunuşla</h3><p>Kart dolunca müşteriye bilet çıkar. Kasada gösterir, sen panelden kullandırırsın.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M16 5a3.2 3.2 0 0 1 0 6"/><path d="M18 14.2a5.6 5.6 0 0 1 3 5.3"/></svg></i>Müdavimlerini tanırsın</h3><p>Kim kaç damga aldı, en son ne zaman geldi, bugün kaç damga verildi. Hepsi tek ekranda.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.4 0 2-1 2-2 0-1.4-1.2-1.6-1.2-2.8 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg></i>Kart senin markanla</h3><p>Müşterinin kartında senin rengin, ödülün, Instagram ve WhatsApp linklerin yer alır.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></i>Hazır tasarımlar</h3><p>Tezgah afişi, Instagram story ve gönderi tasarımları panelde hazır. İndir, paylaş.</p></div>
     </div>
   </div>
 </section>
@@ -470,12 +814,10 @@ footer .logo{font-size:20px}
 <section class="band" id="karsilastir">
   <div class="wrap">
     <h2>Kâğıt kart mı, Damgalio mu?</h2>
-    <p class="band-intro">Kâğıt kart işini görür, ta ki kaybolana ya da taklit edilene kadar.</p>
+    <p class="intro">Kâğıt kart işini görür, ta ki kaybolana ya da taklit edilene kadar.</p>
     <div class="cmp-wrap">
       <table class="cmp">
-        <thead>
-          <tr><th scope="col">Konu</th><th scope="col"><span>Kâğıt kart</span></th><th scope="col"><span>Damgalio</span></th></tr>
-        </thead>
+        <thead><tr><th scope="col">Konu</th><th scope="col"><span>Kâğıt kart</span></th><th scope="col"><span>Damgalio</span></th></tr></thead>
         <tbody>
           <tr><th scope="row">Kart kaybolursa</th><td>Damgalar da gider</td><td>Numaraya kayıtlı, kaybolmaz</td></tr>
           <tr><th scope="row">Sahte damga</th><td>Kaşe ya da kalemle taklit edilebilir</td><td>İstersen her damga senin onayından geçer</td></tr>
@@ -489,44 +831,81 @@ footer .logo{font-size:20px}
   </div>
 </section>
 
-<section class="band calc-band" id="hesapla">
+<!-- ================= MASA & KASA ================= -->
+<section class="band" id="masa" style="background:var(--bg2)">
+  <div class="wrap">
+    <span class="kicker">Masa &amp; Kasa <span class="new">YENİ</span></span>
+    <h2>Garson bir dokunuş uzağında.</h2>
+    <p class="intro">Her masaya NFC ve QR kodlu şık bir stand koyuyoruz. Müşteri telefonunu dokundurur; garsonu çağırır, hesabı ister, siparişlerini canlı görür. Çağrı o an kasandaki ekrana düşer.</p>
+    <div class="feat cards four">
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15V11a6 6 0 0 1 12 0v4l1.5 2.5h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="M12 3v2"/></svg></i>Garson çağır</h3><p>El kaldırmak, seslenmek yok. Çağrı kasaya düşer, garson görünce müşterinin ekranında "Görüldü" yazar.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></i>Hesabı iste</h3><p>Müşteri kalkmadan hesabı ister. Kasada hangi masanın hesap beklediği hemen görünür.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5h10a1.5 1.5 0 0 1 1.5 1.5v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V5A1.5 1.5 0 0 1 7 3.5z"/><path d="M9 9h6M9 13h4"/><circle cx="17.5" cy="5.5" r="2.5" fill="currentColor" stroke="none"/></svg></i>Canlı hesap</h3><p>Girdiğin her sipariş müşterinin telefonunda anında görünür. Sürpriz hesap, tartışma yok.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M16 5a3.2 3.2 0 0 1 0 6"/><path d="M18 14.2a5.6 5.6 0 0 1 3 5.3"/></svg></i>Hesabı bölüştür</h3><p>Eşit böl ya da herkes ne yediyse onu seçsin. Bahşiş dahil kişi başı tutarı telefon hesaplar.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 9a14 14 0 0 1 19 0"/><path d="M5.8 12.4a9.3 9.3 0 0 1 12.4 0"/><path d="M9.2 15.8a4.6 4.6 0 0 1 5.6 0"/><circle cx="12" cy="19.3" r="1.1" fill="currentColor" stroke="none"/></svg></i>Wi-Fi tek dokunuşla</h3><p>"Şifre neydi?" sorusu biter. Ağ adı ve şifre tek dokunuşla kopyalanır.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C6 4 9 4 12 5.5v14C9 18 6 18 3 19.5z"/><path d="M21 5.5C18 4 15 4 12 5.5v14c3-1.5 6-1.5 9 0z"/></svg></i>Menü ve Google yorum</h3><p>Menün, Instagram'ın ve Google yorum linkin masada. Memnun müşteri yorumu oradan yazar.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></i>Turiste İngilizce</h3><p>Telefonu İngilizce olan müşteriye sayfa kendiliğinden İngilizce açılır.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v7M12 14v7M3 12h7M14 12h7"/></svg></i>"Hesabı kim ödeyecek?"</h3><p>Masadakiler isimlerini yazar, çarkı çevirir. Masada eğlence, sende sohbet konusu.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band tight" id="masa-dene" style="background:var(--bg2)">
+  <div class="wrap">
+    <span class="kicker">Canlı deneme · Masa &amp; Kasa</span>
+    <h2>Masadan çağır, kasadan gör.</h2>
+    <p class="intro">Bir yanda müşterinin telefonu, diğer yanda senin kasan. Garsonu çağır, kasadan "Gördüm" de, siparişleri ekle ve hesabın telefonda canlı değişmesini izle.</p>
+    <ol class="flow">
+      <li><b>1</b> Telefondan garson çağır</li>
+      <li><b>2</b> Kasada "Gördüm" de</li>
+      <li><b>3</b> Ürün ekle</li>
+      <li><b>4</b> Hesabı kapat</li>
+    </ol>
+    <div class="mstage">
+      <div class="mphone"><div class="mscreen" id="mScreen"></div></div>
+      <div class="kasa" id="mKasa"></div>
+    </div>
+    <p class="demo-note">Bu bir canlandırmadır. <button class="reset" id="mReset" type="button">Baştan başla</button></p>
+  </div>
+</section>
+
+<section class="band on-n">
+  <div class="wrap">
+    <span class="kicker">Kasa ekranı</span>
+    <h2>Kasan tarafında</h2>
+    <p class="intro">Tablette, telefonda ya da bilgisayarda tarayıcıdan açılır. Program kurmak, cihaz almak yok. Garsonların kendi telefonunda da açabilir.</p>
+    <div class="feat">
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg></i>Masa planı</h3><p>Boş, dolu, çağıran ve hesap bekleyen masalar renkleriyle tek bakışta.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg></i>Sesli çağrı bildirimi</h3><p>Müşteri çağırınca kasa ses verir. Kimse masada unutulmaz.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg></i>Hızlı adisyon</h3><p>Sık satılanlar tek dokunuşla eklenir. Adet artır, azalt, sil, geri al.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v.01M18 14.5v.01"/></svg></i>Nakit, kart, indirim</h3><p>Hesabı ödeme türüyle kapat, istersen indirim yap, para üstünü hesaplasın.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></i>Masa taşı, hesabı böl</h3><p>Müşteri masa değiştirirse hesabı taşırsın, ayrı ödemek isteyenlere bölersin.</p></div>
+      <div><h3><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i>Gün sonu özeti</h3><p>Bugünkü ciro, nakit ve kart dağılımı, en çok satanlar. Bilgi fişini 80 mm yazıcıdan da basarsın.</p></div>
+    </div>
+    <div class="honest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg><p><b>Açık konuşalım:</b> Damgalio Kasa bir adisyon ve masa takip ekranıdır, mali fiş kesmez ve yazar kasanın yerine geçmez. Resmî fişi mevcut yazar kasa ya da POS cihazından kesmeye devam edersin.</p></div>
+  </div>
+</section>
+
+<!-- ================= HESAPLA ================= -->
+<section class="band on-y" id="hesapla">
   <div class="wrap">
     <h2>Kazancını kabaca hesapla</h2>
-    <p class="band-intro">Kendi işletmenin rakamlarını gir. Kart kullanan müşterilerin biraz daha sık gelmesi ayda ne kadar fark eder, gör.</p>
+    <p class="intro">Kendi işletmenin rakamlarını gir. Kart kullanan müşterilerin biraz daha sık gelmesi ayda ne kadar fark eder, gör.</p>
     <div class="calc">
-      <form class="fields" id="calc" onsubmit="return false">
-        <div class="field">
-          <label for="cDaily">Günde kaç müşteri geliyor? <output for="cDaily" id="oDaily"></output></label>
-          <input type="range" id="cDaily" min="10" max="600" step="10" value="80">
-        </div>
-        <div class="field">
-          <label for="cAvg">Ortalama hesap <output for="cAvg" id="oAvg"></output></label>
-          <input type="range" id="cAvg" min="20" max="1000" step="10" value="120">
-        </div>
-        <div class="field">
-          <label for="cUse">Kartı kullanan müşteri oranı <output for="cUse" id="oUse"></output></label>
-          <input type="range" id="cUse" min="5" max="80" step="5" value="30">
-        </div>
-        <div class="field">
-          <label for="cLift">Kart kullananların gelişindeki artış <output for="cLift" id="oLift"></output></label>
-          <input type="range" id="cLift" min="5" max="50" step="5" value="15">
-          <small>Örneğin ayda 4 kez gelen müşteri, kart sayesinde ara sıra 5. kez de gelirse.</small>
-        </div>
-        <div class="field">
-          <label for="cNeed">Kaç damgada ödül? <output for="cNeed" id="oNeed"></output></label>
-          <input type="range" id="cNeed" min="2" max="12" step="1" value="4">
-        </div>
-        <div class="field">
-          <label for="cCost">Ödülün sana maliyeti <output for="cCost" id="oCost"></output></label>
-          <input type="range" id="cCost" min="5" max="300" step="5" value="30">
-          <small>Satış fiyatı değil, sana kaça mal olduğu.</small>
-        </div>
+      <form id="calc" onsubmit="return false">
+        <div class="field"><label for="cDaily">Günde kaç müşteri geliyor? <output for="cDaily" id="oDaily"></output></label><input type="range" id="cDaily" min="10" max="600" step="10" value="80"></div>
+        <div class="field"><label for="cAvg">Ortalama hesap <output for="cAvg" id="oAvg"></output></label><input type="range" id="cAvg" min="20" max="1000" step="10" value="120"></div>
+        <div class="field"><label for="cUse">Kartı kullanan müşteri oranı <output for="cUse" id="oUse"></output></label><input type="range" id="cUse" min="5" max="80" step="5" value="30"></div>
+        <div class="field"><label for="cLift">Kart kullananların gelişindeki artış <output for="cLift" id="oLift"></output></label><input type="range" id="cLift" min="5" max="50" step="5" value="15"><small>Örneğin ayda 4 kez gelen müşteri, kart sayesinde ara sıra 5. kez de gelirse.</small></div>
+        <div class="field"><label for="cNeed">Kaç damgada ödül? <output for="cNeed" id="oNeed"></output></label><input type="range" id="cNeed" min="2" max="12" step="1" value="4"></div>
+        <div class="field"><label for="cCost">Ödülün sana maliyeti <output for="cCost" id="oCost"></output></label><input type="range" id="cCost" min="5" max="300" step="5" value="30"><small>Satış fiyatı değil, sana kaça mal olduğu.</small></div>
       </form>
       <div class="result" aria-live="polite">
         <h3>Aylık tahmin</h3>
         <div class="res-row"><span>Ek ziyaret</span><b id="rVisits">-</b></div>
         <div class="res-row big"><span>Ek ciro</span><b id="rCiro">-</b></div>
         <div class="res-row"><span>Ödüllerin maliyeti</span><b id="rCost">-</b></div>
+        <div class="be" id="rBe"></div>
         <p>Bu bir tahmindir, garanti değildir. Ek ciro kâr değildir, ürün maliyetini düşmeyi unutma. Ödül maliyetine zaten düzenli gelen müşterilerin alacağı ödüller de dahildir.</p>
       </div>
     </div>
@@ -536,17 +915,17 @@ footer .logo{font-size:20px}
 <section class="band">
   <div class="wrap">
     <h2>Sadece kafeler için değil</h2>
-    <p class="band-intro">Müşterisi tekrar tekrar gelen her işletmede çalışır. Damga kuralını sen koyarsın: her kahvede, her tıraşta, her yıkamada.</p>
+    <p class="intro">Damga, müşterisi tekrar tekrar gelen her işletmede çalışır: her kahvede, her tıraşta, her yıkamada. Masa &amp; Kasa ise masaya servis yapılan her yer için.</p>
     <ul class="chips">
-      <li>Kafe</li><li>Kahveci</li><li>Pastane</li><li>Fırın</li><li>Tatlıcı</li><li>Dondurmacı</li><li>Restoran</li><li>Dönerci</li><li>Çiğköfteci</li><li>Berber</li><li>Kuaför</li><li>Güzellik salonu</li><li>Oto yıkama</li><li>Kuru temizleme</li>
+      <li>Kafe</li><li>Kahveci</li><li>Pastane</li><li>Fırın</li><li>Tatlıcı</li><li>Dondurmacı</li><li>Restoran</li><li>Nargile kafe</li><li>Dönerci</li><li>Çiğköfteci</li><li>Berber</li><li>Kuaför</li><li>Güzellik salonu</li><li>Oto yıkama</li><li>Kuru temizleme</li>
     </ul>
   </div>
 </section>
 
-<section class="band" id="isletmeler" style="padding-top:0" hidden>
+<section class="band tight" id="isletmeler" hidden>
   <div class="wrap">
     <h2>Damgalio kullanan işletmeler</h2>
-    <p class="band-intro">Damga toplayabileceğin yerler. Birine dokun, haritada gör ya da yol tarifi al.</p>
+    <p class="intro">Damga toplayabileceğin yerler. Birine dokun, haritada gör ya da yol tarifi al.</p>
     <div class="places">
       <div class="map-box"><iframe id="pMap" title="Damgalio kullanan işletmelerin haritası" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
       <ul class="plist" id="pList"></ul>
@@ -554,123 +933,163 @@ footer .logo{font-size:20px}
   </div>
 </section>
 
-<section class="band" id="fiyat" style="padding-top:0">
+<!-- ================= FİYAT ================= -->
+<section class="band tight" id="fiyat">
   <div class="wrap">
-    <h2>Ne kadar?</h2>
-    <div class="price">
-      <div class="price-main">
-        <div class="price-num">450 ₺</div>
-        <p class="price-unit">kurulum, tek seferlik</p>
-        <span class="price-free">İlk ay ücretsiz</span>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>NFC çipli damga</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>QR kodlu tezgah kartı</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>İşletme paneli</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"></polyline></svg>Yerinde kurulum ve ilk ayarlar</li>
-        </ul>
-        <a class="btn btn-orange js-wa" href="#iletisim">WhatsApp'tan teklif al</a>
-      </div>
-      <div class="price-note">
-        <p><b>İlk ayı ücretsiz kullanırsın.</b> Müşterilerin damga toplamaya başlar, sonucu kendi gözünle görürsün.</p>
-        <p><b>Memnun kalırsan aylık abonelikle devam edersin.</b> Aylık ücreti işletmene göre WhatsApp'tan konuşuruz.</p>
-        <p><b>Devam etmek istemezsen hizmet kapanır.</b> Ek bir ücret çıkmaz.</p>
-      </div>
+    <span class="kicker">Fiyatlar</span>
+    <h2>Basit paketler, sürpriz yok.</h2>
+    <p class="intro">Damga aylık abonelikle çalışır, ilk 14 günü ücretsizdir. Masa &amp; Kasa'yı masa başı bir kez ödersin, aylık ücreti yoktur. Kurulumu ve eğitimi işletmende yerinde biz yapıyoruz.</p>
+    <div class="tables-pick">
+      <label for="tblN">Kaç masan var?</label>
+      <div class="stepper"><button type="button" data-d="-1" aria-label="Masa sayısını azalt">−</button><output id="tblN" aria-live="polite">10</output><button type="button" data-d="1" aria-label="Masa sayısını artır">+</button></div>
+      <div class="qn" role="group" aria-label="Hızlı seçim"><button type="button" data-n="10" aria-pressed="true">10</button><button type="button" data-n="20" aria-pressed="false">20</button><button type="button" data-n="30" aria-pressed="false">30</button></div>
+      <small>Masa &amp; Kasa ve Tam fiyatları masa sayına göre hesaplanır.</small>
     </div>
+    <div class="plans">
+      <article class="plan">
+        <div><h3>Damga</h3><p class="for">Müşterisini geri getirmek isteyen işletmeler için.</p></div>
+        <div class="price"><b>490 ₺</b><span>/ ay</span></div>
+        <p class="price-sub">Yıllık ödersen 4.900 ₺ (2 ay hediye)</p>
+        <div class="trial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5.5 12v8.5h13V12"/><path d="M12 8v12.5"/><path d="M12 8C10.5 4.5 6.5 4.5 7 7c.3 1.2 2.6 1 5 1zm0 0c1.5-3.5 5.5-3.5 5-1-.3 1.2-2.6 1-5 1z"/></svg>İlk 14 gün ücretsiz</div>
+        <div class="setup"><span>Kurulum</span><b>450 ₺</b></div>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>NFC damga ve QR'lı tezgah afişi</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Sınırsız müşteri ve damga</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Onaylı damga, bekleme süresi</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Ödül bileti, markalı damga kartı</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Müşteri listesi ve istatistikler</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Hazır afiş ve story tasarımları</li>
+        </ul>
+        <a class="btn btn-ghost block js-wa" data-msg="Merhaba, Damgalio Damga'yı 14 gün ücretsiz denemek istiyorum. İşletmemin adı: " href="#iletisim">14 gün ücretsiz dene</a>
+      </article>
+      <article class="plan">
+        <div><h3>Masa &amp; Kasa</h3><p class="for">Masaları, çağrıları ve hesapları kolaylaştırmak isteyenler için.</p></div>
+        <div class="price"><b id="pmUnit">300 ₺</b><span>/ masa</span></div>
+        <p class="price-sub">Tek seferlik ödeme · aylık ücret yok</p>
+        <div class="tier" id="tierRow"><span>20 ve üzeri masada</span><b>masa başı 250 ₺</b></div>
+        <div class="setup"><span id="pmN">10 masa · toplam</span><b id="pmTot">3.000 ₺</b></div>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Her masaya NFC ve QR'lı stand</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Garson çağır, hesabı iste</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Canlı hesap ve hesap bölüştürme</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Wi-Fi, menü, Google yorum masada</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Türkçe ve İngilizce masa sayfası</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Kasa ekranı: adisyon, nakit/kart, gün sonu</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Kurulum ve eğitim dahil</li>
+        </ul>
+        <a class="btn btn-ghost block js-wa" id="waMasa" data-msg="Merhaba, Damgalio Masa & Kasa hakkında bilgi almak istiyorum. 10 masam var. İşletmemin adı: " href="#iletisim">Masa &amp; Kasa için yaz</a>
+      </article>
+      <article class="plan best">
+        <span class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z" fill="currentColor"/></svg>En avantajlı</span>
+        <div><h3>Damgalio Tam</h3><p class="for">Damga ve Masa &amp; Kasa bir arada. Müşterini hem masada hem kasada yakala.</p></div>
+        <div class="price"><b>250 ₺</b><span>/ masa</span><s id="ptStrike">300 ₺</s></div>
+        <p class="price-sub">+ Damga 490 ₺ / ay · ilk 14 gün ücretsiz</p>
+        <div class="save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5.5 12v8.5h13V12"/><path d="M12 8v12.5"/><path d="M12 8C10.5 4.5 6.5 4.5 7 7c.3 1.2 2.6 1 5 1zm0 0c1.5-3.5 5.5-3.5 5-1-.3 1.2-2.6 1-5 1z"/></svg><span id="saveTxt">10 masada 950 ₺ daha az ödersin</span></div>
+        <div class="setup"><span id="ptN">10 masa · toplam</span><b id="ptTot">2.500 ₺</b></div>
+        <div class="setup"><span>Damga kurulumu</span><span><s>450 ₺</s><b>Ücretsiz</b></span></div>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Damga paketindeki her şey</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Masa &amp; Kasa paketindeki her şey</li>
+          <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Kaç masan olursa olsun masa başı 250 ₺</li>
+          <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Masada damga kartı tanıtımı</li>
+          <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Açılış tasarımları: story, gönderi, afiş</li>
+          <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg>Öncelikli WhatsApp desteği</li>
+        </ul>
+        <a class="btn btn-o block js-wa" id="waTam" data-msg="Merhaba, Damgalio Tam paketi hakkında bilgi almak istiyorum. 10 masam var. İşletmemin adı: " href="#iletisim">Tam paketle başla</a>
+      </article>
+    </div>
+    <ul class="promise">
+      <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5.5 12v8.5h13V12"/><path d="M12 8v12.5"/><path d="M12 8C10.5 4.5 6.5 4.5 7 7c.3 1.2 2.6 1 5 1zm0 0c1.5-3.5 5.5-3.5 5-1-.3 1.2-2.6 1-5 1z"/></svg></i><span>14 gün ücretsiz<small>Damga'yı ödemeden dene</small></span></li>
+      <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9.5 15l1.8 1.8 3.4-3.6"/></svg></i><span>Taahhüt yok<small>Damga'yı istediğin ay bırakırsın</small></span></li>
+      <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0 5 5L21 13l-8 8-3-3 6.5-6.5"/><path d="M14.5 6.5L17 4l3 3-2.5 2.5"/><path d="M3 21l6-6"/></svg></i><span>Yerinde kurulum<small>Damga, stand ve eğitim bizden</small></span></li>
+      <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></i><span>Masada aylık ücret yok<small>Masa &amp; Kasa'yı bir kez ödersin</small></span></li>
+    </ul>
+    <details class="matrix">
+      <summary>Tüm özellikleri karşılaştır</summary>
+      <div class="mx-wrap"><table class="mx"><thead><tr><th scope="col"><span class="sr">Özellik</span></th><th scope="col">Damga</th><th scope="col">Masa &amp; Kasa</th><th scope="col" class="b">Tam</th></tr></thead><tbody><tr><th scope="row">NFC damga ve QR&#x27;lı tezgah afişi</th><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Damga paneli: müşteriler, onay, ödül bileti</th><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Markalı damga kartı</th><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Hazır afiş ve story tasarımları</th><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Masa standı (NFC + QR)</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td>Her masaya</td><td class="b">Her masaya</td></tr><tr><th scope="row">Garson çağır, hesabı iste</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Canlı hesap ve hesap bölüştürme</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Wi-Fi, menü ve Google yorum masada</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Türkçe ve İngilizce masa sayfası</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Kasa ekranı ve gün sonu özeti</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Masada damga kartı tanıtımı</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Açılış tasarımları (biz hazırlarız)</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17 19 7"/></svg><span class="sr">Var</span></td></tr><tr><th scope="row">Destek</th><td>WhatsApp</td><td>WhatsApp</td><td class="b">Öncelikli</td></tr><tr><th scope="row">Ücretsiz deneme</th><td>14 gün</td><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td class="b">14 gün (Damga)</td></tr><tr><th scope="row">Kurulum</th><td>450 ₺</td><td>Masa fiyatına dahil</td><td class="b">Ücretsiz</td></tr><tr><th scope="row">Aylık ücret</th><td>490 ₺</td><td>Yok</td><td class="b">490 ₺ (Damga)</td></tr><tr><th scope="row">Masa başı (tek seferlik)</th><td><span class="no" aria-hidden="true">–</span><span class="sr">Yok</span></td><td>300 ₺ · 20+ masada 250 ₺</td><td class="b">250 ₺</td></tr></tbody></table></div>
+    </details>
+    <p class="notes">Üç ve daha fazla şubesi olan işletmelere Damga'da %20 indirim. Ödemeler havale ya da EFT ile yapılır.</p>
   </div>
 </section>
 
-<section class="band" id="sss" style="padding-top:0">
+<section class="band tight" id="sss">
   <div class="wrap">
     <h2>Aklına takılanlar</h2>
-    <div class="faq">
-      <details>
-        <summary>Müşterinin uygulama indirmesi gerekir mi?</summary>
-        <p>Hayır. Telefon damgaya yaklaşınca kart sayfası tarayıcıda açılır. Hiçbir şey yüklenmez.</p>
-      </details>
-      <details>
-        <summary>Hangi telefonlarda çalışır?</summary>
-        <p>Yeni iPhone'lar ve NFC'si açık Android telefonlar damgaya dokunarak kartı açar. iPhone'da telefonun üst kısmını, Android'de arka yüzün ortasını yaklaştırmak yeterli. NFC'si olmayan ya da kapalı olan telefonlar tezgahtaki QR kodu kamerayla okutur.</p>
-      </details>
-      <details>
-        <summary>Biri hile yapıp fazladan damga alabilir mi?</summary>
-        <p>Damga linki tahmin edilemeyen gizli bir koddur. Damgalar arasında bekleme süresi var ve istersen her damga senin onayınla eklenir.</p>
-      </details>
-      <details>
-        <summary>Müşteri telefonunu değiştirirse damgaları ne olur?</summary>
-        <p>Damgalar telefon numarasına kayıtlı. Yeni telefondan aynı numarayla girince kart kaldığı yerden devam eder.</p>
-      </details>
-      <details>
-        <summary>Müşterinin internete ihtiyacı var mı?</summary>
-        <p>Evet, kart sayfası açılırken telefonun internete bağlı olması gerekir. Mobil veri yeterli.</p>
-      </details>
-      <details>
-        <summary>Kaç damgada ödül verileceğine kim karar veriyor?</summary>
-        <p>Sen. Kurulumda birlikte ayarlarız. Ödülü ve kartın rengini sonra panelden kendin değiştirirsin.</p>
-      </details>
-      <details>
-        <summary>Kurulumu kim yapıyor?</summary>
-        <p>Biz. Kayseri'de işletmene gelip damgayı ve tezgah kartını yerleştiriyor, paneli birlikte açıyoruz. Başka bir şehirdeysen WhatsApp'tan yaz, birlikte bakalım.</p>
-      </details>
-      <details>
-        <summary>Müşteri bilgileri güvende mi?</summary>
-        <p>Müşteriden yalnızca telefon numarası ve isterse adı alınır, sadece damga kartı için kullanılır. Ayrıntılar <a href="/gizlilik.html">gizlilik metninde</a>.</p>
-      </details>
-      <details>
-        <summary>İlk aydan sonra ne olur?</summary>
-        <p>Devam etmek istersen aylık abonelikle sürer. İstemezsen hizmet kapanır, ek ücret çıkmaz.</p>
-      </details>
-    </div>
+    <div class="faq"><details><summary>Müşterinin uygulama indirmesi gerekir mi?</summary><p>Hayır. Telefonunu damgaya ya da masadaki standa yaklaştırınca sayfa tarayıcıda açılır. Hiçbir şey yüklenmez.</p></details>
+<details><summary>Hangi telefonlarda çalışır?</summary><p>Yeni iPhone'lar ve NFC'si açık Android telefonlar damgaya ya da standa dokunarak sayfayı açar. iPhone'da telefonun üst kısmını, Android'de arka yüzün ortasını yaklaştırmak yeterli. NFC'si olmayan ya da kapalı olan telefonlar QR kodu kamerayla okutur.</p></details>
+<details><summary>Biri hile yapıp fazladan damga alabilir mi?</summary><p>Damga linki tahmin edilemeyen gizli bir koddur. Damgalar arasında bekleme süresi var ve istersen her damga senin onayınla eklenir.</p></details>
+<details><summary>Müşteri telefonunu değiştirirse damgaları ne olur?</summary><p>Damgalar telefon numarasına kayıtlı. Yeni telefondan aynı numarayla girince kart kaldığı yerden devam eder.</p></details>
+<details><summary>Masadaki müşteri telefondan sipariş verebiliyor mu?</summary><p>Siparişi her zamanki gibi garson alır ve kasa ekranından girer. Müşteri telefonunda hesabını canlı görür, garsonu çağırır, hesabı ister. Böylece mutfağa yanlış sipariş düşmez, servis senin kontrolünde kalır.</p></details>
+<details><summary>Kasa ekranı yazar kasamın yerine geçer mi?</summary><p>Hayır. Damgalio Kasa bir adisyon ve masa takip ekranıdır, mali fiş kesmez. Resmî fişi mevcut yazar kasa ya da POS cihazından kesmeye devam edersin.</p></details>
+<details><summary>Kasa ekranı için ne gerekiyor?</summary><p>Elindeki tablet, telefon ya da bilgisayar yeterli; tarayıcıdan açılır. Aynı anda birden fazla cihazda açabilirsin, garsonlar çağrıları kendi telefonundan görebilir. Bilgi fişi basmak istersen 80 mm termal yazıcı kullanabilirsin.</p></details>
+<details><summary>Müşterinin internete ihtiyacı var mı?</summary><p>Evet, sayfa açılırken telefonun internete bağlı olması gerekir. Mobil veri ya da senin Wi-Fi'ın yeterli.</p></details>
+<details><summary>Kaç damgada ödül verileceğine kim karar veriyor?</summary><p>Sen. Kurulumda birlikte ayarlarız. Ödülü ve kartın rengini sonra panelden kendin değiştirirsin.</p></details>
+<details><summary>Kurulumu kim yapıyor?</summary><p>Biz. Kayseri'de işletmene gelip damgayı, tezgah afişini ve masa standlarını yerleştiriyor, paneli ve kasayı birlikte açıyoruz. Başka bir şehirdeysen WhatsApp'tan yaz, birlikte bakalım.</p></details>
+<details><summary>Masa &amp; Kasa&#x27;da aylık ücret var mı?</summary><p>Hayır. Masa başı bir kez ödersin: 20'den az masada masa başı 300 ₺, 20 ve üzeri masada masa başı 250 ₺. Stand, kurulum ve kasa ekranı bu fiyata dahil. Örneğin 10 masa 3.000 ₺, 20 masa 5.000 ₺ tutar.</p></details>
+<details><summary>Paketler arasında geçiş yapabilir miyim?</summary><p>Evet. Damga kullanırken Masa & Kasa eklersen masalarını Tam fiyatından, masa başı 250 ₺'den alırsın. Masa & Kasa'n varken Damga'yı eklersen damga kurulum ücreti ödemezsin.</p></details>
+<details><summary>Ödeme nasıl yapılıyor?</summary><p>Damga aylık ya da yıllık ödenir; yıllık ödemede 2 ay bizden ve fiyat 12 ay sabit kalır. Masa & Kasa masa başı tek seferlik ödenir. Ödemeler havale veya EFT ile.</p></details>
+<details><summary>14 günlük deneme bitince ne olur?</summary><p>Damga'yı beğenirsen aylık 490 ₺ ile devam eder. İstemezsen hizmet kapanır, ek ücret çıkmaz. Ücretsiz deneme yalnızca Damga için geçerlidir; Masa & Kasa tek seferlik satın alınır.</p></details>
+<details><summary>Müşteri bilgileri güvende mi?</summary><p>Damga kartı için müşteriden yalnızca telefon numarası ve isterse adı alınır. Masa sayfası hiçbir kişisel bilgi istemez. Ayrıntılar <a href="/gizlilik.html">gizlilik metninde</a>.</p></details></div>
   </div>
 </section>
 </main>
 
-<section class="final" id="iletisim">
+<section class="final on-o" id="iletisim">
   <div class="wrap">
     <h2>Müşterin bir kez gelmesin, hep gelsin.</h2>
-    <p>İşletmende ilk ay ücretsiz dene.</p>
+    <p>Damga 14 gün ücretsiz. Masa &amp; Kasa'da aylık ücret yok. Kurulum bizden.</p>
     <div class="ctas">
-      <a class="btn btn-ink js-wa" href="#iletisim">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"></path></svg>
-        WhatsApp'tan yaz
-      </a>
-      <a class="btn btn-line" href="#dene">Önce dene</a>
+      <a class="btn btn-ink js-wa" href="#iletisim"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>WhatsApp'tan yaz</a>
+      <a class="btn btn-line" href="#fiyat">Paketleri gör</a>
     </div>
   </div>
 </section>
 
-<footer>
+<footer class="on-n">
   <div class="wrap foot">
-    <a class="logo" href="/" aria-label="Damgalio ana sayfa">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#EE6A37"></rect><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"></circle><path d="M14 12.5h4v4h-4z" fill="#10221F"></path><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"></rect><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"></path></svg>
-      Damgalio
-    </a>
+    <a class="logo" href="/" aria-label="Damgalio ana sayfa"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#EE6A37"/><circle cx="16" cy="9" r="3.5" fill="none" stroke="#10221F" stroke-width="2.4"/><path d="M14 12.5h4v4h-4z" fill="#10221F"/><rect x="7" y="16.5" width="18" height="6" rx="2" fill="#10221F"/><path d="M8 26h16" stroke="#10221F" stroke-width="2.4" stroke-linecap="round"/></svg>Damgalio</a>
     <nav aria-label="Alt menü">
-      <a href="#dene">Dene</a>
-      <a href="#hesapla">Hesapla</a>
-      <a href="#fiyat">Fiyat</a>
-      <a href="/panel.html">İşletme girişi</a>
+      <a href="#damga">Damga</a>
+      <a href="#masa">Masa &amp; Kasa</a>
+      <a href="#fiyat">Fiyatlar</a>
+      <a href="/panel.html">Damga paneli</a>
+      <a href="/kasa">Kasa girişi</a>
       <a href="/gizlilik.html">Gizlilik</a>
     </nav>
-    <small>© 2026 Damgalio</small>
+    <small>© 2026 Damgalio · Kayseri</small>
   </div>
 </footer>
 
+<div class="sticky" id="sticky" aria-hidden="true">
+  <div><b>Damga 14 gün ücretsiz</b><small>Kurulum bizden, taahhüt yok</small></div>
+  <a class="btn btn-o js-wa" href="#iletisim" tabindex="-1"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Yaz</a>
+</div>
 <script>
+window.DMG_IC = {"check": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"5 12.5 10 17 19 7\"/></svg>", "okc": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.4l2.7 2.7L16 9.8\"/></svg>", "bell": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 15V11a6 6 0 0 1 12 0v4l1.5 2.5h-15z\"/><path d=\"M10 20a2 2 0 0 0 4 0\"/><path d=\"M12 3v2\"/></svg>", "bill": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3h12v18l-3-2-3 2-3-2-3 2z\"/><path d=\"M9 8h6M9 12h6M9 16h3\"/></svg>"};
+var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
+var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
+var REDUCED = false;
+try { REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function tl(x) { return Math.round(x).toLocaleString("tr-TR") + " ₺"; }
+
+/* ---------- WhatsApp bağlantıları ---------- */
 (function () {
-  var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
-  var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
   var MSG = "Merhaba, Damgalio hakkında bilgi almak istiyorum. İşletmemin adı: ";
+  var NUM = "";
   function setLinks(n) {
-    n = String(n || "").replace(/\D/g, "");
+    if (n !== undefined) n = String(n || "").replace(/\D/g, ""); else n = NUM;
     if (!/^[0-9]{10,15}$/.test(n)) return;
-    var url = "https://wa.me/" + n + "?text=" + encodeURIComponent(MSG);
+    NUM = n;
     var links = document.querySelectorAll("a.js-wa");
     for (var i = 0; i < links.length; i++) {
-      links[i].href = url;
+      links[i].href = "https://wa.me/" + n + "?text=" + encodeURIComponent(links[i].getAttribute("data-msg") || MSG);
       links[i].target = "_blank";
       links[i].rel = "noopener";
     }
   }
+  window.dmgRelink = function () { setLinks(); };
   try {
     fetch(SB_URL + "/rest/v1/rpc/public_contact", {
       method: "POST",
@@ -682,18 +1101,35 @@ footer .logo{font-size:20px}
   } catch (e) {}
 })();
 
+/* ---------- giriş menüsü ---------- */
+(function () {
+  var d = document.querySelector(".login");
+  if (!d) return;
+  document.addEventListener("click", function (e) { if (d.open && !d.contains(e.target)) d.open = false; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && d.open) { d.open = false; d.querySelector("summary").focus(); } });
+})();
+
+/* ---------- karşılamadaki masa kartı ---------- */
+(function () {
+  var b = $("hcall"), s = $("hcallS");
+  if (!b) return;
+  if (REDUCED) { b.className = "tc-b seen"; s.textContent = "Görüldü ✓"; return; }
+  function cycle() {
+    b.className = "tc-b"; s.textContent = "Masana gelsin";
+    setTimeout(function () { b.className = "tc-b pend"; s.textContent = "Çağrıldı · az önce"; }, 1500);
+    setTimeout(function () { b.className = "tc-b seen"; s.textContent = "Görüldü ✓"; }, 4300);
+  }
+  cycle();
+  setInterval(function () { if (!document.hidden) cycle(); }, 8000);
+})();
+
+/* ---------- damga demosu ---------- */
 (function () {
   var NEED = 4, REWARD = "Bir filtre kahve";
   var ROT = [-9, 6, -3, 11];
   var st = { stamps: 0, pending: false, rewards: 0, today: 0, busy: false, fresh: -1, msg: "start" };
-  var btn = document.getElementById("dStamp");
-  var btnTxt = document.getElementById("dStampTxt");
-  var list = document.getElementById("dList");
-  var screen = document.getElementById("dScreen");
-  var today = document.getElementById("dToday");
-  var waiting = document.getElementById("dWaiting");
+  var btn = $("dStamp"), btnTxt = $("dStampTxt"), list = $("dList"), screen = $("dScreen"), today = $("dToday"), waiting = $("dWaiting");
   if (!btn || !screen) return;
-
   var MSGS = {
     start: ["", "Damgaya dokununca damgan buraya eklenir."],
     wait: ["wait", "Onay bekleniyor. Kasadaki çalışan onaylayınca damgan eklenecek."],
@@ -702,14 +1138,12 @@ footer .logo{font-size:20px}
     no: ["no", "Bu damga onaylanmadı."],
     used: ["", "Afiyet olsun! Yeni kartın başladı."]
   };
-
   function phone() {
     var slots = "";
     for (var i = 0; i < NEED; i++) {
       slots += '<span class="dslot">' + (i < st.stamps ? '<i class="ink' + (i === st.fresh ? ' new' : '') + '" style="--d:0s;--r:' + ROT[i % 4] + 'deg"></i>' : '') + '</span>';
     }
-    var left = NEED - st.stamps;
-    var m = MSGS[st.msg] || MSGS.start;
+    var left = NEED - st.stamps, m = MSGS[st.msg] || MSGS.start;
     var text = st.msg === "added" ? "Damga eklendi. Ödüle " + left + " damga kaldı." : m[1];
     screen.innerHTML =
       '<span class="notch" aria-hidden="true"></span>' +
@@ -721,11 +1155,9 @@ footer .logo{font-size:20px}
       '<div class="dcount"><span>' + st.stamps + ' / ' + NEED + ' damga</span><span>Ödül: ' + REWARD + '</span></div>' +
       '<div class="dmsg ' + m[0] + '" role="status">' + text + '</div>';
   }
-
   function row(title, sub, acts) {
     return '<div class="dp-row"><div><b>' + title + '</b><small>' + sub + '</small></div><div class="dp-acts">' + acts + '</div></div>';
   }
-
   function panel() {
     var html = "";
     if (st.pending) html += row("Yeni damga isteği", "Elif · 5•• ••• •• 34 · şimdi", '<button class="dp-btn alt" type="button" data-a="no">Reddet</button><button class="dp-btn" type="button" data-a="ok">Onayla</button>');
@@ -737,15 +1169,12 @@ footer .logo{font-size:20px}
     btn.disabled = st.pending || st.busy;
     btnTxt.textContent = st.pending ? "Onay bekleniyor" : "Damgaya dokun";
   }
-
   function draw() { phone(); panel(); }
-
   btn.addEventListener("click", function () {
     if (st.pending || st.busy) return;
     st.pending = true; st.fresh = -1; st.msg = "wait";
     draw();
   });
-
   list.addEventListener("click", function (e) {
     var b = e.target.closest ? e.target.closest("button[data-a]") : null;
     if (!b) return;
@@ -755,10 +1184,7 @@ footer .logo{font-size:20px}
       if (st.stamps >= NEED) {
         st.busy = true; st.msg = "added";
         draw();
-        setTimeout(function () {
-          st.stamps = 0; st.rewards++; st.fresh = -1; st.busy = false; st.msg = "full";
-          draw();
-        }, 900);
+        setTimeout(function () { st.stamps = 0; st.rewards++; st.fresh = -1; st.busy = false; st.msg = "full"; draw(); }, 900);
         return;
       }
       st.msg = "added";
@@ -771,22 +1197,103 @@ footer .logo{font-size:20px}
     }
     draw();
   });
-
-  document.getElementById("dReset").addEventListener("click", function () {
+  $("dReset").addEventListener("click", function () {
     st = { stamps: 0, pending: false, rewards: 0, today: 0, busy: false, fresh: -1, msg: "start" };
     draw();
   });
-
   draw();
 })();
 
+/* ---------- masa & kasa demosu ---------- */
 (function () {
-  var sec = document.getElementById("isletmeler");
+  var ph = $("mScreen"), ks = $("mKasa");
+  if (!ph || !ks) return;
+  var IC = window.DMG_IC || {};
+  var PRODS = [{ n: "Çay", p: 25 }, { n: "Türk kahvesi", p: 90 }, { n: "Cheesecake", p: 160 }, { n: "Limonata", p: 85 }];
+  var M;
+  function init() { M = { calls: [], items: [{ n: "Türk kahvesi", q: 2, p: 90 }], today: 3240, done: false, fresh: "", bump: false }; }
+  function total() { return M.items.reduce(function (s, i) { return s + i.q * i.p; }, 0); }
+  function call(k) { var c = null; M.calls.forEach(function (x) { if (x.kind === k) c = x; }); return c; }
+  function phone() {
+    var h = '<span class="notch" aria-hidden="true"></span>';
+    h += '<div class="m-bar"><i aria-hidden="true">SK</i><b>Senin Kafen</b></div>';
+    h += '<div class="m-hero"><small>Hoş geldin</small><b>Masa 4</b></div>';
+    h += '<div class="m-acts">';
+    [["garson", "Garson çağır", "Masana gelsin", "bell"], ["hesap", "Hesabı iste", "Hesap gelsin", "bill"]].forEach(function (d) {
+      var c = call(d[0]), st = c ? (c.seen ? "seen" : "pend") : "";
+      var sub = st === "pend" ? "Çağrıldı · az önce" : st === "seen" ? "Görüldü ✓" : d[2];
+      h += '<button type="button" class="m-cb' + (d[0] === "hesap" ? " alt" : "") + (st ? " " + st : "") + '" data-m="' + d[0] + '"' + (st === "pend" ? " disabled" : "") + '>' +
+        '<i>' + (st === "seen" ? IC.check : IC[d[3]]) + '</i><span><b>' + d[1] + '</b><small>' + sub + '</small></span></button>';
+    });
+    h += '</div>';
+    var pend = M.calls.filter(function (c) { return !c.seen; }), seen = M.calls.filter(function (c) { return c.seen; });
+    if (M.done) h += '<div class="m-bn ok">' + IC.okc + 'Ödemen alındı. Afiyet olsun!</div>';
+    else if (pend.length) h += '<div class="m-bn">' + IC.bell + (pend[pend.length - 1].kind === "hesap" ? "Hesap istendi. Garson hesabını getirecek." : "Garson çağrıldı. Birazdan masanda.") + '</div>';
+    else if (seen.length) h += '<div class="m-bn ok">' + IC.okc + 'Çağrın görüldü. Teşekkürler!</div>';
+    h += '<div class="m-bill"><h4>Hesabın<span>Canlı</span></h4>';
+    if (!M.items.length) h += '<p class="m-empty">Henüz hesabına bir şey eklenmedi.</p>';
+    M.items.forEach(function (i) {
+      h += '<div class="m-it' + (M.fresh === i.n ? " new" : "") + '"><span class="q">' + i.q + '×</span><span class="n">' + esc(i.n) + '</span><span class="p">' + tl(i.q * i.p) + '</span></div>';
+    });
+    h += '<div class="m-tot' + (M.bump ? " bump" : "") + '"><small>TOPLAM</small><b>' + tl(total()) + '</b></div></div>';
+    ph.innerHTML = h;
+  }
+  function kasa() {
+    var t = total(), h = '<div class="k-head"><b>Kasa · Senin Kafen</b><small>Bugün <b>' + tl(M.today) + '</b></small></div>';
+    var pend = M.calls.filter(function (c) { return !c.seen; });
+    h += '<div class="k-calls" aria-live="polite">';
+    if (!pend.length) h += '<p class="k-none">Bekleyen çağrı yok. Telefondan garson çağır.</p>';
+    pend.forEach(function (c) {
+      h += '<div class="k-call' + (c.kind === "hesap" ? " h" : "") + '"><div class="grow"><b>Masa 4</b><small>' + (c.kind === "hesap" ? "Hesap istiyor" : "Garson çağırıyor") + ' · az önce</small></div>' +
+        '<button type="button" data-k="seen" data-c="' + c.kind + '">Gördüm</button></div>';
+    });
+    h += '</div><div class="k-sub">Masalar</div><div class="k-grid">';
+    [[1, 0], [2, 420], [3, 0], [4, -1], [5, 185], [6, 0]].forEach(function (m) {
+      var me = m[1] === -1, v = me ? t : m[1];
+      h += '<div class="k-t' + (v ? " busy" : "") + (me ? " me" : "") + (me && pend.length ? " ring" : "") + '"><b>Masa ' + m[0] + '</b><span>' + (v ? tl(v) : "Boş") + '</span></div>';
+    });
+    h += '</div><div class="k-sub">Masa 4\'e ekle</div><div class="k-prods">';
+    PRODS.forEach(function (p, i) { h += '<button type="button" class="k-p" data-k="add" data-i="' + i + '">' + esc(p.n) + '<span>' + tl(p.p) + '</span></button>'; });
+    h += '</div><div class="ktot"><span>Masa 4 hesabı</span><b>' + tl(t) + '</b></div>';
+    h += '<div class="k-pay"><button type="button" data-k="pay"' + (t ? "" : " disabled") + '>Nakitle kapat</button><button type="button" class="alt" data-k="pay"' + (t ? "" : " disabled") + '>Kartla kapat</button></div>';
+    ks.innerHTML = h;
+  }
+  function draw() { phone(); kasa(); M.fresh = ""; M.bump = false; }
+  ph.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-m]") : null;
+    if (!b || b.disabled) return;
+    var k = b.getAttribute("data-m"), c = call(k);
+    if (c && !c.seen) return;
+    M.calls = M.calls.filter(function (x) { return x.kind !== k; });
+    M.calls.push({ kind: k, seen: false });
+    M.done = false;
+    draw();
+  });
+  ks.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-k]") : null;
+    if (!b || b.disabled) return;
+    var a = b.getAttribute("data-k");
+    if (a === "seen") { var c = call(b.getAttribute("data-c")); if (c) c.seen = true; }
+    else if (a === "add") {
+      var p = PRODS[Number(b.getAttribute("data-i"))], f = null;
+      M.items.forEach(function (i) { if (i.n === p.n) f = i; });
+      if (f) f.q++; else M.items.push({ n: p.n, q: 1, p: p.p });
+      M.fresh = p.n; M.bump = true; M.done = false;
+    } else if (a === "pay") {
+      M.today += total(); M.items = []; M.calls = []; M.done = true;
+    }
+    draw();
+  });
+  $("mReset").addEventListener("click", function () { init(); draw(); });
+  init();
+  draw();
+})();
+
+/* ---------- harita ---------- */
+(function () {
+  var sec = $("isletmeler");
   if (!sec || !window.fetch) return;
-  var SB_URL = "https://rgtexozixcqrqhoepapr.supabase.co";
-  var SB_KEY = "sb_publishable_bKdS0htkq5rqCLIaulu5lQ_8LEqnFvg";
   var MIN = /[?&]harita=goster/.test(location.search) ? 1 : 3;
-  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
   function ll(p) { return Number(p.lat).toFixed(6) + "," + Number(p.lng).toFixed(6); }
   function embed(p) { return "https://maps.google.com/maps?q=" + ll(p) + "&z=16&hl=tr&output=embed"; }
   function route(p) { return "https://www.google.com/maps/dir/?api=1&destination=" + ll(p); }
@@ -798,8 +1305,7 @@ footer .logo{font-size:20px}
     .then(function (list) {
       list = (Array.isArray(list) ? list : []).filter(function (p) { return isFinite(p.lat) && isFinite(p.lng) && p.lat !== null && p.lng !== null; });
       if (list.length < MIN) return;
-      var ul = document.getElementById("pList");
-      var map = document.getElementById("pMap");
+      var ul = $("pList"), map = $("pMap");
       ul.innerHTML = list.map(function (p, i) {
         var rw = p.reward ? (p.needed ? p.needed + " damgada: " : "Ödül: ") + p.reward : "";
         return '<li class="pitem"><button class="pbtn" type="button" data-i="' + i + '"><b>' + esc(p.name) + '</b>' +
@@ -819,17 +1325,17 @@ footer .logo{font-size:20px}
       });
       pick(0);
       sec.hidden = false;
-      var nl = document.getElementById("navPlaces");
+      var nl = $("navPlaces");
       if (nl) nl.hidden = false;
     })
     .catch(function () {});
 })();
 
+/* ---------- hesaplayıcı ---------- */
 (function () {
-  function $(id) { return document.getElementById(id); }
   if (!$("calc")) return;
+  var DAMGA = 490;
   function n(x) { return Math.round(x).toLocaleString("tr-TR"); }
-  function tl(x) { return n(x) + " ₺"; }
   var ins = ["cDaily", "cAvg", "cUse", "cLift", "cNeed", "cCost"];
   function calc() {
     var G = +$("cDaily").value, H = +$("cAvg").value, K = +$("cUse").value / 100;
@@ -845,9 +1351,63 @@ footer .logo{font-size:20px}
     $("rVisits").textContent = n(extra);
     $("rCiro").textContent = tl(extra * H);
     $("rCost").textContent = tl((cardVisits + extra) / N * M);
+    var be = Math.max(1, Math.ceil(DAMGA / H));
+    $("rBe").innerHTML = "Damga paketinin aylık ücreti " + tl(DAMGA) + ". Senin ortalama hesabınla bu, ayda yaklaşık <b>" + n(be) + " ek ziyaretin</b> cirosuna denk.";
   }
   for (var i = 0; i < ins.length; i++) $(ins[i]).addEventListener("input", calc);
   calc();
+})();
+
+/* ---------- masa sayısına göre fiyat ---------- */
+(function () {
+  var out = $("tblN");
+  if (!out) return;
+  var box = out.parentNode.parentNode, dec = box.querySelector('[data-d="-1"]'), inc = box.querySelector('[data-d="1"]');
+  var n = 10;
+  function set(v) {
+    n = Math.max(1, Math.min(99, v));
+    var unit = n >= 20 ? 250 : 300, masa = n * unit, tam = n * 250, save = masa - tam + 450;
+    out.textContent = n;
+    dec.disabled = n <= 1;
+    inc.disabled = n >= 99;
+    box.querySelectorAll("[data-n]").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.getAttribute("data-n")) === n)); });
+    $("pmUnit").textContent = tl(unit);
+    $("tierRow").classList.toggle("on", n >= 20);
+    $("pmN").textContent = n + " masa · toplam";
+    $("pmTot").textContent = tl(masa);
+    $("ptStrike").hidden = unit === 250;
+    $("ptN").textContent = n + " masa · toplam";
+    $("ptTot").textContent = tl(tam);
+    $("saveTxt").textContent = n + " masada " + tl(save) + " daha az ödersin";
+    $("waMasa").setAttribute("data-msg", "Merhaba, Damgalio Masa & Kasa hakkında bilgi almak istiyorum. " + n + " masam var. İşletmemin adı: ");
+    $("waTam").setAttribute("data-msg", "Merhaba, Damgalio Tam paketi hakkında bilgi almak istiyorum. " + n + " masam var. İşletmemin adı: ");
+    if (window.dmgRelink) window.dmgRelink();
+  }
+  box.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button") : null;
+    if (!b || b.disabled) return;
+    if (b.hasAttribute("data-d")) set(n + Number(b.getAttribute("data-d")));
+    else if (b.hasAttribute("data-n")) set(Number(b.getAttribute("data-n")));
+  });
+  set(10);
+})();
+
+/* ---------- mobil alt çubuk ---------- */
+(function () {
+  var s = $("sticky"), hero = document.querySelector(".hero"), fin = $("iletisim");
+  if (!s || !hero || !fin) return;
+  var a = s.querySelector("a"), raf = 0;
+  function upd() {
+    raf = 0;
+    var on = hero.getBoundingClientRect().bottom < 0 && fin.getBoundingClientRect().top > window.innerHeight;
+    if (on === s.classList.contains("on")) return;
+    s.classList.toggle("on", on);
+    s.setAttribute("aria-hidden", on ? "false" : "true");
+    a.tabIndex = on ? 0 : -1;
+  }
+  window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(upd); }, { passive: true });
+  window.addEventListener("resize", upd);
+  upd();
 })();
 </script>
 </body>
